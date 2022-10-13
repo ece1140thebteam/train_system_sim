@@ -75,6 +75,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton.clicked.connect(self.get_line_data)
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
+        self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
 
         # ComboBox Connections
         self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance)
@@ -95,6 +96,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_controlSwitch.setDisabled(True)
             self.pushButton_trackMaintenance.setDisabled(True)
             self.pushButton_dispatchTrains.setDisabled(True)
+
+    def schedule_trains(self):
+        fileName = self.label.text();
+        self.outputLabel.setText("Scheduling Trains from file: " + fileName);
 
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked

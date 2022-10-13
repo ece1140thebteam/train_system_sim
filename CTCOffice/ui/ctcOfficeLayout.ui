@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1199</width>
-    <height>749</height>
+    <width>1195</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -320,8 +320,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>145</width>
-             <height>188</height>
+             <width>200</width>
+             <height>155</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -363,6 +363,25 @@
             <property name="text">
              <string>Schedule Trains</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox">
+            <item>
+             <property name="text">
+              <string>Blue Line</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Red Line</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Green Line</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -895,7 +914,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1199</width>
+     <width>1195</width>
      <height>22</height>
     </rect>
    </property>
