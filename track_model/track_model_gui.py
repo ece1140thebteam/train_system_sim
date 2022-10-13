@@ -222,6 +222,8 @@ class LineListManager(QObject):
         self.model.clear()
 
 class BlockInfoListManager(QObject):
+    blockChanged = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -231,7 +233,7 @@ class BlockInfoListManager(QObject):
 
         self.m_model.setItemRoleNames(roles)
 
-    @pyqtProperty(QObject, constant=True)
+    @pyqtProperty(QObject, notify=blockChanged)
     def model(self):
         return self.m_model
 
@@ -241,6 +243,7 @@ class BlockInfoListManager(QObject):
         it.setData(title, BlockInfoTitleRole)
         it.setData(detail, BlockInfoDetailRole)
         self.model.appendRow(it)
+        self.blockChanged.emit()
 
     @pyqtSlot()
     def clear_list(self):
@@ -356,7 +359,7 @@ def handle_communication():
 
 
 class BkgdMonitor(QObject):
-    bkgd_info_update = pyqtSignal(str)
+    bkgd_info_update = pyqtSignal()
 
     @pyqtSlot()
     def monitor_images(self):
@@ -369,6 +372,7 @@ class BkgdMonitor(QObject):
                 handle_communication()
                 print('file changed!')
                 update_block_info()
+                Gvars.block_info_manager.blockChanged.emit()
 
                 
 
