@@ -20,7 +20,6 @@ import datetime
 import random
 import time
 import _md5
-import requests, json
 
 LineRole = Qt.UserRole + 1000
 SectionRole = Qt.UserRole + 1001
@@ -166,6 +165,7 @@ def load_new_track():
 
 def update_block_info():
     block = Gvars.displayed_block
+    block.print()
     Gvars.block_info_manager.clear_list()
 
     Gvars.block_info_manager.add_info_line('Line', block.line)
@@ -274,7 +274,7 @@ class QFunctions(QObject):
         block = Gvars.track.track_lines[line].get_block(block_num)
         Gvars.displayed_block = block
         update_block_info()
-        block.print()
+        # block.print()
 
     @pyqtSlot()
     def open_new_file(self):
@@ -350,6 +350,7 @@ def handle_communication():
             elif type == "Track Circuit":
                 line.get_block(int(target)).circuit_open = value.lower()=='open'
         update_block_info()
+        update_block_info()
     # except:
     #     print('error with update')
 
@@ -367,6 +368,9 @@ class BkgdMonitor(QObject):
                 t = os.stat('test_communications')[8]
                 handle_communication()
                 print('file changed!')
+                update_block_info()
+
+                
 
 
 def main():

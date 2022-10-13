@@ -7,7 +7,7 @@ import QtQuick.Controls.Material 2.12
 
 ApplicationWindow {
     id: trackModel
-    width: 1200; height: 400
+    width: 600; height: 800
     visible: true
     property var trackFile: track_file_binding.text
     title: "Track Model"

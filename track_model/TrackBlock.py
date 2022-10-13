@@ -83,5 +83,6 @@ class TrackBlock():
         print(f'has_rail_crossing: {self.has_rail_crossing}')
         print(f'crossing_open: {self.crossing_open}')
         print(f'can_travel_to: {str(self.can_travel_to)}')
+        print(f'light: {str(self.light)}')
 
 
