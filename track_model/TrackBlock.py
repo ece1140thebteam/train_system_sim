@@ -40,6 +40,25 @@ class TrackBlock():
         self.signal         = "Green"
         self.light          = "Off"
         self.switch_pos     = switch if switch is None else switch[0]
+        self.track_heater   = 'Off'
+        self.failure_mode   = 'No Failures'
+        self.beacon1        = None
+        self.beacon2        = None
+        self.authority      = 0
+
+        if self.station:
+            # TODO Add side of track
+            self.beacon1 = {
+                'station': self.station
+
+            }
+            self.beacon2 = {
+                'station': self.station
+
+            }
+
+    def update_failure(self,type):
+        self.failure_mode = type
 
     def print(self):
         print(f'line: {self.line}')

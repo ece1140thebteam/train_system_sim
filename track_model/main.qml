@@ -15,17 +15,18 @@ ApplicationWindow {
     RowLayout {
         id: main_windows
         anchors.fill: parent
-        spacing: 0
+        spacing: 4
 
         ColumnLayout {
             id: leftSideBar
-            spacing: 2
+            spacing: 0
             Layout.preferredWidth: main_windows.width*.2
+
             // block selector
             ColumnLayout {
                 //Layout.preferredWidth: 300
                 Layout.fillWidth: true
-                Layout.preferredHeight: main_windows.height*.6
+                Layout.preferredHeight: main_windows.height*.5
 
                 // file selector bar
                 Rectangle{
@@ -140,7 +141,7 @@ ApplicationWindow {
                                 Text { anchors.horizontalCenter: parent.horizontalCenter
                                     font.pixelSize: 16
                                     font.bold: true
-                                    text: section
+                                    text: section + ' line'
                                 }
                             }
 
@@ -152,7 +153,7 @@ ApplicationWindow {
             // selected block information
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: main_windows.height*.4
+                Layout.preferredHeight: main_windows.height*.5
                 
 
                 ScrollView{
@@ -162,7 +163,9 @@ ApplicationWindow {
                     clip: true
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                
+                    background: Rectangle {
+                            color: "#607D8B"
+                    }
 
                     Component {
                         id: blockInfoDelegate
@@ -187,7 +190,7 @@ ApplicationWindow {
                                     leftPadding: 4
                                     text: title
                                     color: "white"
-                                    font.pointSize: 16
+                                    font.pointSize: 14
                                     font.bold: true
                                     horizontalAlignment: Layout.AlignLeft
                                 }
@@ -202,7 +205,7 @@ ApplicationWindow {
                                 Text {
                                     text: detail
                                     color: "white"
-                                    font.pointSize: 14
+                                    font.pointSize: 12
                                     leftPadding: 6
                                     horizontalAlignment: Layout.AlignLeft
 
@@ -210,23 +213,92 @@ ApplicationWindow {
                                 }
                             }
                         }
-                        // }
+
                     }
+
                     ListView {
                         anchors.fill: parent
                         model: displayed_block_manager.model
                         delegate: blockInfoDelegate
                     }
-                
                 }
             }
-        }
 
+            // create a failure
+            ColumnLayout{
+                Rectangle
+                {
+                    height: childrenRect.height
+                    Layout.fillWidth: true
+                    color: "#607D8B"
+                    
+                    RowLayout
+                    {
+                        Button{
+                            text: "Break Rail"
+                            
+                            background: Rectangle {
+                                color: parent.down ? "#bbbbbb" :
+                                    (parent.hovered ? "#d6d6d6" : "#f6f6f6")
+                            }
+                            onClicked: {
+                                function_bindings.create_failure("Broken Rail")
+                            }
+                        }
+                        Item{
+                            Layout.fillWidth: true
+                        }
+                        Button{
+                            text: "Power Failure"
+                            background: Rectangle {
+                                color: parent.down ? "#bbbbbb" :
+                                    (parent.hovered ? "#d6d6d6" : "#f6f6f6")
+                            }
+                            onClicked: {
+                                function_bindings.create_failure("Power Failure")
+                            }
+                        }  
+                    
+                    }
+                }
+                Rectangle{
+                    height: childrenRect.height
+                    Layout.fillWidth: true
+                    color: "#607D8B"
+                    RowLayout
+                    {
+                        Button{
+                            text: "Track Circuit Failure"
+                            background: Rectangle {
+                                color: parent.down ? "#bbbbbb" :
+                                    (parent.hovered ? "#d6d6d6" : "#f6f6f6")
+                            }
+                            onClicked: {
+                                function_bindings.create_failure("Track Circuit Failure")
+                            }
+                        }
+                        Button{
+                            text: "No Failure"
+                            background: Rectangle {
+                                color: parent.down ? "#bbbbbb" :
+                                    (parent.hovered ? "#d6d6d6" : "#f6f6f6")
+                            }
+                            onClicked: {
+                                print('helo')
+                                function_bindings.create_failure("No Failure")
+                            }
+                        } 
+                    }
+                }
+
+            }
+        }
+    
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredWidth: main_windows.width*.8
-            color: "red"
+            // color: "red"
         }
     }
 }

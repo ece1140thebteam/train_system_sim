@@ -1,4 +1,4 @@
-
+import random
 
 
 
@@ -12,6 +12,7 @@ class TrackLine():
         self.sections = dict()
         self.blocks   = dict()
         self.switches = dict()
+        self.stations = dict()  #{station: passengers}
 
     def add_switch(self, start, connections):
         self.switches[start] = connections
@@ -20,6 +21,8 @@ class TrackLine():
         return self.blocks[block_num]
 
     def add_block(self, block):
+        if block.station is not None:
+            self.stations[block.station] = random.randint(10,30)
         # print(block.block_number)
         # section lookup table
         if block.section in self.sections:
