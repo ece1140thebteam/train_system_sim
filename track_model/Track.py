@@ -16,7 +16,6 @@ class Track():
             self.track_lines[block.line] = TrackLine.TrackLine(block.line)
             self.track_lines[block.line].add_block(block)
 
-
     def print(self):
         for line in self.track_lines:
             print('-------------------')

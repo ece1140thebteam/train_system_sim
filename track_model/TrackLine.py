@@ -16,6 +16,9 @@ class TrackLine():
     def add_switch(self, start, connections):
         self.switches[start] = connections
 
+    def get_block(self, block_num):
+        return self.blocks[block_num]
+
     def add_block(self, block):
         # print(block.block_number)
         # section lookup table

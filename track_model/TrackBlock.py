@@ -36,6 +36,10 @@ class TrackBlock():
         self.has_rail_crossing = has_rail_crossing
         self.can_travel_to  = can_travel_to
         self.crossing_open  = None if not has_rail_crossing else False
+        self.circuit_open   = True
+        self.signal         = "Green"
+        self.light          = "Off"
+        self.switch_pos     = switch if switch is None else switch[0]
 
     def print(self):
         print(f'line: {self.line}')
