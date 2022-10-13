@@ -245,7 +245,7 @@ class TrainCTRLTestUI(QWidget):
                     print('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
                 else:
-                    print('No Brakes Enabled, calculating power...')
+                    print('Brake Case got triggered but no brakes are on!')
 
             if pow < 0:
                 pow = 0

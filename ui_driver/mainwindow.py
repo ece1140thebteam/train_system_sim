@@ -32,7 +32,6 @@ class TrainController(QMainWindow):
         self.brakeFault = False
         self.faultMode = False
 
-
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
         self.ui.manModeBtn.toggle()
@@ -131,6 +130,12 @@ class TrainController(QMainWindow):
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
         if self.faultMode:
+            if self.trackSigFault:
+                self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
+            if self.engineFault:
+                self.ui.engFailStatus.setText('Engine Status: FAILING')
+            if self.brakeFault:
+                self.ui.brakeFailStatus.setText('Brake Status: FAILING')
             print('Failure detected, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.eBrakeBtn.setChecked(True)
