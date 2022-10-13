@@ -15,6 +15,7 @@ class TrainCTRLTestUI(QWidget):
         self.ui = Ui_TrainCTRLTestUI()
         self.ui.setupUi(self)
 
+        #Kp and Ki values to be set by the engineer
         self.Kp = 1
         self.Ki = 0.5
 
@@ -26,7 +27,7 @@ class TrainCTRLTestUI(QWidget):
         self.curSpd = 0
         self.speedLim = 40
         self.driverCmd = 0
-        self.failureMode = False
+        self.faultMode = False
 
 
         #initialize various button states and make them toggleable
@@ -77,39 +78,71 @@ class TrainCTRLTestUI(QWidget):
         #Initializing values for display
         self.ui.driverSpd.setText('0MPH')
         self.ui.curSpd.setText('Current Speed: 0 MPH')
-        self.ui.cmdSpd.setText('Commanded Speed: 30 MPH')
+        self.ui.cmdSpd.setText('Commanded Speed: 0 MPH')
+        self.ui.cmdPowOutput.setText('Commanded Power Output: 0.0kW')
+        
         self.ui.curTempLabel.setText('Current Temp: 70F')
         self.ui.tempDial.setValue(70)
+        
+        self.ui.cmdSpdDial.setValue(0)
+        self.ui.cmdLabel.setText('Commanded Speed: 0MPH')
+
+        self.ui.curSpdDial.setValue(0)
+        self.ui.curInputLabel.setText('Current Speed: 0MPH')
+
+        self.ui.spdLimDial.setValue(0)
+        self.ui.spdLimLabel.setText('Speed Limit: 0MPH')
+
         self.ui.brakeFailStatus.setText('Brake Status: Working')
         self.ui.engFailStatus.setText('Engine Status: Working')
         self.ui.trackSigStatus.setText('Track Signal Status: Detected')
-        self.ui.speedSlider.setMaximum(self.speedLim)
+        
 
         #Button Connections
         self.ui.manModeBtn.clicked.connect(self.setManMode)
         self.ui.tempDial.valueChanged.connect(self.tempAdjust)
+        self.ui.cmdSpdDial.valueChanged.connect(self.cmdSpdAdjust)
+        self.ui.curSpdDial.valueChanged.connect(self.curInput)
+        self.ui.spdLimDial.valueChanged.connect(self.spdLimInput)
         self.ui.speedSlider.valueChanged.connect(self.setSpdSlider)
         self.ui.eBrakeBtn.clicked.connect(self.powerCalc)
         self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
-        self.ui.activateEFault.clicked.connect(self.FaultHandler)
-        self.ui.activateBFault.clicked.connect(self.FaultHandler)
-        self.ui.activateSFault.clicked.connect(self.FaultHandler)
-        
-
+        self.ui.activateEFault.clicked.connect(self.EFaultHandler)
+        self.ui.activateBFault.clicked.connect(self.BFaultHandler)
+        self.ui.activateSFault.clicked.connect(self.SFaultHandler)
+        self.ui.authBox.clicked.connect(self.authUpdate)
+        self.ui.faultReset.clicked.connect(self.faultReset)
 
     #Fault Handler Function
-    def FaultHandler(self):
+    #Called when a fault mode is triggered through the test ui, sets fault mode to true
+    #and disables the rest of the buttons
+    def EFaultHandler(self):
         self.faultMode = True
-        if(self.ui.activateEFault.isChecked()):
-            self.ui.activateBFault.setDisabled(True)
-            self.ui.activateSFault.setDisabled(True)
-            self.ui.engFailStatus.setText('Engine Status: FAILING')
-        elif(self.ui.activateBFault.isChecked()):
-            self.ui.activateEFault.setDisabled(True)
-            self.ui.activateSFault.setDisabled(True)
-        else:
-            self.ui.activateEFault.setDisabled(True)
-            self.ui.activateBFault.setDisabled(True)
+        self.ui.activateBFault.setDisabled(True)
+        self.ui.activateSFault.setDisabled(True)
+        self.ui.engFailStatus.setText('Engine Status: FAILING')
+    
+    def BFaultHandler(self):
+        set.faultMode = True
+        self.ui.activateEFault.setDisabled(True)
+        self.ui.activateSFault.setDisabled(True)
+        self.ui.brakeFailStatus.setText('Brake Status: FAILING')
+
+    def SFaultHandler(self):
+        self.faultMode = True
+        self.ui.activateEFault.setDisabled(True)
+        self.ui.activateBFault.setDisabled(True)
+        self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
+
+
+    def faultReset(self):
+        self.faultMode = False
+        self.ui.activateBFault.setEnabled(True)
+        self.ui.activateEFault.setEnabled(True)
+        self.ui.activateSFault.setEnabled(True)
+        self.ui.engFailStatus.setText('Engine Status: Working')
+        self.ui.brakeFailStatus.setText('Brake Status: Working')
+        self.ui.trackSigStatus.setText('Track Signal Status: Detected')
 
     #Mutator Functions
     def setManMode(self):
@@ -128,14 +161,40 @@ class TrainCTRLTestUI(QWidget):
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
 
+    def authUpdate(self):
+        if self.ui.authBox.isChecked():
+            self.auth = True
+            self.powerCalc()
+        else:
+            self.auth = False
+            self.powerCalc()
+
     def tempAdjust(self):
         self.temp = self.ui.tempDial.value()
         tempStr = 'Current Temp: ' + str(self.temp) + 'F'
         self.ui.curTempLabel.setText(tempStr)
 
     def cmdSpdAdjust(self):
-        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd)
-        self.ui.cmdSpd.setText(cmdStr)
+        self.cmdSpd = self.ui.cmdSpdDial.value()
+        tempStr = 'Commanded Speed: ' + str(self.cmdSpd) + 'MPH'
+        self.ui.cmdLabel.setText(tempStr)
+        self.ui.cmdSpd.setText(tempStr)
+        self.powerCalc()
+
+    def curInput(self):
+        self.curSpd = self.ui.curSpdDial.value()
+        tempStr = 'Current Speed: ' + str(self.curSpd) + 'MPH'
+        self.ui.curInputLabel.setText(tempStr)
+        self.ui.curSpd.setText(tempStr)
+        self.powerCalc()
+
+    def spdLimInput(self):
+        self.speedLim = self.ui.spdLimDial.value()
+        tempStr = 'Speed Limit: ' + str(self.speedLim) + 'MPH'
+        self.ui.spdLimLabel.setText(tempStr)
+        self.ui.speedSlider.setMaximum(self.speedLim)
+        self.powerCalc()
+
 
     def setSpdSlider(self):
         if not self.auth:
@@ -152,7 +211,7 @@ class TrainCTRLTestUI(QWidget):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        if self.failureMode:
+        if self.faultMode:
             print('Failure detected, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.eBrakeBtn.setChecked(True)
@@ -173,7 +232,12 @@ class TrainCTRLTestUI(QWidget):
 
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
                 pow = 0
-                print('Brake Engaged, power output set to 0')
+                if self.ui.eBrakeBtn.isChecked():
+                    print('EBrake Engaged, power output set to 0')
+                    self.ui.sBrakeBtn.setChecked(False)
+                else:
+                    print('SBrake Engaged, power output set to 0')
+                    self.ui.eBrakeBtn.setChecked(False)
 
             if pow < 0:
                 pow = 0
@@ -182,7 +246,7 @@ class TrainCTRLTestUI(QWidget):
                 self.powOutput = pow
 
             #Print statement to see the outputs that go to backend
-            print('Power Output: ' + str(self.powOutput) + 'kW')
+            self.ui.cmdPowOutput.setText('Commanded Power Output: ' + str(self.powOutput) + 'kW')
 
 
 if __name__ == "__main__":
