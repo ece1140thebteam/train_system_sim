@@ -123,7 +123,7 @@ class TrainCTRLTestUI(QWidget):
         self.ui.engFailStatus.setText('Engine Status: FAILING')
     
     def BFaultHandler(self):
-        set.faultMode = True
+        self.faultMode = True
         self.ui.activateEFault.setDisabled(True)
         self.ui.activateSFault.setDisabled(True)
         self.ui.brakeFailStatus.setText('Brake Status: FAILING')
@@ -179,6 +179,10 @@ class TrainCTRLTestUI(QWidget):
         tempStr = 'Commanded Speed: ' + str(self.cmdSpd) + 'MPH'
         self.ui.cmdLabel.setText(tempStr)
         self.ui.cmdSpd.setText(tempStr)
+        if self.speedLim > self.cmdSpd:
+            self.ui.speedSlider.setMaximum(self.cmdSpd)
+        else:
+            self.ui.speedSlider.setMaximum(self.speedLim)
         self.powerCalc()
 
     def curInput(self):
@@ -192,7 +196,10 @@ class TrainCTRLTestUI(QWidget):
         self.speedLim = self.ui.spdLimDial.value()
         tempStr = 'Speed Limit: ' + str(self.speedLim) + 'MPH'
         self.ui.spdLimLabel.setText(tempStr)
-        self.ui.speedSlider.setMaximum(self.speedLim)
+        if self.speedLim > self.cmdSpd:
+            self.ui.speedSlider.setMaximum(self.cmdSpd)
+        else:
+            self.ui.speedSlider.setMaximum(self.speedLim)
         self.powerCalc()
 
 
@@ -206,7 +213,6 @@ class TrainCTRLTestUI(QWidget):
         else:
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            self.curSpd = self.driverCmd
             self.powerCalc()
 
     #Major Power calculation and Velocity adjustment method
@@ -235,9 +241,11 @@ class TrainCTRLTestUI(QWidget):
                 if self.ui.eBrakeBtn.isChecked():
                     print('EBrake Engaged, power output set to 0')
                     self.ui.sBrakeBtn.setChecked(False)
-                else:
+                elif self.ui.sBrakeBtn.isChecked():
                     print('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
+                else:
+                    print('No Brakes Enabled, calculating power...')
 
             if pow < 0:
                 pow = 0

@@ -30,7 +30,7 @@ class TrainController(QMainWindow):
         self.engineFault = False
         self.trackSigFault = False
         self.brakeFault = False
-        self.failureMode = False
+        self.faultMode = False
 
 
         #initialize various button states and make them toggleable
@@ -118,7 +118,11 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setDisabled(True)
             self.ui.speedSlider.setValue(0)
             self.ui.driverSpd.setText('0MPH')
-        else:    
+        else:
+            if self.speedLim > self.cmdSpd:
+                self.ui.speedSlider.setMaximum(self.cmdSpd)
+            else:
+                self.ui.speedSlider.setMaximum(self.speedLim)    
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
             self.curSpd = self.driverCmd
@@ -126,7 +130,7 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        if self.failureMode:
+        if self.faultMode:
             print('Failure detected, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.eBrakeBtn.setChecked(True)
@@ -138,25 +142,32 @@ class TrainController(QMainWindow):
                     error_k = self.speedLim - self.curSpd
                 else:
                     error_k = self.cmdSpd - self.curSpd
-        
+
             pow = self.Kp * error_k + self.Ki * self.curSpd
 
             if pow > self.maxPow:
                 pow = self.maxPow
                 print('Max power exceeded, capping power output')
-        
+
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
                 pow = 0
-                print('Brake Engaged, power output set to 0')
-        
+                if self.ui.eBrakeBtn.isChecked():
+                    print('EBrake Engaged, power output set to 0')
+                    self.ui.sBrakeBtn.setChecked(False)
+                elif self.ui.sBrakeBtn.isChecked():
+                    print('SBrake Engaged, power output set to 0')
+                    self.ui.eBrakeBtn.setChecked(False)
+                else:
+                    print('No Brakes Enabled, calculating power...')
+
             if pow < 0:
                 pow = 0
                 self.ui.sBrakeBtn.setChecked(True)
             else:
-                self.powOutput = pow    
-        
+                self.powOutput = pow
+
             #Print statement to see the outputs that go to backend
-            print('Power Output: ' + str(self.powOutput) + 'kW')
+            print('Commanded Power Output: ' + str(self.powOutput) + 'kW')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
