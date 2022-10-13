@@ -45,6 +45,7 @@ class TrackBlock():
         self.beacon1        = None
         self.beacon2        = None
         self.authority      = 0
+        self.maintenance_mode = False
 
         if self.station:
             # TODO Add side of track
@@ -59,6 +60,13 @@ class TrackBlock():
 
     def update_failure(self,type):
         self.failure_mode = type
+
+    def update_switch_pos(self, pos):
+        if pos in self.switch:
+            self.switch_pos = pos
+            return True
+        else:
+            return False
 
     def print(self):
         print(f'line: {self.line}')

@@ -7,7 +7,7 @@ import QtQuick.Controls.Material 2.12
 
 ApplicationWindow {
     id: trackModel
-    width: 1200; height: 600
+    width: 1200; height: 400
     visible: true
     property var trackFile: track_file_binding.text
     title: "Track Model"
@@ -20,7 +20,7 @@ ApplicationWindow {
         ColumnLayout {
             id: leftSideBar
             spacing: 0
-            Layout.preferredWidth: main_windows.width*.2
+            Layout.preferredWidth: main_windows.width
 
             // block selector
             ColumnLayout {
@@ -225,7 +225,7 @@ ApplicationWindow {
             }
 
             // create a failure
-            ColumnLayout{
+            // ColumnLayout{
                 Rectangle
                 {
                     height: childrenRect.height
@@ -258,15 +258,6 @@ ApplicationWindow {
                                 function_bindings.create_failure("Power Failure")
                             }
                         }  
-                    
-                    }
-                }
-                Rectangle{
-                    height: childrenRect.height
-                    Layout.fillWidth: true
-                    color: "#607D8B"
-                    RowLayout
-                    {
                         Button{
                             text: "Track Circuit Failure"
                             background: Rectangle {
@@ -288,17 +279,19 @@ ApplicationWindow {
                                 function_bindings.create_failure("No Failure")
                             }
                         } 
+                    
                     }
+
                 }
 
-            }
+            // }
         }
     
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.preferredWidth: main_windows.width*.8
-            // color: "red"
-        }
+        // Rectangle {
+        //     Layout.fillWidth: true
+        //     Layout.fillHeight: true
+        //     Layout.preferredWidth: main_windows.width*.8
+        //     // color: "red"
+        // }
     }
 }

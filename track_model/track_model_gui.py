@@ -4,7 +4,6 @@ from ssl import ALERT_DESCRIPTION_HANDSHAKE_FAILURE
 import sys
 from tkinter import N
 from tracemalloc import start
-import mysql.connector
 
 from PyQt5.QtGui import QGuiApplication, QStandardItem, QStandardItemModel, QIcon
 from PyQt5.QtQml import QQmlApplicationEngine
@@ -20,7 +19,7 @@ from os.path import exists
 import datetime
 import random
 import time
-
+import _md5
 import requests, json
 
 LineRole = Qt.UserRole + 1000
@@ -29,7 +28,7 @@ BlockRole = Qt.UserRole + 1002
 
 BlockInfoTitleRole = Qt.UserRole + 1003
 BlockInfoDetailRole = Qt.UserRole + 1004
-pittsburgh_weather ={
+pittsburgh_weather = {
     1: 30,
     2: 32,
     3: 41,
@@ -46,7 +45,7 @@ pittsburgh_weather ={
 
 class Gvars():
     track               = Track.Track()
-    track_file          = 'default.csv'
+    track_file          = 'blueline.csv'
     track_file_binding  = None
     block_list_manager  = None
     block_info_manager  = None
@@ -153,7 +152,12 @@ def update_properties(engine):
     engine.rootContext().setContextProperty("displayed_block_manager", Gvars.block_info_manager)
     engine.rootContext().setContextProperty("function_bindings", Gvars.function_bindings)
 
+
 def load_new_track():
+    Gvars.block_list_manager.clear_list()
+
+    with open('loaded_track', 'w') as f:
+        f.write(Gvars.track_file)
     Gvars.track = Track.Track()
     Gvars.track_file_binding.text = Gvars.track_file.replace(os.getcwd(), '').replace('/', '').replace('\\','')
     Gvars.block_list_manager.clear_list()
@@ -186,6 +190,7 @@ def update_block_info():
     Gvars.block_info_manager.add_info_line('Light', block.light)
     Gvars.block_info_manager.add_info_line('Track Heater', block.track_heater)
     Gvars.block_info_manager.add_info_line('Failure Mode', block.failure_mode)
+    Gvars.block_info_manager.add_info_line('Maintenance Mode', block.maintenance_mode)
 
 def create_failure(block, type):
     block.update_failure(type)
@@ -278,14 +283,17 @@ class QFunctions(QObject):
         dlg.setFileMode(QFileDialog.ExistingFile)
         # dlg.setFilter("csv(*.csv)")
         t = QFileDialog.getOpenFileName(dlg, "hello", os.getcwd(), "csv(*.csv)")
+        
         if exists(t[0]):
             Gvars.track_file = t[0]
+            # notify others which track is loaded 
             load_new_track()
 
     @pyqtSlot(str)
     def create_failure(self, failure_type):
         print('creating failure')
         create_failure(Gvars.displayed_block, failure_type)
+        update_block_info()
 
 def init_globals():
     # managers
@@ -297,19 +305,73 @@ def init_globals():
     Gvars.track_file_binding.text = Gvars.track_file
 
 
+def handle_communication():
+    # try:
+        with open('test_communications', 'r') as f:
+            comm = f.read()
+            array = comm.split(':')
+            type = array[0]
+            target = array[1]
+            value = array[2]
+            line = list(Gvars.track.track_lines.values())[0] # TODO update this 
+
+            if type == "Authority":
+                print(f'OUTPUT COMMUNICATION')
+                print(f'Train {target} authority {float(value)*0.3048} m')
+            elif type == "Commanded Speed":
+                print(f'OUTPUT COMMUNICATION')
+                print(f'Train {target} speed {value*1.60934} km/h')
+            elif type == "Switch Position":
+                print(f'updating switch position')
+                if line.blocks.get_block(int(target)).update_switch_pos(int(value)):
+                    print(f'updated switch position')
+                else:
+                    print('invalid switch position')
+
+            elif type == "Railway Crossing":
+                if line.get_block(int(target)).has_rail_crossing:
+                    line.get_block(target).rail_crossing = value
+                else:
+                    print('error in railway submission')
+            elif type == "Signal":
+                line.get_block(int(target)).signal = value
+
+            elif type == "Track Maintenance":
+                line.set_maintenance_mode(value.lower()=="yes")
+
+            elif type == "Track Heater":
+                line.get_block(int(target)).track_heater = value
+            elif type == "Track Failure":
+                line.get_block(int(target)).track_failure = value
+
+            elif type == "Lights":
+                line.get_block(int(target)).light = value
+
+            elif type == "Track Circuit":
+                line.get_block(int(target)).circuit_open = value.lower()=='open'
+        update_block_info()
+    # except:
+    #     print('error with update')
+
+
 class BkgdMonitor(QObject):
     bkgd_info_update = pyqtSignal(str)
 
     @pyqtSlot()
     def monitor_images(self):
         # I'm guessing this is an infinite while loop that monitors files
+        t = os.stat('test_communications')[8]
         while True:
-            print('hi')
-            time.sleep(2)
+            time.sleep(.2)
+            if os.stat('test_communications')[8] != t:
+                t = os.stat('test_communications')[8]
+                handle_communication()
+                print('file changed!')
+
 
 def main():
     init_globals()
-    parse_track()
+    load_new_track()
     get_temperature()
     Gvars.bkgd_monitor = BkgdMonitor()
 
@@ -331,7 +393,7 @@ def main():
 
     engine = QQmlApplicationEngine()
     update_properties(engine)
-    fill_block_list()
+    # fill_block_list()
 
     engine.quit.connect(app.quit)
     engine.load('./main.qml')

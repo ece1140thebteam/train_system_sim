@@ -20,6 +20,10 @@ class TrackLine():
     def get_block(self, block_num):
         return self.blocks[block_num]
 
+    def set_maintenance_mode(self, section, mode):
+        for block in self.sections[section]:
+            block.maintenance_mode = mode
+    
     def add_block(self, block):
         if block.station is not None:
             self.stations[block.station] = random.randint(10,30)
