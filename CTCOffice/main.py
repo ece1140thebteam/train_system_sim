@@ -5,7 +5,6 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
-import mysql.connector
 import sqlite3
 
 import InitData
