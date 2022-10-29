@@ -8,6 +8,8 @@ import sys
 import mysql.connector
 import sqlite3
 
+import InitData
+
 # mydb = mysql.connector.connect(
 #     host="localhost",
 #     user="root",
@@ -24,6 +26,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
+        init_data = InitData.InitData()
+
+        self.throughputs = init_data.get_throughput()
+        self.lines = init_data.get_blocks()
 
         # Initialize Static Data
         self.redBlocks = []
@@ -534,6 +540,20 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         print(filename)
         self.label.setText(str(filename[0]))
         self.outputLabel.setText(("Opened file: " + str(filename[0])))
+
+    def update_failure(self, line, block_number, failure):
+        if line is "Red":
+            self.lines[0].get(block_number).failure = failure
+
+    def update_crossing(self, line, block_number, crossing):
+        if line is "Red":
+            self.lines[0].get(block_number).set_crossing(crossing)
+
+    def update_throughput(self, line_name: str, throughput):
+        if line_name is "Red":
+            self.throughputs[0].setThroughput(throughput)
+        elif line_name is "Green":
+            self.throughputs[1].setThroughput(throughput)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
