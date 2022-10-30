@@ -21,10 +21,10 @@ class TrainController(QMainWindow):
         self.maxPow = 120000 #120kW, per the Datasheet
         self.powOutput = 0
         self.temp = 70
-        self.auth = True
-        self.cmdSpd = 30
+        self.auth = False
+        self.cmdSpd = 0
         self.curSpd = 0
-        self.speedLim = 35
+        self.speedLim = 0
         self.driverCmd = 0
         
         self.engineFault = False
@@ -101,15 +101,25 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
 
+
     def tempAdjust(self):
         self.temp = self.ui.tempDial.value()
         tempStr = 'Current Temp: ' + str(self.temp) + 'F'
         self.ui.curTempLabel.setText(tempStr)
 
     def cmdSpdAdjust(self):
-        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd)
+        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
+        if self.speedLim > self.cmdSpd:
+            self.ui.speedSlider.setMaximum(self.cmdSpd)
+        else:
+            self.ui.speedSlider.setMaximum(self.speedLim)
+        self.powerCalc()
     
+    def curSpdAdjust(self):
+        curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
+        self.ui.curSpd.setText(curStr)
+
     def setSpdSlider(self):
         if not self.auth:
             print('Not authorized to travel on block, setting power to 0 and engaging ebrake')
@@ -173,6 +183,11 @@ class TrainController(QMainWindow):
 
             #Print statement to see the outputs that go to backend
             print('Commanded Power Output: ' + str(self.powOutput) + 'kW')
+    
+    #Function used to interface with other modules/DB to get track signal
+    def getCur(self, cur):
+            self.curSpd = cur
+            self.curSpdAdjust()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
