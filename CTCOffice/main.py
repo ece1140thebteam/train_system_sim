@@ -6,18 +6,13 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
 import sqlite3
+import time
+
+from testUiMain import MainTestWindow
 
 import InitData
 
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="P1ttsburgh",
-#     database="ctcoffice"
-# )
-
 mydb = sqlite3.connect("ctcOffice.db")
-
 cursor = mydb.cursor()
 
 
@@ -25,10 +20,15 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        init_data = InitData.InitData()
 
+        init_data = InitData.InitData()
         self.throughputs = init_data.get_throughput()
         self.lines = init_data.get_blocks()
+
+        self.startTime = 0
+        self.elapsedTime = 0
+        self.simRunning = 0
+        self.simReset = 1
 
         # Initialize Static Data
         self.redBlocks = []
@@ -81,6 +81,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
         self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
+        self.pushButton_startSim.clicked.connect(self.start_simulation)
+        self.pushButton_stopSim.clicked.connect(self.stop_simulation)
+        self.pushButton_resetSim.clicked.connect(self.reset_simulation)
+
+        self.pushButton_openTestUi.clicked.connect(self.open_test_ui)
 
         # ComboBox Connections
         self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance)
@@ -104,7 +109,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     def schedule_trains(self):
         fileName = self.label.text();
-        self.outputLabel.setText("Scheduling Trains from file: " + fileName);
+        self.outputLabel.setText("Scheduling Trains from file: " + fileName)
 
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked
@@ -112,13 +117,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         line = self.comboBox_controlSwitch_Line.currentText()
         switch = self.comboBox_controlSwitch_switch.currentText()
         position = self.comboBox_controlSwitch_switchPosition.currentText()
+
         print("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         self.outputLabel.setText("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         if position == "Normal":
             values = (0, line, switch)
         else:
             values = (1, line, switch)
-        # query = "UPDATE track_blocks SET Switch_Position = (%s) WHERE Line = (%s) and Block_Number = (%s)"
         query = "UPDATE track_blocks SET Switch_Position = ? WHERE Line = ? and Block_Number = ?"
 
         cursor.execute(query, values)
@@ -130,13 +135,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         line = self.comboBox_trackMaintenance_line.currentText()
         block = self.comboBox_trackMaintenance_blockNumber.currentText()
         status = self.comboBox_trackMaintenance_trackStatus.currentText()
+
         print("Setting Line " + line + " block #: " + block + " to status: " + status)
         self.outputLabel.setText("Setting Line " + line + " block #: " + block + " to status: " + status)
         if status == "In Maintenance":
             values = (1, line, block)
         else:
             values = (0, line, block)
-        # query = "UPDATE track_blocks SET Maintenance = (%s) WHERE Line = (%s) and Block_Number = (%s)"
         query = "UPDATE track_blocks SET Maintenance = ? WHERE Line = ? and Block_Number = ?"
 
         cursor.execute(query, values)
@@ -146,6 +151,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         line = self.comboBox_changeSpeed_line.currentText()
         train = self.comboBox_changeSpeed_train.currentText()
         speed = self.spinBox_changeSpeed_speed.value()
+
         print("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
         self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
 
@@ -273,21 +279,18 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def get_switches(self):
         cursor.execute(
             "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-            # "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND SUBSTRING(Infrastructure, 1, 6) = 'SWITCH'")
         blocks = cursor.fetchall()
         for block in blocks:
             self.redSwitches.append(str(block[0]))
 
         cursor.execute(
             "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-            # "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND SUBSTRING(Infrastructure, 1, 6) = 'SWITCH'")
         blocks = cursor.fetchall()
         for block in blocks:
             self.greenSwitches.append(str(block[0]))
 
         cursor.execute(
             "SELECT Block_Number FROM track_blocks WHERE line = 'Blue' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-        # "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND SUBSTRING(Infrastructure, 1, 6) = 'SWITCH'")
         blocks = cursor.fetchall()
         for block in blocks:
             self.blueSwitches.append(str(block[0]))
@@ -534,25 +537,67 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.get_throughput()
         mydb.commit()
 
+        if self.simRunning == 1:
+            self.elapsedTime = time.time() - self.startTime
+            self.label_currentTime.setText(time.strftime("%H:%M:%S", time.gmtime(self.elapsedTime)))
+        else:
+            self.label_currentTime.setText(time.strftime("%H:%M:%S", time.gmtime(0)))
+
     def open_file(self):
         filename = QFileDialog.getOpenFileName(self, 'Open File')
         print(filename)
         self.label.setText(str(filename[0]))
         self.outputLabel.setText(("Opened file: " + str(filename[0])))
 
+    # Function calls for Class Objects
     def update_failure(self, line, block_number, failure):
         if line is "Red":
             self.lines[0].get(block_number).failure = failure
+        elif line is "Green":
+            self.lines[1].get(block_number).failure = failure
 
     def update_crossing(self, line, block_number, crossing):
         if line is "Red":
             self.lines[0].get(block_number).set_crossing(crossing)
+        elif line is "Green":
+            self.lines[1].get(block_number).set_crossing(crossing)
 
     def update_throughput(self, line_name: str, throughput):
         if line_name is "Red":
             self.throughputs[0].setThroughput(throughput)
+            self.RedThroughput.setText(self.throughputs[0].get_throughput())
         elif line_name is "Green":
             self.throughputs[1].setThroughput(throughput)
+            self.GreenThroughput.setText(self.throughputs[1].get_throughput())
+
+    def set_occupancy(self, line, block_number, occupancy):
+        if line is "Red":
+            self.lines[0].get(block_number).occupancy = occupancy
+        elif line is "Green":
+            self.lines[1].get(block_number).occupancy = occupancy
+
+    # Simulation Timing Control
+    def start_simulation(self):
+        if self.simReset == 1:   
+            self.startTime = time.time()
+        self.elapsedTime = time.time()
+        self.outputLabel.setText("Starting Simulation")
+        self.label_simStatus.setText("Running")
+        self.elapsedTime = 1
+
+    def stop_simulation(self):
+        self.outputLabel.setText("Stopping Simulation")
+        self.label_simStatus.setText("Stopped")
+        self.elapsedTime = 0
+
+    def reset_simulation(self):
+        self.outputLabel.setText("Resetting Simulation")
+        self.label_simStatus.setText("Stopped")
+        self.elapsedTime = 0
+    
+    def open_test_ui(self):
+        self.testUi = MainTestWindow()
+        self.testUi.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

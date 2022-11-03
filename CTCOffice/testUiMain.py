@@ -2,27 +2,17 @@ import ui.ctcOfficeTestLayout as ctcOfficeTestLayout
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 import sys
-import mysql.connector
 import sqlite3
 
-# NOTE: To use externally configure mysql database, uncomment the lines below
-#       Also, uncomment/comment the respective lines in the code to follow correct sql syntax (%s vs ?)
-
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="P1ttsburgh",
-#     database="ctcoffice"
-# )
 
 mydb = sqlite3.connect("ctcOffice.db")
 
 cursor = mydb.cursor()
 
 
-class MainWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
+class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
     def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+        super(MainTestWindow, self).__init__(parent)
         self.setupUi(self)
 
         # Initialize Static Data
@@ -181,7 +171,7 @@ class MainWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = MainTestWindow()
     window.show()
 
     sys.exit(app.exec())
