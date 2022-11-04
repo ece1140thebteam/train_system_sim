@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 import time
-from CTCOffice.signal import s
+from signals import s
 
 from CTCOffice.testUiMain import MainTestWindow
 
@@ -95,7 +95,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains)
 
-        s.throughput_signal.connect(self.test_emit)
+        s.send_throughput_signal.connect(self.update_throughput)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -568,14 +568,14 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.lines[1].get(block_number).set_crossing(crossing)
 
     def update_throughput(self, line_name: str, throughput):
-        if line_name is "Red":
+        if line_name == 'Red':
             self.throughputs[0].setThroughput(throughput)
-            self.RedThroughput.setText(self.throughputs[0].get_throughput())
-        elif line_name is "Green":
+            self.RedThroughput.setText(str(self.throughputs[0].get_throughput()))
+        elif line_name == "Green":
             self.throughputs[1].setThroughput(throughput)
-            self.GreenThroughput.setText(self.throughputs[1].get_throughput())
+            self.GreenThroughput.setText(str(self.throughputs[1].get_throughput()))
         
-        print("UPDATE THROUGHPUT CALLED")
+        print("UPDATE THROUGHPUT CALLED" + line_name + str(throughput))
 
     def set_occupancy(self, line, block_number, occupancy):
         if line is "Red":

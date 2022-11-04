@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 
-from CTCOffice.signal import s
+from signals import s
 
 
 mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
@@ -96,16 +96,16 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         query = "UPDATE throughput SET throughput = ? WHERE Line = ?"
         throughput = self.spinBox_setThroughput_throughput.value()
         if self.comboBox_setThroughput_line.currentText() == "Red":
-            values = (throughput, 'Red')
+            line = 'Red'
         elif self.comboBox_setThroughput_line.currentText() == "Green":
-            values = (throughput, 'Green')
+            line = 'Green'
         else:
-            values = (throughput, 'Blue')
+            line = 'Blue'
 
-        cursor.execute(query, values)
-        mydb.commit()
+        # cursor.execute(query, values)
+        # mydb.commit()
 
-        s.throughput_signal.emit()
+        s.send_throughput_signal.emit(line, throughput)
 
     def set_failure(self):
         # query = "UPDATE track_blocks SET Failure_State = (%s) WHERE Line = (%s) and Block_Number = (%s)"
