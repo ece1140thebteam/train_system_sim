@@ -1,19 +1,19 @@
 from PyQt6 import QtGui
 
-import ui.ctcOfficeLayout as ctcOfficeLayout
+import CTCOffice.ui.ctcOfficeLayout as ctcOfficeLayout
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 import time
-from signal import s
+from CTCOffice.signal import s
 
-from testUiMain import MainTestWindow
+from CTCOffice.testUiMain import MainTestWindow
 
-import InitData
+import CTCOffice.InitData as InitData
 
-mydb = sqlite3.connect("ctcOffice.db")
+mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
 cursor = mydb.cursor()
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):

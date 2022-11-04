@@ -1,9 +1,9 @@
-from LineInfo import LineInfo
-from Blocks import Blocks
+from CTCOffice.LineInfo import LineInfo
+from CTCOffice.Blocks import Blocks
 import pandas as pd
-from BlockInfo import BlockInfo
+from CTCOffice.BlockInfo import BlockInfo
 
-file_name = 'DataFiles/Track Layout & Vehicle Data vF2.xlsx'
+file_name = 'CTCOffice/DataFiles/Track Layout & Vehicle Data vF2.xlsx'
 
 
 class InitData(): 

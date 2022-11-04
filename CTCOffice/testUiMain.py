@@ -1,13 +1,13 @@
-import ui.ctcOfficeTestLayout as ctcOfficeTestLayout
+import CTCOffice.ui.ctcOfficeTestLayout as ctcOfficeTestLayout
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 
-from signal import s
+from CTCOffice.signal import s
 
 
-mydb = sqlite3.connect("ctcOffice.db")
+mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
 
 cursor = mydb.cursor()
 
