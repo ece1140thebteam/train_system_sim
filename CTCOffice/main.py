@@ -95,7 +95,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains)
 
-        s.send_throughput_signal.connect(self.update_throughput)
+        s.send_TrackModel_throughput_signal.connect(self.update_throughput)
+        s.send_TrackController_failure.connect(self.update_failure)
+        s.send_TrackController_crossing.connect(self.update_crossing)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -134,6 +136,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         cursor.execute(query, values)
         mydb.commit()
 
+        s.send_CTC_switch_position_signal.emit(line, int(switch), int(position))
+
     # Set the maintenance for given line and block and store in database
     # Called when the set maintenance button is clicked
     def set_maintenance(self):
@@ -152,6 +156,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         cursor.execute(query, values)
         mydb.commit()
 
+        s.send_CTC_maintenance_mode_signal.emit(line, int(block), int(status))
+
     def change_speed(self):
         line = self.comboBox_changeSpeed_line.currentText()
         train = self.comboBox_changeSpeed_train.currentText()
@@ -159,6 +165,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         print("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
         self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
+
+        s.send_CTC_suggested_speed.emit(line, int(train), int(speed))
 
     def edit_stations(self):
         line = self.comboBox_editStations_line.currentText()
@@ -561,11 +569,15 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         elif line is "Green":
             self.lines[1].get(block_number).failure = failure
 
+        print("Failure: " + line, str(block_number), failure)
+
     def update_crossing(self, line, block_number, crossing):
         if line is "Red":
             self.lines[0].get(block_number).set_crossing(crossing)
         elif line is "Green":
             self.lines[1].get(block_number).set_crossing(crossing)
+
+        print("Crossing: " + line + str(block_number) + str(crossing))
 
     def update_throughput(self, line_name: str, throughput):
         if line_name == 'Red':

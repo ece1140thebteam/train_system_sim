@@ -92,8 +92,6 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
             block_box.addItems(self.blueBlocks)
 
     def set_throughput(self):
-        # query = "UPDATE throughput SET throughput = (%s) WHERE Line = (%s)"
-        query = "UPDATE throughput SET throughput = ? WHERE Line = ?"
         throughput = self.spinBox_setThroughput_throughput.value()
         if self.comboBox_setThroughput_line.currentText() == "Red":
             line = 'Red'
@@ -102,28 +100,16 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             line = 'Blue'
 
-        # cursor.execute(query, values)
-        # mydb.commit()
-
         s.send_throughput_signal.emit(line, throughput)
 
     def set_failure(self):
-        # query = "UPDATE track_blocks SET Failure_State = (%s) WHERE Line = (%s) and Block_Number = (%s)"
-        query = "UPDATE track_blocks SET Failure_State = ? WHERE Line = ? and Block_Number = ?"
         line = self.comboBox_trackFailure_line.currentText()
         blockNumber = self.comboBox_trackFailure_blockNumber.currentText()
         state = self.comboBox_trackFailure_status.currentText()
-        if state == "Power Failure":
-            values = (state, line, blockNumber)
-        elif state == "Broken Rail":
-            values = (state, line, blockNumber)
-        elif state == "Track Circuit Fail":
-            values = (state, line, blockNumber)
-        else:
-            values = ('', line, blockNumber)
 
-        cursor.execute(query, values)
-        mydb.commit()
+        s.send_TrackController_failure.emit(line, int(blockNumber), state)
+
+
 
     def set_occupancy(self):
         # query = "UPDATE track_blocks SET Occupancy = (%s) WHERE Line = (%s) and Block_Number = (%s)"
@@ -159,20 +145,15 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
             self.blueCrossings.append(str(block[0]))
 
     def set_crossings(self):
-        # query = "UPDATE track_blocks SET Crossing = (%s) WHERE Line = (%s) and Block_Number = (%s)"
-        query = "UPDATE track_blocks SET Crossing = ? WHERE Line = ? and Block_Number = ?"
         line = self.comboBox_crossing_line.currentText()
         blockNumber = self.comboBox_crossing_blockNumber.currentText()
         state = self.comboBox_crossing_status.currentText()
         if state == "Active":
-            values = (1, line, blockNumber)
+            status = 1
         else:
-            values = (0, line, blockNumber)
+            status = 0
 
-        cursor.execute(query, values)
-        mydb.commit()
-
-        # self.parentWidget().setThroughput("Red", 100)
+        s.send_TrackController_crossing.emit(line, int(blockNumber), status)
 
 
 
