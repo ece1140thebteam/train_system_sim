@@ -1,4 +1,4 @@
-from PyQt6 import QtGui, QtWidgets
+from PyQt6 import QtGui
 
 import ui.ctcOfficeLayout as ctcOfficeLayout
 from PyQt6.QtCore import *
@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 import time
+from signal import s
 
 from testUiMain import MainTestWindow
 
@@ -14,7 +15,6 @@ import InitData
 
 mydb = sqlite3.connect("ctcOffice.db")
 cursor = mydb.cursor()
-
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -95,6 +95,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains)
 
+        s.throughput_signal.connect(self.test_emit)
+
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
     def set_manual_mode(self):
@@ -106,6 +108,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_controlSwitch.setDisabled(True)
             self.pushButton_trackMaintenance.setDisabled(True)
             self.pushButton_dispatchTrains.setDisabled(True)
+
+    def test_emit(self):
+        print("TEST")
 
     def schedule_trains(self):
         fileName = self.label.text();
@@ -569,6 +574,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         elif line_name is "Green":
             self.throughputs[1].setThroughput(throughput)
             self.GreenThroughput.setText(self.throughputs[1].get_throughput())
+        
+        print("UPDATE THROUGHPUT CALLED")
 
     def set_occupancy(self, line, block_number, occupancy):
         if line is "Red":
@@ -577,9 +584,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.lines[1].get(block_number).occupancy = occupancy
 
     # Simulation Timing Control
-    def start_simulation(self):
-        if self.simReset == 1:   
-            self.startTime = time.time()
+    def start_simulation(self): 
+        self.startTime = time.time()
         self.elapsedTime = time.time()
         self.outputLabel.setText("Starting Simulation")
         self.label_simStatus.setText("Running")

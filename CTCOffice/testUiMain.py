@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import *
 import sys
 import sqlite3
 
+from signal import s
+
 
 mydb = sqlite3.connect("ctcOffice.db")
 
@@ -14,6 +16,7 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
     def __init__(self, parent=None):
         super(MainTestWindow, self).__init__(parent)
         self.setupUi(self)
+
 
         # Initialize Static Data
         self.redBlocks = []
@@ -102,6 +105,8 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         cursor.execute(query, values)
         mydb.commit()
 
+        s.throughput_signal.emit()
+
     def set_failure(self):
         # query = "UPDATE track_blocks SET Failure_State = (%s) WHERE Line = (%s) and Block_Number = (%s)"
         query = "UPDATE track_blocks SET Failure_State = ? WHERE Line = ? and Block_Number = ?"
@@ -166,6 +171,8 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
 
         cursor.execute(query, values)
         mydb.commit()
+
+        # self.parentWidget().setThroughput("Red", 100)
 
 
 
