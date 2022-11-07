@@ -440,7 +440,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -453,7 +453,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -487,7 +487,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -512,7 +512,7 @@
          <number>-1</number>
         </property>
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>100</number>
+         <number>80</number>
         </attribute>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
@@ -532,6 +532,31 @@
         </column>
         <column>
          <property name="text">
+          <string>Occupancy</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Authority</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Switch Position</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Failure</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Crossing</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Section</string>
          </property>
         </column>
@@ -547,22 +572,12 @@
         </column>
         <column>
          <property name="text">
-          <string>Failure</string>
+          <string>Signal</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Switch Position</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Occupancy</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Crossing</string>
+          <string>Suggested Speed</string>
          </property>
         </column>
        </widget>
@@ -570,7 +585,7 @@
       <item>
        <widget class="QTableWidget" name="tableWidget">
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>100</number>
+         <number>80</number>
         </attribute>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
@@ -590,6 +605,31 @@
         </column>
         <column>
          <property name="text">
+          <string>Occupancy</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Authority</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Switch Position</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Failure</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Crossing</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Section</string>
          </property>
         </column>
@@ -605,22 +645,12 @@
         </column>
         <column>
          <property name="text">
-          <string>Failure</string>
+          <string>Signal</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Switch Position</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Occupancy</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Crossing</string>
+          <string>Suggested Speed</string>
          </property>
         </column>
        </widget>

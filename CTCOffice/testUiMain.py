@@ -100,30 +100,30 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             line = 'Blue'
 
-        s.send_throughput_signal.emit(line, throughput)
+        s.send_TrackModel_throughput_signal.emit(line, throughput)
 
     def set_failure(self):
         line = self.comboBox_trackFailure_line.currentText()
         blockNumber = self.comboBox_trackFailure_blockNumber.currentText()
         state = self.comboBox_trackFailure_status.currentText()
 
+        if state == "No Failure":
+            state = ''
+
         s.send_TrackController_failure.emit(line, int(blockNumber), state)
 
 
 
     def set_occupancy(self):
-        # query = "UPDATE track_blocks SET Occupancy = (%s) WHERE Line = (%s) and Block_Number = (%s)"
-        query = "UPDATE track_blocks SET Occupancy = ? WHERE Line = ? and Block_Number = ?"
         line = self.comboBox_occupancy_Line.currentText()
         blockNumber = self.comboBox_occupancy_blockNumber.currentText()
         state = self.comboBox_occupancy_status.currentText()
         if state == "Train":
-            values = (1, line, blockNumber)
+            status = 1
         else:
-            values = (0, line, blockNumber)
+            status = 0
 
-        cursor.execute(query, values)
-        mydb.commit()
+        s.send_TrackController_track_occupancy.emit(line, int(blockNumber), status)
 
     def get_crossings(self):
         cursor.execute(

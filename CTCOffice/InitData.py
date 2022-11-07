@@ -31,12 +31,27 @@ class InitData():
             block = BlockInfo()
             block.set_data(blockNum, line, section, Infrastructure)
             blocks[int(blockNum)] = block
-
         
-
         lines.append(blocks)
 
-        print(lines[0].get(1).failure)
+        blocks = {}
+        print("Adding Green Line")
+        redline = pd.read_excel(file_name, sheet_name=3, usecols=['Line', 'Section', 'Block Number', 'Infrastructure'])
+        for r in range(0, 150):
+            line = str(redline.iloc[r]['Line'])
+            section = str(redline.iloc[r]['Section'])
+            blockNum = str(int(redline.iloc[r]['Block Number']))
+
+            if str(redline.iloc[r]['Infrastructure']) == 'nan':
+                Infrastructure = ''
+            else:
+                Infrastructure = str(redline.iloc[r]['Infrastructure'])
+            
+            block = BlockInfo()
+            block.set_data(blockNum, line, section, Infrastructure)
+            blocks[int(blockNum)] = block
+        
+        lines.append(blocks)
 
         return lines
 

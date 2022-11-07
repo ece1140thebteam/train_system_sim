@@ -13,7 +13,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.setupUi(self)
 
       self.pushButton_ctc.clicked.connect(self.open_CTC)
-      self.pushButton_ctc_test.clicked.connect(self.open_test)
+      self.pushButton_ctc_test.clicked.connect(self.open_CTC_test)
 
 
 
@@ -21,7 +21,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.main_window = MainWindow()
       self.main_window.show()
 
-    def open_test(self):
+    def open_CTC_test(self):
       self.test_window = MainTestWindow()
       self.test_window.show()
 

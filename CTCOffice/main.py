@@ -59,7 +59,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.init_switch_positions()
         self.init_crossings()
 
-        self.get_throughput()
+        # self.get_throughput()
         self.get_trains()
 
         # Initialize Components
@@ -70,6 +70,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.update_dispatch_stations()
         self.update_stations_trains()
         self.update_speed_trains()
+
+        self.get_line_data()
 
         # Button Connections
         self.pushButton_manualMode.clicked.connect(self.set_manual_mode)
@@ -98,6 +100,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
         s.send_TrackController_failure.connect(self.update_failure)
         s.send_TrackController_crossing.connect(self.update_crossing)
+        s.send_TrackController_track_occupancy.connect(self.set_occupancy)
+        s.send_CTC_switch_position_signal.connect(self.set_switch_position)
+        s.send_CTC_maintenance_mode_signal.connect(self.set_maintenance_mode)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -110,9 +115,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_controlSwitch.setDisabled(True)
             self.pushButton_trackMaintenance.setDisabled(True)
             self.pushButton_dispatchTrains.setDisabled(True)
-
-    def test_emit(self):
-        print("TEST")
 
     def schedule_trains(self):
         fileName = self.label.text();
@@ -128,15 +130,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         print("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         self.outputLabel.setText("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         if position == "Normal":
-            values = (0, line, switch)
+            state = 0
         else:
-            values = (1, line, switch)
-        query = "UPDATE track_blocks SET Switch_Position = ? WHERE Line = ? and Block_Number = ?"
+            state = 1
 
-        cursor.execute(query, values)
-        mydb.commit()
-
-        s.send_CTC_switch_position_signal.emit(line, int(switch), int(position))
+        s.send_CTC_switch_position_signal.emit(line, int(switch), int(state))
 
     # Set the maintenance for given line and block and store in database
     # Called when the set maintenance button is clicked
@@ -148,15 +146,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         print("Setting Line " + line + " block #: " + block + " to status: " + status)
         self.outputLabel.setText("Setting Line " + line + " block #: " + block + " to status: " + status)
         if status == "In Maintenance":
-            values = (1, line, block)
+            state = 1
         else:
-            values = (0, line, block)
-        query = "UPDATE track_blocks SET Maintenance = ? WHERE Line = ? and Block_Number = ?"
+            state = 0
 
-        cursor.execute(query, values)
-        mydb.commit()
-
-        s.send_CTC_maintenance_mode_signal.emit(line, int(block), int(status))
+        s.send_CTC_maintenance_mode_signal.emit(line, int(block), int(state))
 
     def change_speed(self):
         line = self.comboBox_changeSpeed_line.currentText()
@@ -271,159 +265,132 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # Get all blocks for a line
     # Called once on init of window
     def get_blocks(self):
-        my_cursor = mydb.cursor()
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Red'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.redBlocks.append(str(block[0]))
-
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Green'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.greenBlocks.append(str(block[0]))
-
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Blue'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.blueBlocks.append(str(block[0]))
+        for line in self.lines:
+            for block in line:
+                if line.get(block).line == 'Red':
+                    self.redBlocks.append(str(block))
+                if line.get(block).line == 'Green':
+                    self.greenBlocks.append(str(block))
+                if line.get(block).line == 'Blue':
+                    self.blueBlocks.append(str(block))
 
     # Get all switches for a line be filtering on Infrastructure substring
     # Called once on init of window
     def get_switches(self):
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.redSwitches.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.greenSwitches.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Blue' AND SUBSTR(Infrastructure, 1, 6) = 'SWITCH'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.blueSwitches.append(str(block[0]))
+        for line in self.lines:
+            for block in line:
+                if line.get(block).line == 'Red':
+                    if line.get(block).infrastructure[0:6] == "SWITCH":
+                        self.redSwitches.append(str(block))
+                if line.get(block).line == 'Green':
+                    if line.get(block).infrastructure[0:6] == "SWITCH":
+                        self.greenSwitches.append(str(block))
+                if line.get(block).line == 'Blue':
+                    if line.get(block).infrastructure[0:6] == "SWITCH":
+                        self.blueSwitches.append(str(block))
+        
 
     # Get all stations for a line be filtering on Infrastructure substring
     # Called once on init of window
-    def get_stations(self):
-        cursor.execute(
-            "SELECT Infrastructure FROM track_blocks WHERE line = 'Red' AND SUBSTR(UPPER(Infrastructure), 1, 7) = 'STATION'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.redStations.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Infrastructure FROM track_blocks WHERE line = 'Green' AND SUBSTR(UPPER(Infrastructure), 1, 7) = 'STATION'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.greenStations.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Infrastructure FROM track_blocks WHERE line = 'Blue' AND SUBSTR(UPPER(Infrastructure), 1, 7) = 'STATION'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.blueStations.append(str(block[0]))
+    def get_stations(self): 
+        for line in self.lines:
+            for block in line:
+                if line.get(block).line == 'Red':
+                    if line.get(block).infrastructure[0:7].upper() == "STATION":
+                        self.redStations.append(str(line.get(block).infrastructure))
+                if line.get(block).line == 'Green':
+                    if line.get(block).infrastructure[0:7].upper() == "STATION":
+                        self.greenStations.append(str(line.get(block).infrastructure))
+                if line.get(block).line == 'Blue':
+                    if line.get(block).infrastructure[0:7].upper() == "STATION":
+                        self.blueStations.append(str(line.get(block).infrastructure))
 
     # Get all stations for a line be filtering on Infrastructure match
     # Called once on init of window
     def get_crossings(self):
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.redCrossings.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.greenCrossings.append(str(block[0]))
-
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Blue' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.blueCrossings.append(str(block[0]))
+        for line in self.lines:
+            for block in line:
+                if line.get(block).line == 'Red':
+                    if line.get(block).infrastructure == "RAILWAY CROSSING":
+                        self.redCrossings.append(str(block))
+                if line.get(block).line == 'Green':
+                    if line.get(block).infrastructure == "RAILWAY CROSSING":
+                        self.greenCrossings.append(str(block))
+                if line.get(block).line == 'Blue':
+                    if line.get(block).infrastructure == "RAILWAY CROSSING":
+                        self.blueCrossings.append(str(block))
 
     # Update all switches to have a position of 0
     def init_switch_positions(self):
-        # query = "UPDATE track_blocks SET Switch_Position = (%s) WHERE line = (%s) and Block_Number = (%s)"
-        query = "UPDATE track_blocks SET Switch_Position = ? WHERE line = ? and Block_Number = ?"
         for c in self.redSwitches:
-            values = (0, 'Red', c)
-            cursor.execute(query, values)
+            self.lines[0].get(int(c)).switch_position = 0
         for c in self.greenSwitches:
-            values = (0, 'Green', c)
-            cursor.execute(query, values)
+            self.lines[1].get(int(c)).switch_position = 0
         for c in self.blueSwitches:
-            values = (0, 'Blue', c)
-            cursor.execute(query, values)
-        mydb.commit()
+            self.lines[2].get(int(c)).switch_position = 0
 
     # Update all crossings to have a status of 0
     def init_crossings(self):
-        # query = "UPDATE track_blocks SET Crossing = (%s) WHERE line = (%s) and Block_Number = (%s)"
-        query = "UPDATE track_blocks SET Crossing = ? WHERE line = ? and Block_Number = ?"
         for c in self.redCrossings:
-            values = (0, 'Red', c)
-            cursor.execute(query, values)
+            self.lines[0].get(int(c)).crossing = 0
         for c in self.greenCrossings:
-            values = (0, 'Green', c)
-            cursor.execute(query, values)
+            self.lines[1].get(int(c)).crossing = 0
         for c in self.blueCrossings:
-            values = (0, 'Blue', c)
-            cursor.execute(query, values)
-        mydb.commit()
+            self.lines[2].get(int(c)).crossing = 0
+
 
     # Get all data for a line and update table
     # Table is colored depending on value returned
     def get_line_data(self):
         self.tableWidget_2.setRowCount(70)
-
-        cursor.execute("SELECT * FROM track_blocks WHERE line = 'Red'")
-        data = cursor.fetchall()
         for row in range(0, 70):
-            for col in range(0, 9):
-                self.tableWidget_2.setItem(row, col, QTableWidgetItem(str(data[row][col])))
+            block = self.lines[0].get(row+1)
+            self.tableWidget_2.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
+            self.tableWidget_2.setItem(row, 1, QTableWidgetItem(str(block.line)))
+            self.tableWidget_2.setItem(row, 2, QTableWidgetItem(str(block.occupancy)))
+            self.tableWidget_2.setItem(row, 3, QTableWidgetItem(str(block.authority)))
+            self.tableWidget_2.setItem(row, 4, QTableWidgetItem(str(block.switch_position)))
+            self.tableWidget_2.setItem(row, 5, QTableWidgetItem(str(block.failure)))
+            self.tableWidget_2.setItem(row, 6, QTableWidgetItem(str(block.crossing)))
+            self.tableWidget_2.setItem(row, 7, QTableWidgetItem(str(block.section)))
+            self.tableWidget_2.setItem(row, 8, QTableWidgetItem(str(block.maintenance_mode)))
+            self.tableWidget_2.setItem(row, 9, QTableWidgetItem(str(block.infrastructure)))  
+            self.tableWidget_2.setItem(row, 10, QTableWidgetItem(str(block.signal_state)))  
+            self.tableWidget_2.setItem(row, 11, QTableWidgetItem(str(block.suggested_speed)))
 
             # Failure
-            if str(data[row][5]) != '':
+            if block.failure != '':
                 self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
             else:
                 self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
 
             # Maintenance
-            if str(data[row][3]) != '0':
-                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(255, 255, 51))
+            if block.maintenance_mode != 0:
+                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
             else:
-                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
 
             # Switch
-            if data[row][6] is None:
-                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
-            elif str(data[row][6]) == '0':
-                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(102, 255, 255))
+            if block.switch_position is None:
+                self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
+            elif block.switch_position == 0:
+                self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
             else:
-                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 102))
+                self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(255, 255, 102))
 
             # Occupancy
-            if str(data[row][7]) != '0':
-                self.tableWidget_2.item(row, 7).setBackground(QtGui.QColor(51, 255, 51))
+            if block.occupancy != 0:
+                self.tableWidget_2.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
             else:
-                self.tableWidget_2.item(row, 7).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
 
             # Crossing
-            if data[row][8] is None:
-                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-            elif str(data[row][8]) == '0':
-                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
+            if block.crossing is None:
+                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+            elif block.crossing == 0:
+                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
             else:
-                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 153, 51))
+                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
         if self.comboBox_selectLineGraph.currentText() == "Blue Line":
             self.tableWidget.setRowCount(15)
@@ -469,60 +436,54 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                     self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 153, 51))
         elif self.comboBox_selectLineGraph.currentText() == "Green Line":
             self.tableWidget.setRowCount(150)
-            cursor.execute("SELECT * FROM track_blocks WHERE line = 'Green'")
-            data = cursor.fetchall()
-
             for row in range(0, 150):
-                for col in range(0, 9):
-                    self.tableWidget.setItem(row, col, QTableWidgetItem(str(data[row][col])))
+                block = self.lines[1].get(row+1)
+                self.tableWidget.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
+                self.tableWidget.setItem(row, 1, QTableWidgetItem(str(block.line)))
+                self.tableWidget.setItem(row, 2, QTableWidgetItem(str(block.occupancy)))
+                self.tableWidget.setItem(row, 3, QTableWidgetItem(str(block.authority)))
+                self.tableWidget.setItem(row, 4, QTableWidgetItem(str(block.switch_position)))
+                self.tableWidget.setItem(row, 5, QTableWidgetItem(str(block.failure)))
+                self.tableWidget.setItem(row, 6, QTableWidgetItem(str(block.crossing)))
+                self.tableWidget.setItem(row, 7, QTableWidgetItem(str(block.section)))
+                self.tableWidget.setItem(row, 8, QTableWidgetItem(str(block.maintenance_mode)))
+                self.tableWidget.setItem(row, 9, QTableWidgetItem(str(block.infrastructure)))  
+                self.tableWidget.setItem(row, 10, QTableWidgetItem(str(block.signal_state)))  
+                self.tableWidget.setItem(row, 11, QTableWidgetItem(str(block.suggested_speed)))
 
-                # Color Failure
-                if str(data[row][5]) != '':
+                # Failure
+                if block.failure != '':
                     self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
                 else:
                     self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
 
-                # Color Maintenance
-                if str(data[row][3]) != '0':
-                    self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 51))
+                # Maintenance
+                if block.maintenance_mode != 0:
+                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
                 else:
-                    self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
 
                 # Switch
-                if data[row][6] is None:
+                if block.switch_position is None:
+                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
+                elif block.switch_position == 0:
+                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
+                else:
+                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 102))
+
+                # Occupancy
+                if block.occupancy != 0:
+                    self.tableWidget.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
+                else:
+                    self.tableWidget.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
+
+                # Crossing
+                if block.crossing is None:
                     self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
-                elif str(data[row][6]) == '0':
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(102, 255, 255))
+                elif block.crossing == 0:
+                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
                 else:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 102))
-
-                # Color Occupancy
-                if str(data[row][7]) != '0':
-                    self.tableWidget.item(row, 7).setBackground(QtGui.QColor(51, 255, 51))
-                else:
-                    self.tableWidget.item(row, 7).setBackground(QtGui.QColor(255, 255, 255))
-
-                # Color Crossing
-                if data[row][8] is None:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-                elif str(data[row][8]) == '0':
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-                else:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 153, 51))
-
-    # Fetch the throughput for each line from the database
-    def get_throughput(self):
-        cursor.execute("SELECT throughput FROM throughput WHERE line = 'Red'")
-        data = cursor.fetchone()
-        self.RedThroughput.setText(str(data[0]))
-
-        cursor.execute("SELECT throughput FROM throughput WHERE line = 'Green'")
-        data = cursor.fetchone()
-        self.GreenThroughput.setText(str(data[0]))
-
-        cursor.execute("SELECT throughput FROM throughput WHERE line = 'Blue'")
-        data = cursor.fetchone()
-        self.BlueThroughput.setText(str(data[0]))
+                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
     def get_trains(self):
         cursor.execute("SELECT Train_ID FROM trains WHERE line = 'Red'")
@@ -547,7 +508,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # These methods are called every time the timer expires
     def update_data(self):
         self.get_line_data()
-        self.get_throughput()
         mydb.commit()
 
         if self.simRunning == 1:
@@ -564,20 +524,24 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Function calls for Class Objects
     def update_failure(self, line, block_number, failure):
-        if line is "Red":
+        if line == "Red":
             self.lines[0].get(block_number).failure = failure
-        elif line is "Green":
+        elif line == "Green":
             self.lines[1].get(block_number).failure = failure
 
-        print("Failure: " + line, str(block_number), failure)
+        self.get_line_data()
+
+        print("Update Failure: " + line, str(block_number), failure)
 
     def update_crossing(self, line, block_number, crossing):
-        if line is "Red":
+        if line == "Red":
             self.lines[0].get(block_number).set_crossing(crossing)
-        elif line is "Green":
+        elif line == "Green":
             self.lines[1].get(block_number).set_crossing(crossing)
 
-        print("Crossing: " + line + str(block_number) + str(crossing))
+        self.get_line_data()
+
+        print("Update Crossing: " + line + str(block_number) + str(crossing))
 
     def update_throughput(self, line_name: str, throughput):
         if line_name == 'Red':
@@ -586,14 +550,41 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         elif line_name == "Green":
             self.throughputs[1].setThroughput(throughput)
             self.GreenThroughput.setText(str(self.throughputs[1].get_throughput()))
+        elif line_name == "Blue":
+            self.throughputs[2].setThroughput(throughput)
+            self.BlueThroughput.setText(str(self.throughputs[2].get_throughput()))
         
-        print("UPDATE THROUGHPUT CALLED" + line_name + str(throughput))
+        print("Update throughput: " + line_name + str(throughput))
 
     def set_occupancy(self, line, block_number, occupancy):
-        if line is "Red":
+        if line == "Red":
             self.lines[0].get(block_number).occupancy = occupancy
-        elif line is "Green":
+        elif line == "Green":
             self.lines[1].get(block_number).occupancy = occupancy
+
+        self.get_line_data()
+        
+        print("Update Occupancy: " + line, str(block_number), str(occupancy))
+
+    def set_switch_position(self, line, block_number, position):
+        if line == "Red":
+            self.lines[0].get(block_number).switch_position = position
+        elif line == "Green":
+            self.lines[1].get(block_number).switch_position = position
+
+        self.get_line_data()
+        
+        print("Update crossing: " + line, str(block_number), str(position))
+    
+    def set_maintenance_mode(self, line, block_number, mode):
+        if line == "Red":
+            self.lines[0].get(block_number).maintenance_mode = mode
+        elif line == "Green":
+            self.lines[1].get(block_number).maintenance_mode = mode
+
+        self.get_line_data()
+        
+        print("Update crossing: " + line, str(block_number), str(mode))
 
     # Simulation Timing Control
     def start_simulation(self): 

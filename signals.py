@@ -35,4 +35,6 @@ class signals(QObject):
   send_TrackController_failure = pyqtSignal(str, int, str) # Line, block, failure type
 
 
+# Create a single instance of this class to be used in all modules. 
+# By using a single instance this will ensure the same singals are being used globally
 s = signals()

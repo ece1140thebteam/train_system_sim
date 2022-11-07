@@ -6,9 +6,9 @@ class BlockInfo():
         self.maintenance_mode = 0
         self.infrastructure = ''
         self.failure = ''
-        self.switch_position = 0
+        self.switch_position = None
         self.occupancy = 0
-        self.crossing = 0
+        self.crossing = None
         self.authority = 0
         self.signal_state = 'None'
         self.suggested_speed = 0
