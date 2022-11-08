@@ -86,7 +86,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_startSim.clicked.connect(self.start_simulation)
         self.pushButton_stopSim.clicked.connect(self.stop_simulation)
         self.pushButton_resetSim.clicked.connect(self.reset_simulation)
-
         self.pushButton_openTestUi.clicked.connect(self.open_test_ui)
 
         # ComboBox Connections
@@ -101,8 +100,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_CTC_test_failure.connect(self.update_failure)
         s.send_CTC_test_crossing.connect(self.update_crossing)
         s.send_CTC_test_track_occupancy.connect(self.set_occupancy)
-        s.send_CTC_switch_position_signal.connect(self.set_switch_position)
-        s.send_CTC_maintenance_mode_signal.connect(self.set_maintenance_mode)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -133,8 +130,23 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             state = 0
         else:
             state = 1
+        
+        if line == "Red":
+            self.lines[0].get(int(switch)).switch_position = state
+            positions = []
+            for block in self.lines[0]:
+                positions.append(self.lines[0].get(block).switch_position)
 
-        s.send_CTC_switch_position_signal.emit(line, int(switch), int(state))
+            s.send_CTC_switch_position_signal.emit(line, positions) # Emit signal to set positions
+        elif line == "Green":
+            self.lines[1].get(int(switch)).switch_position = state
+            positions = []
+            for block in self.lines[1]:
+                positions.append(self.lines[1].get(block).switch_position)
+
+            s.send_CTC_switch_position_signal.emit(line, positions) # Emit signal to set positions
+
+        self.get_line_data() # Update displayed tables
 
     # Set the maintenance for given line and block and store in database
     # Called when the set maintenance button is clicked
@@ -150,7 +162,22 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         else:
             state = 0
 
-        s.send_CTC_maintenance_mode_signal.emit(line, int(block), int(state))
+        if line == "Red":
+            self.lines[0].get(int(block)).maintenance_mode = state
+            modes = []
+            for block in self.lines[0]:
+                modes.append(self.lines[0].get(block).maintenance_mode)
+
+            s.send_CTC_maintenance_mode_signal.emit(line, modes) # Emit signal to set maintenance 
+        elif line == "Green":
+            self.lines[1].get(int(block)).maintenance_mode = state
+            modes = []
+            for block in self.lines[1]:
+                modes.append(self.lines[1].get(block).maintenance_mode)
+
+            s.send_CTC_maintenance_mode_signal.emit(line, modes) # Emit signal to set maintenance
+
+        self.get_line_data() # Update displayed tables
 
     def change_speed(self):
         line = self.comboBox_changeSpeed_line.currentText()
@@ -274,7 +301,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 if line.get(block).line == 'Blue':
                     self.blueBlocks.append(str(block))
 
-    # Get all switches for a line be filtering on Infrastructure substring
+    # Get all switches for a line by filtering on Infrastructure substring
     # Called once on init of window
     def get_switches(self):
         for line in self.lines:
@@ -287,10 +314,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                         self.greenSwitches.append(str(block))
                 if line.get(block).line == 'Blue':
                     if line.get(block).infrastructure[0:6] == "SWITCH":
-                        self.blueSwitches.append(str(block))
-        
+                        self.blueSwitches.append(str(block))      
 
-    # Get all stations for a line be filtering on Infrastructure substring
+    # Get all stations for a line by filtering on Infrastructure substring
     # Called once on init of window
     def get_stations(self): 
         for line in self.lines:
@@ -305,7 +331,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                     if line.get(block).infrastructure[0:7].upper() == "STATION":
                         self.blueStations.append(str(line.get(block).infrastructure))
 
-    # Get all stations for a line be filtering on Infrastructure match
+    # Get all crossings for a line by filtering on Infrastructure match
     # Called once on init of window
     def get_crossings(self):
         for line in self.lines:
@@ -337,7 +363,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.lines[1].get(int(c)).crossing = 0
         for c in self.blueCrossings:
             self.lines[2].get(int(c)).crossing = 0
-
 
     # Get all data for a line and update table
     # Table is colored depending on value returned
@@ -565,26 +590,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.get_line_data()
         
         print("Update Occupancy: " + line, str(block_number), str(occupancy))
-
-    def set_switch_position(self, line, block_number, position):
-        if line == "Red":
-            self.lines[0].get(block_number).switch_position = position
-        elif line == "Green":
-            self.lines[1].get(block_number).switch_position = position
-
-        self.get_line_data()
-        
-        print("Update crossing: " + line, str(block_number), str(position))
-    
-    def set_maintenance_mode(self, line, block_number, mode):
-        if line == "Red":
-            self.lines[0].get(block_number).maintenance_mode = mode
-        elif line == "Green":
-            self.lines[1].get(block_number).maintenance_mode = mode
-
-        self.get_line_data()
-        
-        print("Update crossing: " + line, str(block_number), str(mode))
 
     # Simulation Timing Control
     def start_simulation(self): 

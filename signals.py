@@ -3,6 +3,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
 class signals(QObject):
+  # ! Info on signals
   # How to use signals
   #
   # Add import to file `from signals import s`
