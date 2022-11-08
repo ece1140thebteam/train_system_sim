@@ -1,6 +1,4 @@
-import mysql.connector
 import pandas as pd
-import xlrd
 import sqlite3
 
 mydb = sqlite3.connect("ctcOffice.db")
