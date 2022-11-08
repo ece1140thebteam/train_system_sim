@@ -100,7 +100,7 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             line = 'Blue'
 
-        s.send_TrackModel_throughput_signal.emit(line, throughput)
+        s.send_CTC_test_throughput_signal.emit(line, throughput)
 
     def set_failure(self):
         line = self.comboBox_trackFailure_line.currentText()
@@ -110,7 +110,7 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         if state == "No Failure":
             state = ''
 
-        s.send_TrackController_failure.emit(line, int(blockNumber), state)
+        s.send_CTC_test_failure.emit(line, int(blockNumber), state)
 
 
 
@@ -123,7 +123,7 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             status = 0
 
-        s.send_TrackController_track_occupancy.emit(line, int(blockNumber), status)
+        s.send_CTC_test_track_occupancy.emit(line, int(blockNumber), status)
 
     def get_crossings(self):
         cursor.execute(
@@ -153,7 +153,7 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             status = 0
 
-        s.send_TrackController_crossing.emit(line, int(blockNumber), status)
+        s.send_CTC_test_crossing.emit(line, int(blockNumber), status)
 
 
 

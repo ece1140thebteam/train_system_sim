@@ -97,10 +97,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains)
 
-        s.send_TrackModel_throughput_signal.connect(self.update_throughput)
-        s.send_TrackController_failure.connect(self.update_failure)
-        s.send_TrackController_crossing.connect(self.update_crossing)
-        s.send_TrackController_track_occupancy.connect(self.set_occupancy)
+        s.send_CTC_test_throughput_signal.connect(self.update_throughput)
+        s.send_CTC_test_failure.connect(self.update_failure)
+        s.send_CTC_test_crossing.connect(self.update_crossing)
+        s.send_CTC_test_track_occupancy.connect(self.set_occupancy)
         s.send_CTC_switch_position_signal.connect(self.set_switch_position)
         s.send_CTC_maintenance_mode_signal.connect(self.set_maintenance_mode)
 
