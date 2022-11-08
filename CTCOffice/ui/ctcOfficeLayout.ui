@@ -73,17 +73,17 @@
            <widget class="QComboBox" name="comboBox_controlSwitch_Line">
             <item>
              <property name="text">
-              <string>Blue</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Red</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Green</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue</string>
              </property>
             </item>
            </widget>
@@ -166,17 +166,17 @@
            <widget class="QComboBox" name="comboBox_trackMaintenance_line">
             <item>
              <property name="text">
-              <string>Blue</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Red</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Green</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue</string>
              </property>
             </item>
            </widget>
@@ -260,17 +260,17 @@
          <widget class="QComboBox" name="comboBox_dispatchTrain_line">
           <item>
            <property name="text">
-            <string>Blue</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>Red</string>
            </property>
           </item>
           <item>
            <property name="text">
             <string>Green</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Blue</string>
            </property>
           </item>
          </widget>
@@ -369,17 +369,17 @@
            <widget class="QComboBox" name="comboBox">
             <item>
              <property name="text">
-              <string>Blue Line</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Red Line</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Green Line</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue Line</string>
              </property>
             </item>
            </widget>
@@ -440,7 +440,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -453,7 +453,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -487,7 +487,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Throughput</string>
+               <string>0</string>
               </property>
              </widget>
             </item>
@@ -512,7 +512,7 @@
          <number>-1</number>
         </property>
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>100</number>
+         <number>80</number>
         </attribute>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
@@ -532,6 +532,31 @@
         </column>
         <column>
          <property name="text">
+          <string>Occupancy</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Authority</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Switch Position</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Failure</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Crossing</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Section</string>
          </property>
         </column>
@@ -547,22 +572,12 @@
         </column>
         <column>
          <property name="text">
-          <string>Failure</string>
+          <string>Signal</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Switch Position</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Occupancy</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Crossing</string>
+          <string>Suggested Speed</string>
          </property>
         </column>
        </widget>
@@ -570,7 +585,7 @@
       <item>
        <widget class="QTableWidget" name="tableWidget">
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>100</number>
+         <number>80</number>
         </attribute>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
@@ -590,6 +605,31 @@
         </column>
         <column>
          <property name="text">
+          <string>Occupancy</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Authority</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Switch Position</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Failure</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Crossing</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Section</string>
          </property>
         </column>
@@ -605,22 +645,12 @@
         </column>
         <column>
          <property name="text">
-          <string>Failure</string>
+          <string>Signal</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Switch Position</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Occupancy</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Crossing</string>
+          <string>Suggested Speed</string>
          </property>
         </column>
        </widget>
@@ -673,17 +703,17 @@
            <widget class="QComboBox" name="comboBox_changeSpeed_line">
             <item>
              <property name="text">
-              <string>Blue</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Red</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Green</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue</string>
              </property>
             </item>
            </widget>
@@ -755,17 +785,17 @@
            <widget class="QComboBox" name="comboBox_editStations_line">
             <item>
              <property name="text">
-              <string>Blue</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Red</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Green</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue</string>
              </property>
             </item>
            </widget>
@@ -865,6 +895,61 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_26">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Simulation Timing</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_startSim">
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_stopSim">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_resetSim">
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_simStatus">
+          <property name="text">
+           <string>Stopped</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_31">
+          <property name="text">
+           <string>Current Time: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_currentTime">
+          <property name="text">
+           <string>0:00</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -883,17 +968,12 @@
        <widget class="QComboBox" name="comboBox_selectLineGraph">
         <item>
          <property name="text">
-          <string>Blue Line</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Red Line</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Green Line</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Blue Line</string>
          </property>
         </item>
        </widget>
@@ -902,6 +982,13 @@
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>Refresh Data</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_openTestUi">
+        <property name="text">
+         <string>OPEN TEST UI</string>
         </property>
        </widget>
       </item>
