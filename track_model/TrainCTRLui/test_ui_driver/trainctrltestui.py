@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication, QWidget
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -22,11 +22,7 @@ class TrainCTRLTestUI(QWidget):
         self.cmdSpd = 0
         self.curSpd = 0
         self.speedLim = 40
-
-        #initialize various button states and make them toggleable
-        self.ui.manModeBtn.setCheckable(True)
-        self.ui.manModeBtn.toggle()
-        self.ui.manModeBtn.setChecked(True)
+        self.faultMode = False
 
         self.ui.activateEFault.setCheckable(True)
         self.ui.activateEFault.toggle()
