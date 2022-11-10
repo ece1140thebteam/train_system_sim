@@ -16,6 +16,8 @@ class TrainController(QMainWindow):
         self.ui = Ui_TrainController()
         self.ui.setupUi(self)
 
+        
+
         self.Kp = 1
         self.Ki = 0.5
 
@@ -190,9 +192,6 @@ class TrainController(QMainWindow):
                 self.ui.sBrakeBtn.setChecked(True)
             else:
                 self.powOutput = pow
-
-            #Print statement to see the outputs that go to backend
-            #print('Commanded Power Output: ' + str(self.powOutput) + 'kW')
     
     #Function used to interface with other modules/DB to get track signal
     def getCur(self, cur):

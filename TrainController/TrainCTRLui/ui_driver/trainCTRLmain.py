@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication, QWidget
 from PySide6.QtWidgets import QApplication, QMainWindow
 from mainwindow import TrainController
 from trainctrltestui import TrainCTRLTestUI
+from engineerui import engineerUI
 
 def main():
     
@@ -12,9 +13,11 @@ def main():
     app = QApplication(sys.argv)
     train1 = TrainController()
     test1 = TrainCTRLTestUI(train1)
+    engUI = engineerUI(train1)
     
     train1.show()
     test1.show()
+    engUI.show()
 
     sys.exit(app.exec())
 
