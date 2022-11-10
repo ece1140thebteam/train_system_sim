@@ -18,6 +18,7 @@ class TrainController(QMainWindow):
 
         
 
+        #Initialization of internal variables
         self.Kp = 1
         self.Ki = 0.5
 
@@ -87,7 +88,7 @@ class TrainController(QMainWindow):
         self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
 
     
-    #Mutator Functions
+    #Manual Mode toggling function
     def setManMode(self):
         if not self.ui.manModeBtn.isChecked(): #Case for True
             self.ui.elightBtn.setDisabled(True)
@@ -104,11 +105,13 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
 
+    #Function to adjust temp
     def tempAdjust(self):
         self.temp = self.ui.tempDial.value()
         tempStr = 'Current Temp: ' + str(self.temp) + 'F'
         self.ui.curTempLabel.setText(tempStr)
 
+    #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self):
         cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
@@ -118,11 +121,13 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.speedLim)
         self.powerCalc()
     
+    #Function to adjust current speed, is called externally
     def curSpdAdjust(self):
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
         self.powerCalc()
 
+    #Function to adjust speed limit, is called externally
     def speedLimUpdate(self, lim):
         self.speedLim = lim
         if self.speedLim > self.cmdSpd:
@@ -131,6 +136,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.speedLim)
         self.powerCalc()
 
+    #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
         if not self.auth:
             dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging ebrake')
@@ -151,7 +157,7 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        if self.faultMode:
+        if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
             if self.engineFault:
@@ -161,10 +167,10 @@ class TrainController(QMainWindow):
             print('Failure detected, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.eBrakeBtn.setChecked(True)
-        else:
-            if self.ui.manModeBtn.isChecked():
+        else: #No Faults Found
+            if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
                 error_k = self.driverCmd - self.curSpd
-            else:
+            else: #Commanded speed from CTC if automatic mode
                 if self.cmdSpd > self.speedLim:
                     error_k = self.speedLim - self.curSpd
                 else:
@@ -172,10 +178,12 @@ class TrainController(QMainWindow):
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
 
+            #Check to make sure max power is not exceeded
             if pow > self.maxPow:
                 pow = self.maxPow
                 print('Max power exceeded, capping power output')
 
+            #Set power to 0 if brakes active
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
                 pow = 0
                 if self.ui.eBrakeBtn.isChecked():
@@ -187,6 +195,7 @@ class TrainController(QMainWindow):
                 else:
                     print('No Brakes Enabled, calculating power...')
                 brakeDialog.exec()
+            #If power becomes negative, set to 0 and engage SBrake
             if pow < 0:
                 pow = 0
                 self.ui.sBrakeBtn.setChecked(True)
