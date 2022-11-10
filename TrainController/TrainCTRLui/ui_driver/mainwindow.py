@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 #     pyuic6 form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_TrainController
+from tctrl_dialog import trainDialog
 
 class TrainController(QMainWindow):
     def __init__(self, parent=None):
@@ -101,7 +102,6 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
 
-
     def tempAdjust(self):
         self.temp = self.ui.tempDial.value()
         tempStr = 'Current Temp: ' + str(self.temp) + 'F'
@@ -119,14 +119,24 @@ class TrainController(QMainWindow):
     def curSpdAdjust(self):
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
+        self.powerCalc()
+
+    def speedLimUpdate(self, lim):
+        self.speedLim = lim
+        if self.speedLim > self.cmdSpd:
+            self.ui.speedSlider.setMaximum(self.cmdSpd)
+        else:
+            self.ui.speedSlider.setMaximum(self.speedLim)
+        self.powerCalc()
 
     def setSpdSlider(self):
         if not self.auth:
-            print('Not authorized to travel on block, setting power to 0 and engaging ebrake')
+            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.speedSlider.setDisabled(True)
             self.ui.speedSlider.setValue(0)
             self.ui.driverSpd.setText('0MPH')
+            dialog.exec()
         else:
             if self.speedLim > self.cmdSpd:
                 self.ui.speedSlider.setMaximum(self.cmdSpd)
@@ -167,14 +177,14 @@ class TrainController(QMainWindow):
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
                 pow = 0
                 if self.ui.eBrakeBtn.isChecked():
-                    print('EBrake Engaged, power output set to 0')
+                    brakeDialog = trainDialog('EBrake Engaged, power output set to 0')
                     self.ui.sBrakeBtn.setChecked(False)
                 elif self.ui.sBrakeBtn.isChecked():
-                    print('SBrake Engaged, power output set to 0')
+                    brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
                 else:
                     print('No Brakes Enabled, calculating power...')
-
+                brakeDialog.exec()
             if pow < 0:
                 pow = 0
                 self.ui.sBrakeBtn.setChecked(True)
@@ -182,7 +192,7 @@ class TrainController(QMainWindow):
                 self.powOutput = pow
 
             #Print statement to see the outputs that go to backend
-            print('Commanded Power Output: ' + str(self.powOutput) + 'kW')
+            #print('Commanded Power Output: ' + str(self.powOutput) + 'kW')
     
     #Function used to interface with other modules/DB to get track signal
     def getCur(self, cur):
