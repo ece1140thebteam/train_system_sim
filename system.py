@@ -41,8 +41,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.test_window.show()
 
     def open_TrackModel(self):
-      self.trackmodel_main_window = TrackModelGUI()
-      self.trackmodel_main_window.show()
+      self.trackmodel = TrackModelGUI()
+      self.trackmodel.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
