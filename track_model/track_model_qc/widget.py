@@ -4,10 +4,13 @@ from pathlib import Path
 import sys
 import datetime
 import random 
+import time
+import threading
 
 from os.path import exists
 from PyQt5.QtWidgets import QApplication, QWidget, QTreeWidgetItem, QFileDialog
-from PyQt5.QtCore import QFile
+from PyQt5.QtCore import QFile, Qt, QThread, pyqtSignal, QObject
+from PyQt5.QtGui import QColor
 from PyQt5 import uic
 import Track
 import TrackBlock
@@ -29,18 +32,37 @@ pittsburgh_weather = {
     12: 29
 }
 
-class Widget(QWidget):
+run_thread = True
+
+class HelperThread(QObject):
+    change_color = pyqtSignal()
+
+    def run(self):
+        print('starting')
+        self.change_color.emit()
+
+class TrackModel(QWidget):
     default_track_file = 'saved_track.csv'
 
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
         self.load_ui()
         self.track = Track.Track()
-        self.load_track(Widget.default_track_file)
+        self.load_track(TrackModel.default_track_file)
         self.config_temp()
         self.blockTree = self.blockListTreeWidget
         self.uploadTrackButton.clicked.connect(self.open_new_file)
+
+        # self.thread = QThread()
+        # self.helper = HelperThread(parent=self)
+        # self.helper.moveToThread(self.thread)
+        # self.thread.started.connect(self.helper.run)
+        # self.helper.change_color.connect(self.update_list_color)
+        # # Step 6: Start the thread
+        # self.thread.start()
+
         self.displayed_block = None
+        
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
@@ -104,7 +126,7 @@ class Widget(QWidget):
 
         with open(track_file) as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
-            headers = next(reader, None)
+            next(reader, None)
 
             for block in reader:
                 line = block[0]
@@ -184,11 +206,15 @@ class Widget(QWidget):
                 for block in tracklines[line][section]:
                     b = QTreeWidgetItem([f'Block {block}'])
                     sec.addChild(b)
+                # sec.expandAll();
                 lineItem.addChild(sec)
             items.append(lineItem)
         
         self.blockListTreeWidget.insertTopLevelItems(0, items)
         self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
+        self.blockListTreeWidget.expandAll()
+
+        print(self.blockListTreeWidget)
 
     def config_temp(self):
         month = datetime.datetime.now().month
@@ -212,12 +238,10 @@ class Widget(QWidget):
                 self.display_block_info()
 
         else:
-            if self.temperatureSpinBox.value() < 32:
+            if self.temperatureSpinBox.value() <= 32:
                 print('Turning heater on')
                 self.track.turn_heater_on()
                 self.display_block_info()
-
-
 
     def load_ui(self):
 #        loader = QUiLoader()
@@ -227,9 +251,69 @@ class Widget(QWidget):
         uic.loadUi(ui_file, self)
         ui_file.close()
 
+    def update_list_color(self):
+        print('updating')
+        num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+
+        for line_num in range(0, num_lines):
+            line = self.blockListTreeWidget.invisibleRootItem().child(line_num)
+            num_sections = line.childCount()
+
+            for section_num in range(0, num_sections):
+                section = line.child(section_num)
+                num_blocks = section.childCount()
+
+                for block_num in range(0, num_blocks):
+                    block = section.child(block_num)
+                    print(block.text(0))
+
+                    block.setBackground(0, Qt.green)
+                    time.sleep(1)
+
+    def update_commanded_speed(self, line, block, speed):
+        pass
+
+    def update_authority(self, line, block, authority):
+        pass
+
+    def get_authority(self, line, block):
+        pass
+
+    def get_block_info(self, line, block):
+        # this will return {next block, block length, beacon, grade, authority, commanded speed}
+        pass
+
+    def get_block_occupancy(self, line, block):
+        # return true for occupied false for empty
+        pass
+
+    def get_route(self, start, end):
+        pass
+
+    def update_switch_position(self, line, block, block_target):
+        pass
+
+    def set_block_occupancy(self, line, block, occupancy):
+        pass
+
+    def set_maintenance_mode(self, line, block, maintenance_mode):
+        pass
+
+    def get_ticket_sales(self, line):
+        pass
+
+# def make_changes(model):
+#     time.sleep(2)
+#     model.update_list_color()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    widget = Widget()
+    widget = TrackModel()
+    # helper = HelperThread(parent=widget)
+    # helper.change_color.connect(widget.update_list_color)
+    # helper.start()
+
     widget.show()
+    run_thread = False
     sys.exit(app.exec())
