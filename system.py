@@ -1,8 +1,8 @@
-import systemui as system
+import sys
+
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-import sys
 
 from CTCOffice.testUiMain import MainTestWindow as MainTestWindowCTC
 from CTCOffice.main import MainWindow as MainWindowCTC
@@ -17,6 +17,13 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def __init__(self, parent=None):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
+      
+      self.trainmodel = TrainModel()
+      self.trainmodel_test = TestTrainModel(self.trainmodel)
+      self.pushButton_ctc.clicked.connect(self.open_CTC)
+      self.pushButton_ctc_test.clicked.connect(self.open_CTC_test)
+      self.pushButton_trainmodel.clicked.connect(self.open_trainmodel)
+      self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
 
       #Create list of trains for indexing
       self.Trains = []
@@ -67,6 +74,11 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       else:
         self.timer.stop()
 
+    def open_trainmodel(self):
+      self.trainmodel.show()
+
+    def open_trainmodel_test(self):
+      self.trainmodel_test.show()
     def open_traincontrol(self):
       self.Trains.append(TrainController())
       self.Train = self.Trains[0]
