@@ -55,6 +55,11 @@ class signals(QObject):
   # Send throughput from Track Model to CTC
   send_TrackModel_throughput_signal = pyqtSignal(str, int)
 
+  #######################################################
+  # Track Model test
+  # Send throughput from Track Model test to Track Model
+  send_TrackModel_track_occupancy = pyqtSignal(str, int) #line, block
+
 
 # Create a single instance of this class to be used in all modules. 
 # By using a single instance this will ensure the same singals are being used globally

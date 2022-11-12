@@ -8,12 +8,12 @@ import time
 import threading
 
 from os.path import exists
-from PyQt5.QtWidgets import QApplication, QWidget, QTreeWidgetItem, QFileDialog
-from PyQt5.QtCore import QFile, Qt, QThread, pyqtSignal, QObject
-from PyQt5.QtGui import QColor
-from PyQt5 import uic
-import Track
-import TrackBlock
+from PyQt6.QtWidgets import QApplication, QWidget, QTreeWidgetItem, QFileDialog
+from PyQt6.QtCore import QFile, Qt, QThread, pyqtSignal, QObject
+from PyQt6.QtGui import QColor
+from PyQt6 import uic
+from . import Track
+from . import TrackBlock
 import re
 import csv
 
@@ -42,7 +42,7 @@ class HelperThread(QObject):
         self.change_color.emit()
 
 class TrackModel(QWidget):
-    default_track_file = 'saved_track.csv'
+    default_track_file = 'default_track.csv'
 
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
@@ -246,10 +246,10 @@ class TrackModel(QWidget):
     def load_ui(self):
 #        loader = QUiLoader()
         path = str(Path(__file__).resolve().parent / "form.ui")
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        uic.loadUi(ui_file, self)
-        ui_file.close()
+        # ui_file = QFile(path)
+        # ui_file.open(QFile.ReadOnly)
+        uic.loadUi(path, self)
+        # ui_file.close()
 
     def update_list_color(self):
         print('updating')
