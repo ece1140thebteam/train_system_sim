@@ -4,8 +4,8 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
 
-from CTCOffice.testUiMain import MainTestWindowCTC
-from CTCOffice.main import MainWindowCTC
+from CTCOffice.testUiMain import MainTestWindow as MainTestWindowCTC
+from CTCOffice.main import MainWindow as MainWindowCTC
 from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
 from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUI
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
