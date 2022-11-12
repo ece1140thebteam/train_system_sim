@@ -83,10 +83,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
         self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
-        self.pushButton_startSim.clicked.connect(self.start_simulation)
-        self.pushButton_stopSim.clicked.connect(self.stop_simulation)
-        self.pushButton_resetSim.clicked.connect(self.reset_simulation)
-        self.pushButton_openTestUi.clicked.connect(self.open_test_ui)
 
         # ComboBox Connections
         self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance)
@@ -203,18 +199,16 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
-        station = self.comboBox_dispatchTrain_station.currentText()
-        hour = self.spinBox_dispatchTrain_hour.value()
-        minute = self.spinBox_dispatchTrain_minute.value()
-        print("Dispatching train on " + line + " line to " + station + " at " + str(hour) + ":" + str(minute))
-        self.outputLabel.setText("Dispatching train on " + line + " line to " + station + " at " + str(hour) + ":" + str(minute))
+        stations = []
 
-        query = "INSERT INTO trains VALUES (?, ?, ?, ?, ?)"
-        values = (None, line, 0,0,0)
-        cursor.execute(query, values)
-        mydb.commit()
+        for row in range(0, self.tableWidget_dispatch.rowCount()):
+            time = self.tableWidget_dispatch.item(row, 1).text()
+            if time != '':
+                stations.append((row, time))
 
-        self.get_trains()
+        print(str(stations))
+
+            
 
     # Update the comboBox of track_blocks
     # Called when the line is changed for maintenance
@@ -279,14 +273,19 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # Update the comboBox of stations for dispatch
     # Called when the line is changed for edit stations
     def update_dispatch_stations(self):
-        station_box = self.comboBox_dispatchTrain_station
-        station_box.clear()
         if self.comboBox_dispatchTrain_line.currentText() == "Red":
-            station_box.addItems(self.redStations)
+            self.tableWidget_dispatch.setRowCount(len(self.redStations))
+            for row in range(0, len(self.redStations)):
+                station = self.redStations[row]
+                self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))
+                self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
+
         elif self.comboBox_dispatchTrain_line.currentText() == "Green":
-            station_box.addItems(self.greenStations)
-        elif self.comboBox_dispatchTrain_line.currentText() == "Blue":
-            station_box.addItems(self.blueStations)
+            self.tableWidget_dispatch.setRowCount(len(self.greenStations))
+            for row in range(0, len(self.greenStations)):
+                station = self.greenStations[row]
+                self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))
+                self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
 
 
     # Get all blocks for a line
@@ -548,24 +547,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         
         print("Update Occupancy: " + line, str(block_number), str(occupancy))
 
-    # Simulation Timing Control
-    def start_simulation(self): 
-        self.startTime = time.time()
-        self.elapsedTime = time.time()
-        self.outputLabel.setText("Starting Simulation")
-        self.label_simStatus.setText("Running")
-        self.elapsedTime = 1
-
-    def stop_simulation(self):
-        self.outputLabel.setText("Stopping Simulation")
-        self.label_simStatus.setText("Stopped")
-        self.elapsedTime = 0
-
-    def reset_simulation(self):
-        self.outputLabel.setText("Resetting Simulation")
-        self.label_simStatus.setText("Stopped")
-        self.elapsedTime = 0
-    
     def open_test_ui(self):
         self.testUi = MainTestWindow()
         self.testUi.show()
