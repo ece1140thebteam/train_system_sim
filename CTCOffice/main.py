@@ -417,98 +417,55 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             else:
                 self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
-        if self.comboBox_selectLineGraph.currentText() == "Blue Line":
-            self.tableWidget.setRowCount(15)
-            cursor.execute("SELECT * FROM track_blocks WHERE line = 'Blue'")
-            data = cursor.fetchall()
+        self.tableWidget.setRowCount(150)
+        for row in range(0, 150):
+            block = self.lines[1].get(row+1)
+            self.tableWidget.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(str(block.line)))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(str(block.occupancy)))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(block.authority)))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(str(block.switch_position)))
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(block.failure)))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(block.crossing)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(str(block.section)))
+            self.tableWidget.setItem(row, 8, QTableWidgetItem(str(block.maintenance_mode)))
+            self.tableWidget.setItem(row, 9, QTableWidgetItem(str(block.infrastructure)))  
+            self.tableWidget.setItem(row, 10, QTableWidgetItem(str(block.signal_state)))  
+            self.tableWidget.setItem(row, 11, QTableWidgetItem(str(block.suggested_speed)))
 
-            for row in range(0, 15):
-                for col in range(0, 9):
-                    self.tableWidget.setItem(row, col, QTableWidgetItem(str(data[row][col])))
+            # Failure
+            if block.failure != '':
+                self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
+            else:
+                self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
 
-                # Color Failure
-                if str(data[row][5]) != '':
-                    self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
-                else:
-                    self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
+            # Maintenance
+            if block.maintenance_mode != 0:
+                self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
+            else:
+                self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
 
-                # Color Maintenance
-                if str(data[row][3]) != '0':
-                    self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 51))
-                else:
-                    self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+            # Switch
+            if block.switch_position is None:
+                self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
+            elif block.switch_position == 0:
+                self.tableWidget.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
+            else:
+                self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 102))
 
-                # Switch
-                if data[row][6] is None:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
-                elif str(data[row][6]) == '0':
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(102, 255, 255))
-                else:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 102))
+            # Occupancy
+            if block.occupancy != 0:
+                self.tableWidget.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
+            else:
+                self.tableWidget.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
 
-                # Color Occupancy
-                if str(data[row][7]) != '0':
-                    self.tableWidget.item(row, 7).setBackground(QtGui.QColor(51, 255, 51))
-                else:
-                    self.tableWidget.item(row, 7).setBackground(QtGui.QColor(255, 255, 255))
-
-                # Color Crossing
-                if data[row][8] is None:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-                elif str(data[row][8]) == '0':
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-                else:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 153, 51))
-        elif self.comboBox_selectLineGraph.currentText() == "Green Line":
-            self.tableWidget.setRowCount(150)
-            for row in range(0, 150):
-                block = self.lines[1].get(row+1)
-                self.tableWidget.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
-                self.tableWidget.setItem(row, 1, QTableWidgetItem(str(block.line)))
-                self.tableWidget.setItem(row, 2, QTableWidgetItem(str(block.occupancy)))
-                self.tableWidget.setItem(row, 3, QTableWidgetItem(str(block.authority)))
-                self.tableWidget.setItem(row, 4, QTableWidgetItem(str(block.switch_position)))
-                self.tableWidget.setItem(row, 5, QTableWidgetItem(str(block.failure)))
-                self.tableWidget.setItem(row, 6, QTableWidgetItem(str(block.crossing)))
-                self.tableWidget.setItem(row, 7, QTableWidgetItem(str(block.section)))
-                self.tableWidget.setItem(row, 8, QTableWidgetItem(str(block.maintenance_mode)))
-                self.tableWidget.setItem(row, 9, QTableWidgetItem(str(block.infrastructure)))  
-                self.tableWidget.setItem(row, 10, QTableWidgetItem(str(block.signal_state)))  
-                self.tableWidget.setItem(row, 11, QTableWidgetItem(str(block.suggested_speed)))
-
-                # Failure
-                if block.failure != '':
-                    self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
-                else:
-                    self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
-
-                # Maintenance
-                if block.maintenance_mode != 0:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
-                else:
-                    self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
-
-                # Switch
-                if block.switch_position is None:
-                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
-                elif block.switch_position == 0:
-                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
-                else:
-                    self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 102))
-
-                # Occupancy
-                if block.occupancy != 0:
-                    self.tableWidget.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
-                else:
-                    self.tableWidget.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
-
-                # Crossing
-                if block.crossing is None:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
-                elif block.crossing == 0:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
-                else:
-                    self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
+            # Crossing
+            if block.crossing is None:
+                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+            elif block.crossing == 0:
+                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+            else:
+                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
     def get_trains(self):
         cursor.execute("SELECT Train_ID FROM trains WHERE line = 'Red'")
