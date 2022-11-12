@@ -281,7 +281,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
 
         elif self.comboBox_dispatchTrain_line.currentText() == "Green":
-            self.tableWidget_dispatch.setRowCount(len(self.redStations))
+            self.tableWidget_dispatch.setRowCount(len(self.greenStations))
             for row in range(0, len(self.greenStations)):
                 station = self.greenStations[row]
                 self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))

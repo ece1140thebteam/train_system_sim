@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(631, 395)
+        MainWindow.resize(329, 241)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -53,9 +53,13 @@ class Ui_MainWindow(object):
         self.pushButton_traincontrol_test.setObjectName("pushButton_traincontrol_test")
         self.verticalLayout_2.addWidget(self.pushButton_traincontrol_test)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.pushButton_start = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_start.setCheckable(True)
+        self.pushButton_start.setObjectName("pushButton_start")
+        self.horizontalLayout.addWidget(self.pushButton_start)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 631, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 329, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -78,6 +82,7 @@ class Ui_MainWindow(object):
         self.pushButton_trackmodel_test.setText(_translate("MainWindow", "Track Model Test"))
         self.pushButton_trainmodel_test.setText(_translate("MainWindow", "Train Model Test"))
         self.pushButton_traincontrol_test.setText(_translate("MainWindow", "Train Control Test"))
+        self.pushButton_start.setText(_translate("MainWindow", "Start/Stop"))
 
 
 if __name__ == "__main__":
