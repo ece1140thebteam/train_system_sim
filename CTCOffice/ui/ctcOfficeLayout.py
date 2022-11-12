@@ -447,7 +447,7 @@ class Ui_MainWindow(object):
         self.pushButton_openTestUi.setObjectName("pushButton_openTestUi")
         self.verticalLayout_6.addWidget(self.pushButton_openTestUi)
         self.horizontalLayout_20.addLayout(self.verticalLayout_6)
-        self.horizontalLayout_20.setStretch(0, 1)
+        self.horizontalLayout_20.setStretch(0, 4)
         self.horizontalLayout_20.setStretch(1, 10)
         self.horizontalLayout_20.setStretch(2, 3)
         MainWindow.setCentralWidget(self.centralwidget)

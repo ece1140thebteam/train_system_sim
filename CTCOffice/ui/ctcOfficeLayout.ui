@@ -23,7 +23,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="1,10,3">
+   <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="4,10,3">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_10">
       <item>
