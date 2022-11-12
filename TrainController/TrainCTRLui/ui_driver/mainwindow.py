@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 #     pyside2-uic form.ui -o ui_form.py
 from TrainController.TrainCTRLui.ui_driver.ui_form import Ui_TrainController
 from TrainController.TrainCTRLui.ui_driver.tctrl_dialog import trainDialog
+from signals import s
 
 class TrainController(QMainWindow):
     def __init__(self, parent=None):
@@ -82,10 +83,18 @@ class TrainController(QMainWindow):
 
         #Button Connections
         self.ui.manModeBtn.clicked.connect(self.setManMode)
-        self.ui.tempDial.valueChanged.connect(self.tempAdjust)
+        self.ui.tempDial.sliderReleased.connect(self.tempAdjust)
         self.ui.speedSlider.valueChanged.connect(self.setSpdSlider)
         self.ui.eBrakeBtn.clicked.connect(self.powerCalc)
         self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
+        
+        #Light toggles
+        self.ui.elightBtn.clicked.connect(self.eLights)
+        self.ui.ilightBtn.clicked.connect(self.iLights)
+
+        #Door toggles
+        self.ui.rdoorBtn.clicked.connect(self.rDoors)
+        self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
     
     #Manual Mode toggling function
@@ -105,11 +114,24 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
 
+    #Functions to send door signals
+    def rDoors(self):
+        s.send_TrainModel_rDoor.emit(self.ui.rdoorBtn.isChecked())
+    def lDoors(self):
+        s.send_TrainModel_lDoor.emit(self.ui.ldoorBtn.isChecked())
+
+    #Functions to send light signals
+    def eLights(self):
+        s.send_TrainModel_eLight.emit(self.ui.elightBtn.isChecked())
+    def iLights(self):
+        s.send_TrainModel_iLight.emit(self.ui.ilightBtn.isChecked())
+
     #Function to adjust temp
     def tempAdjust(self):
         self.temp = self.ui.tempDial.value()
         tempStr = 'Current Temp: ' + str(self.temp) + 'F'
         self.ui.curTempLabel.setText(tempStr)
+        s.send_TrainModel_temp.emit(self.temp)
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self):
@@ -199,8 +221,11 @@ class TrainController(QMainWindow):
             if pow < 0:
                 pow = 0
                 self.ui.sBrakeBtn.setChecked(True)
-            else:
-                self.powOutput = pow
+            
+            self.powOutput = pow
+            s.send_TrainModel_powerOutput.emit(self.powOutput)
+            
+
     
     #Function used to interface with other modules/DB to get track signal
     def getCur(self, cur):
