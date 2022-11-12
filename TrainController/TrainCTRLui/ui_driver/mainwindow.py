@@ -186,9 +186,14 @@ class TrainController(QMainWindow):
                 self.ui.engFailStatus.setText('Engine Status: FAILING')
             if self.brakeFault:
                 self.ui.brakeFailStatus.setText('Brake Status: FAILING')
-            print('Failure detected, setting power to 0 and engaging ebrake')
+            self.faultDialog = trainDialog('Failure detected, setting power to 0 and engaging ebrake')
             self.powOutput = 0
             self.ui.eBrakeBtn.setChecked(True)
+            #Send brake states to Train Model and display popup to user indicating fault
+            s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+            s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+            self.faultDialog.show()
+
         else: #No Faults Found
             if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
                 error_k = self.driverCmd - self.curSpd
@@ -203,7 +208,8 @@ class TrainController(QMainWindow):
             #Check to make sure max power is not exceeded
             if pow > self.maxPow:
                 pow = self.maxPow
-                print('Max power exceeded, capping power output')
+                self.maxPowError = trainDialog('Max power exceeded, capping power output')
+                self.maxPowError.show()
 
             #Set power to 0 if brakes active
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
@@ -211,9 +217,15 @@ class TrainController(QMainWindow):
                 if self.ui.eBrakeBtn.isChecked():
                     brakeDialog = trainDialog('EBrake Engaged, power output set to 0')
                     self.ui.sBrakeBtn.setChecked(False)
+                    #Send Brake State signals to train model
+                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 elif self.ui.sBrakeBtn.isChecked():
                     brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
+                    #Send Brake State signals to train model
+                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 else:
                     print('No Brakes Enabled, calculating power...')
                 brakeDialog.exec()
@@ -225,7 +237,6 @@ class TrainController(QMainWindow):
             self.powOutput = pow
             s.send_TrainModel_powerOutput.emit(self.powOutput)
             
-
     
     #Function used to interface with other modules/DB to get track signal
     def getCur(self, cur):
