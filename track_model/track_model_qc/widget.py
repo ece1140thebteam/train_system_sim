@@ -52,7 +52,7 @@ class TrackModel(QWidget):
         self.config_temp()
         self.blockTree = self.blockListTreeWidget
         self.uploadTrackButton.clicked.connect(self.open_new_file)
-
+        self.time_elapsed = 0
         # self.thread = QThread()
         # self.helper = HelperThread(parent=self)
         # self.helper.moveToThread(self.thread)
@@ -269,6 +269,11 @@ class TrackModel(QWidget):
 
                     block.setBackground(0, Qt.green)
                     time.sleep(1)
+
+    def handle_timestep(self, ts):
+        self.time_elapsed += 1
+        print(f'Elapsed time: {self.time_elapsed}')
+
 
     def update_commanded_speed(self, line, block, speed):
         pass
