@@ -10,6 +10,7 @@ from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
 from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUI
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
+from signals import s
 
 
 class SystemWindow(QMainWindow, system.Ui_MainWindow):
@@ -20,11 +21,20 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       #Create list of trains for indexing
       self.Trains = []
 
-      self.pushButton_ctc.clicked.connect(self.open_CTC)
-      self.pushButton_ctc_test.clicked.connect(self.open_CTC_test)
 
       self.pushButton_traincontrol.clicked.connect(self.open_traincontrol)
       self.pushButton_traincontrol_test.clicked.connect(self.open_traincontrol_test)
+      self.main_windowCTC = MainWindowCTC()
+      self.test_windowCTC = MainTestWindowCTC()
+      self.pushButton_ctc.clicked.connect(self.open_CTC)
+      self.pushButton_ctc_test.clicked.connect(self.open_CTC_test)
+
+      self.pushButton_start.clicked.connect(self.pause_timer)
+
+
+      self.timer = QTimer()
+      self.timer.setInterval(100)
+      self.timer.timeout.connect(self.timer_timeout)
 
 # TODO: unconnect lines for module and add functions as indicated to open window
       # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
@@ -40,12 +50,22 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       # self.pushButton_traincontrol_test.clicked.connect(self.open_TrainController_test)
 
     def open_CTC(self):
-      self.main_window = MainWindowCTC()
-      self.main_window.show()
+      
+      self.main_windowCTC.show()
 
     def open_CTC_test(self):
-      self.test_window = MainTestWindowCTC()
-      self.test_window.show()
+      
+      self.test_windowCTC.show()
+
+    def timer_timeout(self):
+      print("Timer")
+      s.timer_tick.emit()
+    
+    def pause_timer(self):
+      if self.pushButton_start.isChecked():
+        self.timer.start()
+      else:
+        self.timer.stop()
 
     def open_traincontrol(self):
       self.Trains.append(TrainController())

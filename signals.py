@@ -81,6 +81,8 @@ class signals(QObject):
   send_TrainModel_temp = pyqtSignal(int) #temp command
   
   
+  timer_tick = pyqtSignal()
+
 
 # Create a single instance of this class to be used in all modules. 
 # By using a single instance this will ensure the same singals are being used globally
