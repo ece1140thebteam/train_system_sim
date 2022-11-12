@@ -83,10 +83,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
         self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
-        self.pushButton_startSim.clicked.connect(self.start_simulation)
-        self.pushButton_stopSim.clicked.connect(self.stop_simulation)
-        self.pushButton_resetSim.clicked.connect(self.reset_simulation)
-        self.pushButton_openTestUi.clicked.connect(self.open_test_ui)
 
         # ComboBox Connections
         self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance)
@@ -548,24 +544,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         
         print("Update Occupancy: " + line, str(block_number), str(occupancy))
 
-    # Simulation Timing Control
-    def start_simulation(self): 
-        self.startTime = time.time()
-        self.elapsedTime = time.time()
-        self.outputLabel.setText("Starting Simulation")
-        self.label_simStatus.setText("Running")
-        self.elapsedTime = 1
-
-    def stop_simulation(self):
-        self.outputLabel.setText("Stopping Simulation")
-        self.label_simStatus.setText("Stopped")
-        self.elapsedTime = 0
-
-    def reset_simulation(self):
-        self.outputLabel.setText("Resetting Simulation")
-        self.label_simStatus.setText("Stopped")
-        self.elapsedTime = 0
-    
     def open_test_ui(self):
         self.testUi = MainTestWindow()
         self.testUi.show()
