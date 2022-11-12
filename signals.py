@@ -60,6 +60,27 @@ class signals(QObject):
   # Send throughput from Track Model test to Track Model
   send_TrackModel_track_occupancy = pyqtSignal(str, int) #line, block
 
+  #######################################################
+  # Train Controller to Train Model
+  # Send power calculation from Train Controller to Train Model
+  send_TrainModel_powerOutput = pyqtSignal(float) #power value
+
+  # Send service/emergency brake command from Train Controller to Train Model
+  send_TrainModel_sBrake = pyqtSignal(bool) #brake state
+  send_TrainModel_eBrake = pyqtSignal(bool) #brake state
+
+  # Send external/internal light command from Train Controller to Train Model
+  send_TrainModel_eLight = pyqtSignal(bool) #light state
+  send_TrainModel_iLight = pyqtSignal(bool) #light state
+
+  #Send left/right door command from Train Controller to Train Model
+  send_TrainModel_lDoor = pyqtSignal(bool) #door state
+  send_TrainModel_rDoor = pyqtSignal(bool) #door state
+
+  #Send cabin temperature command from Train Controller to Train Model
+  send_TrainModel_temp = pyqtSignal(int) #temp command
+  
+  
 
 # Create a single instance of this class to be used in all modules. 
 # By using a single instance this will ensure the same singals are being used globally
