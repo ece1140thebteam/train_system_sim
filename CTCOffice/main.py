@@ -199,18 +199,16 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
-        station = self.comboBox_dispatchTrain_station.currentText()
-        hour = self.spinBox_dispatchTrain_hour.value()
-        minute = self.spinBox_dispatchTrain_minute.value()
-        print("Dispatching train on " + line + " line to " + station + " at " + str(hour) + ":" + str(minute))
-        self.outputLabel.setText("Dispatching train on " + line + " line to " + station + " at " + str(hour) + ":" + str(minute))
+        stations = []
 
-        query = "INSERT INTO trains VALUES (?, ?, ?, ?, ?)"
-        values = (None, line, 0,0,0)
-        cursor.execute(query, values)
-        mydb.commit()
+        for row in range(0, self.tableWidget_dispatch.rowCount()):
+            time = self.tableWidget_dispatch.item(row, 1).text()
+            if time != '':
+                stations.append((row, time))
 
-        self.get_trains()
+        print(str(stations))
+
+            
 
     # Update the comboBox of track_blocks
     # Called when the line is changed for maintenance
@@ -275,14 +273,19 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # Update the comboBox of stations for dispatch
     # Called when the line is changed for edit stations
     def update_dispatch_stations(self):
-        station_box = self.comboBox_dispatchTrain_station
-        station_box.clear()
         if self.comboBox_dispatchTrain_line.currentText() == "Red":
-            station_box.addItems(self.redStations)
+            self.tableWidget_dispatch.setRowCount(len(self.redStations))
+            for row in range(0, len(self.redStations)):
+                station = self.redStations[row]
+                self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))
+                self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
+
         elif self.comboBox_dispatchTrain_line.currentText() == "Green":
-            station_box.addItems(self.greenStations)
-        elif self.comboBox_dispatchTrain_line.currentText() == "Blue":
-            station_box.addItems(self.blueStations)
+            self.tableWidget_dispatch.setRowCount(len(self.redStations))
+            for row in range(0, len(self.greenStations)):
+                station = self.greenStations[row]
+                self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))
+                self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
 
 
     # Get all blocks for a line
