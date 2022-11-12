@@ -7,7 +7,8 @@ import sys
 from CTCOffice.testUiMain import MainTestWindow
 from CTCOffice.main import MainWindow
 from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
-from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUi
+from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUI
+from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 
 
 class SystemWindow(QMainWindow, system.Ui_MainWindow):
@@ -16,7 +17,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.setupUi(self)
 
       #Create list of trains for indexing
-      Trains = []
+      self.Trains = []
 
       self.pushButton_ctc.clicked.connect(self.open_CTC)
       self.pushButton_ctc_test.clicked.connect(self.open_CTC_test)
@@ -36,10 +37,13 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
     def open_traincontrol(self):
       self.Trains.append(TrainController())
-      self.main_window.show()
-    
+      self.Train = self.Trains[0]
+      self.engWindow = engineerUI(self.Train)
+      self.Train.show()
+      self.engWindow.show()
+
     def open_traincontrol_test(self):
-      self.test_window = TrainCTRLTestUi(self.Trains[0])
+      self.test_window = TrainCTRLTestUI(self.Trains[0])
       self.test_window.show()
 
   

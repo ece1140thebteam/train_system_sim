@@ -7,9 +7,9 @@ from PyQt6.QtWidgets import QApplication, QWidget
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from eng_form import Ui_engineerUI
-from tctrl_dialog import trainDialog
-from mainwindow import TrainController
+from TrainController.TrainCTRLui.ui_driver.eng_form import Ui_engineerUI
+from TrainController.TrainCTRLui.ui_driver.tctrl_dialog import trainDialog
+from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
 
 class engineerUI(QWidget):
     def __init__(self, TrainController, parent=None):
