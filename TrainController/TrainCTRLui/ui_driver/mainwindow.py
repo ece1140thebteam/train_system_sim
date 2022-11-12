@@ -17,7 +17,6 @@ class TrainController(QMainWindow):
         self.ui = Ui_TrainController()
         self.ui.setupUi(self)
 
-        
 
         #Initialization of internal variables
         self.Kp = 1
