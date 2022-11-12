@@ -8,8 +8,6 @@ class TrackLine():
         self.sections = dict()
         self.graph = [] #negative connections represent switches
 
-        self.stations = dict()
-        self.sections = dict()
         self.blocks   = dict()
         self.switches = dict()
         self.stations = dict()  #{station: passengers}

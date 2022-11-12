@@ -65,10 +65,9 @@ def get_temperature():
     # random pittsburgh temperature based on month
     Gvars.temperature_f = random.randint(avg_month_temp-dev, avg_month_temp+dev)
 
-def parse_track():
-    print(Gvars.track_file)
-    with open(Gvars.track_file) as csvfile:
-        print('opened')
+def parse_track(track_file):
+    track = Track.Track()
+    with open(track_file) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         headers = next(reader, None)
         
@@ -95,10 +94,10 @@ def parse_track():
                     all = [int(x) for x in re.findall(r'\d+', i.lower().replace('yard', '0'))]
                     if len(all) > 2:
                         start = int(max(set(all), key = all.count))
-                        print
+                        
                         # to = [x for i, x in enumerate(all) if i!=start]
                         to = [x for x in all if x != start]
-                        Gvars.track.add_switch(line, start, to)
+                        track.add_switch(line, start, to)
 
             connections = block[10]
             connections = connections.split(';')
@@ -132,12 +131,8 @@ def parse_track():
                 can_travel_to = block_travels_to
             )
 
-            # b.print()
-            # print()
-
-            Gvars.track.add_block(b)
-    
-    Gvars.track.print()
+            track.add_block(b)
+    return track
 
 def fill_block_list():
     for line in Gvars.track.track_lines:
@@ -157,10 +152,9 @@ def load_new_track():
 
     with open('loaded_track', 'w') as f:
         f.write(Gvars.track_file)
-    Gvars.track = Track.Track()
     Gvars.track_file_binding.text = Gvars.track_file.replace(os.getcwd(), '').replace('/', '').replace('\\','')
     Gvars.block_list_manager.clear_list()
-    parse_track()
+    Gvars.track = parse_track(Gvars.track_file)
     fill_block_list()
 
 def update_block_info():
