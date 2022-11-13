@@ -46,7 +46,7 @@ class TrackBlock():
         self.beacon2        = None
         self.authority      = 0
         self.maintenance_mode = False
-
+        print(self.can_travel_to)
         if self.station:
             # TODO Add side of track
             self.beacon1 = {

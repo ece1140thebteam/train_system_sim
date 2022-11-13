@@ -40,6 +40,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
       # self.pushButton_trackcontrol_test.clicked.connect(self.open_TrackController_test)
 
+      self.trackmodel = TrackModelGUI()
       self.pushButton_trackmodel.clicked.connect(self.open_TrackModel)
       # self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModel_test)
       
@@ -58,7 +59,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.test_windowCTC.show()
 
     def timer_timeout(self):
-      print("Timer")
       s.timer_tick.emit()
     
     def pause_timer(self):
@@ -80,7 +80,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
   
     def open_TrackModel(self):
-      self.trackmodel = TrackModelGUI()
       self.trackmodel.show()
 
 if __name__ == "__main__":

@@ -11,11 +11,12 @@ from os.path import exists
 from PyQt6.QtWidgets import QApplication, QWidget, QTreeWidgetItem, QFileDialog
 from PyQt6.QtCore import QFile, Qt, QThread, pyqtSignal, QObject
 from PyQt6.QtGui import QColor
-from PyQt6 import uic
+from PyQt6 import uic, QtGui
 from . import Track
 from . import TrackBlock
 import re
 import csv
+from signals import s
 
 pittsburgh_weather = {
     1: 30,
@@ -53,6 +54,9 @@ class TrackModel(QWidget):
         self.blockTree = self.blockListTreeWidget
         self.uploadTrackButton.clicked.connect(self.open_new_file)
         self.time_elapsed = 0
+        self.r = 0
+        self.g = 0
+        self.b = 0
         # self.thread = QThread()
         # self.helper = HelperThread(parent=self)
         # self.helper.moveToThread(self.thread)
@@ -62,7 +66,12 @@ class TrackModel(QWidget):
         # self.thread.start()
 
         self.displayed_block = None
+        s.timer_tick.connect(self.handle_time_increment)
+        s.send_TrackController_track_occupancy.connect(self.set_block_occupancy)
         
+    def handle_time_increment(self):
+        # print('hello from the track model')
+        self.update_list_color()
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
@@ -252,8 +261,16 @@ class TrackModel(QWidget):
         # ui_file.close()
 
     def update_list_color(self):
-        print('updating')
         num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+        # if self.i is None: self.i = 0
+        self.b += 10
+        if self.b > 255:
+            self.g += 10
+            self.b = 0
+        if self.g > 255:
+            self.g = 0
+            self.r += 10
+            self.r = self.r % 255
 
         for line_num in range(0, num_lines):
             line = self.blockListTreeWidget.invisibleRootItem().child(line_num)
@@ -265,10 +282,10 @@ class TrackModel(QWidget):
 
                 for block_num in range(0, num_blocks):
                     block = section.child(block_num)
-                    print(block.text(0))
+                    # print(block.text(0))
 
-                    block.setBackground(0, Qt.green)
-                    time.sleep(1)
+                    block.setBackground(0, QtGui.QColor(self.r, self.g, self.b, 255))
+                    # time.sleep(1)
 
     def handle_timestep(self, ts):
         self.time_elapsed += 1
@@ -284,13 +301,22 @@ class TrackModel(QWidget):
     def get_authority(self, line, block):
         pass
 
-    def get_block_info(self, line, block):
-        # this will return {next block, block length, beacon, grade, authority, commanded speed}
-        pass
+    def get_next_block(self, line, current_block_num, train):
+        next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
+        block = self.track.track_lines[line].blocks[next_block_num]
+        block_info = dict()
 
-    def get_block_occupancy(self, line, block):
-        # return true for occupied false for empty
-        pass
+        # the block the train will enter
+        block_info['block_num'] = block.block_number
+        block_info['grade']     = block.grade
+        block_info['beacon']    = {'station_name' : block.station, 'station_side' : 'right'}
+        block_info['length']    = block.block_len
+
+        s.send_TrackModel_block_info.emit(train, block_info)
+
+    # def get_block)_(self, line, block):
+    #     # return true for occupied false for empty
+    #     pass
 
     def get_route(self, start, end):
         pass

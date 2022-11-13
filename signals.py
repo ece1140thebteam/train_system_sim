@@ -42,7 +42,7 @@ class signals(QObject):
   #######################################################
   # Wayside to CTC 
   # Send track occupancy from Track Controller to CTC
-  send_TrackController_track_occupancy = pyqtSignal(str, list) # Line, occupancy (0=open, 1=occupied)
+  send_TrackController_track_occupancy = pyqtSignal(str, list, bool) # Line, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
   send_TrackController_crossing = pyqtSignal(str, list) # Line, status (0=deactivated, 1=activated)
@@ -58,7 +58,12 @@ class signals(QObject):
   #######################################################
   # Track Model test
   # Send throughput from Track Model test to Track Model
-  send_TrackModel_track_occupancy = pyqtSignal(str, int) #line, block
+  send_TrackModel_track_occupancy = pyqtSignal(str, int, bool) #line, block
+
+  #######################################################
+  # Track Model to Train Model
+  # Send throughput from Track Model test to Track Model
+  send_TrackModel_block_info = pyqtSignal(int, dict) #trainID, block info
 
   #######################################################
   # Train Controller to Train Model
