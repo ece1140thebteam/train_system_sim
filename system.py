@@ -46,6 +46,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.timer.setInterval(100)
       self.timer.timeout.connect(self.timer_timeout)
 
+      self.update_speed()
+      self.horizontalSlider.valueChanged.connect(self.update_speed)
+
 # TODO: unconnect lines for module and add functions as indicated to open window
       # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
       # self.pushButton_trackcontrol_test.clicked.connect(self.open_TrackController_test)
@@ -97,6 +100,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def open_TrackModel(self):
       self.trackmodel_main_window = TrackModelGUI()
       self.trackmodel_main_window.show()
+
+    def update_speed(self):
+      self.label_speed.setText(str(self.horizontalSlider.value()))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
