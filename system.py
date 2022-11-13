@@ -1,5 +1,6 @@
 import sys
 
+import systemui as system
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -11,6 +12,8 @@ from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestU
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
 from signals import s
+
+from Train_Model.TrainModel import TrainModel, TestTrainModel
 
 
 class SystemWindow(QMainWindow, system.Ui_MainWindow):
