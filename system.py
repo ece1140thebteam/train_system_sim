@@ -10,6 +10,8 @@ from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
 from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUI
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
+from track_model.TrackModelTestUI.trackmodeltestui import TrackModelTestUI as TrackModelTestUI
+ 
 from signals import s
 
 
@@ -41,8 +43,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       # self.pushButton_trackcontrol_test.clicked.connect(self.open_TrackController_test)
 
       self.trackmodel = TrackModelGUI()
+      self.trackModelTestUI = TrackModelTestUI()
       self.pushButton_trackmodel.clicked.connect(self.open_TrackModel)
-      # self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModel_test)
+      self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModelTestUI)
       
       # self.pushButton_trainmodel.clicked.connect(self.open_TrainModel)
       # self.pushButton_trainmodel_test.clicked.connect(self.open_TrainModel_test)
@@ -81,6 +84,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
   
     def open_TrackModel(self):
       self.trackmodel.show()
+
+    def open_TrackModelTestUI(self):
+      self.trackModelTestUI.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

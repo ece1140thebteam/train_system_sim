@@ -35,13 +35,6 @@ pittsburgh_weather = {
 
 run_thread = True
 
-class HelperThread(QObject):
-    change_color = pyqtSignal()
-
-    def run(self):
-        print('starting')
-        self.change_color.emit()
-
 class TrackModel(QWidget):
     default_track_file = 'default_track.csv'
 
@@ -57,21 +50,30 @@ class TrackModel(QWidget):
         self.r = 0
         self.g = 0
         self.b = 0
-        # self.thread = QThread()
-        # self.helper = HelperThread(parent=self)
-        # self.helper.moveToThread(self.thread)
-        # self.thread.started.connect(self.helper.run)
-        # self.helper.change_color.connect(self.update_list_color)
-        # # Step 6: Start the thread
-        # self.thread.start()
 
         self.displayed_block = None
         s.timer_tick.connect(self.handle_time_increment)
-        s.send_TrackController_track_occupancy.connect(self.set_block_occupancy)
+        s.send_TrackModel_failure_status.connect(self.update_failures)
+        s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
+        s.get_TrackModel_map_info.connect(self.get_track_info)
+        s.send_TrackModel_block_authority.connect(self.update_block_authority)
+    
+    def get_track_info(self):
+        track_dict = dict()
+
+        for line in self.track.track_lines:
+            track_dict[line] = dict()
+            for section in self.track.track_lines[line].sections:
+                track_dict[line][section] = list()
+                for block in self.track.track_lines[line].sections[section]:
+                    track_dict[line][section].append(int(block))
         
+        s.send_TrackModel_map_info.emit(track_dict)
+
     def handle_time_increment(self):
         # print('hello from the track model')
-        self.update_list_color()
+        self.update_block_occupancy('blue', 12, False)
+
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
@@ -129,6 +131,48 @@ class TrackModel(QWidget):
             track_file = t[0]
             # notify others which track is loaded 
             self.load_track(track_file)
+
+    def update_block_color(self, line, block, color):
+        num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+        for line_num in range(0, num_lines):
+            l = self.blockListTreeWidget.invisibleRootItem().child(line_num)
+            num_sections = l.childCount()
+            if l.text(0).split(' ')[0].lower() == line.lower():
+                for section_num in range(0, num_sections):
+                    section = l.child(section_num)
+                    num_blocks = section.childCount()
+
+                    for block_num in range(0, num_blocks):
+                        b = section.child(block_num)
+                        if int(b.text(0).split(' ')[1]) == block:
+                            b.setBackground(0, color)
+
+    def update_failures(self, line, block, failure):
+        print('failure')
+        if failure != 'None':
+            color = QtGui.QColor(200, 0, 0, 255)
+        else:
+            color = QtGui.QColor(0, 0, 0, 0)
+
+        self.update_block_color(line, block, color)
+        self.track.track_lines[line].blocks[block].failure_mode = failure
+        self.display_block_info()
+
+    def update_block_occupancy(self, line, block, occupancy):
+        print(f'updating {line} {block}')
+        
+        if occupancy:
+            color = QtGui.QColor(0, 0, 140, 255)
+        else:
+            color = QtGui.QColor(0, 0, 0, 0)
+
+        self.update_block_color(line, block, color)
+        self.track.track_lines[line].blocks[block].circuit_open = not occupancy
+        self.display_block_info()
+
+    def update_block_authority(self, line, block, authority):
+        self.track.track_lines[line].blocks[block].authority = authority
+        self.display_block_info()
 
     def load_track(self, track_file):
         tracklines = dict()
@@ -223,8 +267,6 @@ class TrackModel(QWidget):
         self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
         self.blockListTreeWidget.expandAll()
 
-        print(self.blockListTreeWidget)
-
     def config_temp(self):
         month = datetime.datetime.now().month
         hour = datetime.datetime.now().hour
@@ -253,7 +295,6 @@ class TrackModel(QWidget):
                 self.display_block_info()
 
     def load_ui(self):
-#        loader = QUiLoader()
         path = str(Path(__file__).resolve().parent / "form.ui")
         # ui_file = QFile(path)
         # ui_file.open(QFile.ReadOnly)
@@ -282,10 +323,8 @@ class TrackModel(QWidget):
 
                 for block_num in range(0, num_blocks):
                     block = section.child(block_num)
-                    # print(block.text(0))
 
                     block.setBackground(0, QtGui.QColor(self.r, self.g, self.b, 255))
-                    # time.sleep(1)
 
     def handle_timestep(self, ts):
         self.time_elapsed += 1
@@ -322,9 +361,6 @@ class TrackModel(QWidget):
         pass
 
     def update_switch_position(self, line, block, block_target):
-        pass
-
-    def set_block_occupancy(self, line, block, occupancy):
         pass
 
     def set_maintenance_mode(self, line, block, maintenance_mode):
