@@ -1,4 +1,5 @@
 import sys
+import datetime
 
 import systemui as system
 from PyQt6.QtCore import *
@@ -20,6 +21,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def __init__(self, parent=None):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
+      self.second = 0
+
+      self.label_time.setText(str(round(self.second, 1)))
       
       self.trainmodel = TrainModel()
       self.trainmodel_test = TestTrainModel(self.trainmodel)
@@ -71,7 +75,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.test_windowCTC.show()
 
     def timer_timeout(self):
-      print("Timer")
+      self.second += 0.1
+      self.label_time.setText(str(datetime.timedelta(seconds=round(self.second))))
       s.timer_tick.emit()
     
     def pause_timer(self):
@@ -103,6 +108,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
     def update_speed(self):
       self.label_speed.setText(str(self.horizontalSlider.value()))
+      self.timer.setInterval(100/self.horizontalSlider.value())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -81,7 +81,7 @@ class Train_Sim():
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1
       origin_block = train.current_block
-      dest_block = 0
+      dest_block = -1
       self.set_authority(train.line, origin_block, dest_block)
     else:
       # Set authority from current block to next station to 1
@@ -92,6 +92,8 @@ class Train_Sim():
   def set_authority(self, line, origin, destination):
     if(line == 'Green'):
       location = green_route.index(origin)
+
+      self.green_authority = [0] * 151
 
       for i in range(location, len(green_route)):
         block = green_route[i]
