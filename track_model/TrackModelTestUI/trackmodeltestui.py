@@ -14,15 +14,65 @@ class TrackModelTestUI(QWidget):
         self.load_ui()
         s.send_TrackModel_map_info.connect(self.update_track_info)
         s.get_TrackModel_map_info.emit()
+        s.send_TrackModel_updated.connect(self.update_track_info)
         self.lineDropDown.currentTextChanged.connect(self.populate_block_dropdown)
+        self.blockDropDown.currentTextChanged.connect(self.block_num_changed)
+
         self.updateTypeDropdown.currentTextChanged.connect(self.update_type_inputs)
         self.update_type_inputs()
         self.populate_line_dropdown()
         self.updateButton.clicked.connect(self.send_update)
+        s.timer_tick.connect(self.handle_time_increment)
+        s.send_TrackModel_block_info.connect(self.receive_block_info)
+
+        self.current_block_info = None
+        self.current_block = 0
+        self.previous_block = 0
+        self.traveled_in_block = 0
+
+    def receive_block_info(self, train_num, block_info):
+        # do these per block with multiple trains
+        self.current_block_info = block_info
+        self.traveled_in_block = 0
+        self.previous_block = self.current_block
+        self.current_block = self.current_block_info['block_num']
+        print(block_info['block_num'])
+        print(block_info['grade'])
+        print(block_info['beacon'])
+        print(block_info['length'])
+        print(block_info['authority'])
+        print(block_info['commanded_speed'])
+
+    def handle_time_increment(self):
+        dt = .1 #100 ms, TODO udpate
+        if self.current_block_info == None:
+            #line, current_block, previous block, train num
+            s.send_TrackModel_get_block_info.emit('Blue', -1, -1, 0)
+            return
+        
+        if self.traveled_in_block == 0:
+            s.send_TrackModel_track_occupancy.emit('Blue', self.current_block_info['block_num'], True) 
+            
+            if self.previous_block>0: 
+                s.send_TrackModel_track_occupancy.emit('Blue', self.previous_block, False) 
+        
+        distance = self.current_block_info['commanded_speed']*dt
+
+        self.traveled_in_block += distance
+
+        if self.traveled_in_block > self.current_block_info['length']:
+            print('NEXT')
+            s.send_TrackModel_get_block_info.emit('Blue', self.current_block, self.previous_block, 0)
+
+
+    def block_num_changed(self, text):
+        if self.updateTypeDropdown.currentText() == "Switch Position":
+            self.set_update_value_switch_pos(text)
+            pass
 
     def update_type_inputs(self):
-        print('updating dropdown')
         update_type = self.updateTypeDropdown.currentText()
+        self.populate_block_dropdown(self.lineDropDown.currentText())
 
         if update_type == "Occupancy":
             self.updateValueLabel.setText("Occupied?")
@@ -33,18 +83,61 @@ class TrackModelTestUI(QWidget):
         elif update_type == 'Authority':
             self.updateValueLabel.setText("Authority Value")
             self.set_update_dropdown_authority()
+        elif update_type == 'Commanded Speed':
+            self.updateValueSpinboxLabel.setText("Speed (mph)")
+            self.set_update_input_speed()
+        elif update_type == "Maintenance":
+            self.updateValueLabel.setText("Maintenance?")
+            self.set_update_dropdown_yes_no()
+        elif update_type == "Signal":
+            self.updateValueLabel.setText("Color")
+            self.set_update_value_signal_colors()
+        elif update_type == "Switch Position":
+            self.updateValueLabel.setText("Position")
+
+    def set_update_value_switch_pos(self, text):
+        if text == '': return
+        line = self.lineDropDown.currentText()
+        block = int(text)
+        self.enable_input_value_dropdown()
+        sw = self.track[line]['switches'][block]
+        self.inputValueDropdown.clear()
+        self.inputValueDropdown.addItem(str(sw[0]))
+        self.inputValueDropdown.addItem(str(sw[1]))
+
+    def enable_input_value_dropdown(self):
+        self.inputValueDropdown.setEnabled(True)
+        self.inputValueSpinBox.setEnabled(False)
+        self.updateValueSpinboxLabel.setText("")
+
+    def enable_input_value_spinbox(self):
+        self.inputValueDropdown.setEnabled(False)
+        self.inputValueSpinBox.setEnabled(True)
+        self.updateValueLabel.setText("")
+
+    def set_update_input_speed(self):
+        self.enable_input_value_spinbox()
+
+    def set_update_value_signal_colors(self):
+        self.enable_input_value_dropdown()
+        self.inputValueDropdown.clear()
+        self.inputValueDropdown.addItem('Red')
+        self.inputValueDropdown.addItem('Green')
 
     def set_update_dropdown_authority(self):
+        self.enable_input_value_dropdown()
         self.inputValueDropdown.clear()
         self.inputValueDropdown.addItem('1')
         self.inputValueDropdown.addItem('0')
 
     def set_update_dropdown_yes_no(self):
+        self.enable_input_value_dropdown()
         self.inputValueDropdown.clear()
         self.inputValueDropdown.addItem('Yes')
         self.inputValueDropdown.addItem('No')
 
     def set_update_dropdown_failures(self):
+        self.enable_input_value_dropdown()
         self.inputValueDropdown.clear()
         self.inputValueDropdown.addItem('Power failure')
         self.inputValueDropdown.addItem('Track Circuit failure')
@@ -53,13 +146,50 @@ class TrackModelTestUI(QWidget):
 
     def send_update(self):
         print(self.updateTypeDropdown.currentText())
-
         if self.updateTypeDropdown.currentText() == "Occupancy":
             self.send_occupancy_update()
         elif self.updateTypeDropdown.currentText() == "Failure":
             self.send_failure_update()
         elif self.updateTypeDropdown.currentText() == "Authority":
             self.send_authority_update()
+        elif self.updateTypeDropdown.currentText() == "Commanded Speed":
+            self.send_commanded_speed_update()
+        elif self.updateTypeDropdown.currentText() == "Maintenance":
+            self.send_maintenance_update()
+        elif self.updateTypeDropdown.currentText() == "Signal":
+            self.send_signal_update()
+        elif self.updateTypeDropdown.currentText() == "Switch Position":
+            self.send_switch_position_update()
+
+    def send_switch_position_update(self):
+        line = self.lineDropDown.currentText()
+        block = self.blockDropDown.currentText()
+        position = self.inputValueDropdown.currentText()
+
+        s.send_TrackModel_switch_position.emit(line, int(block), int(position))
+
+    def send_signal_update(self):
+        line = self.lineDropDown.currentText()
+        block = self.blockDropDown.currentText()
+        color = self.inputValueDropdown.currentText()
+
+        s.send_TrackModel_signal_status.emit(line, int(block), color)
+
+    def send_maintenance_update(self):
+        line = self.lineDropDown.currentText()
+        block = self.blockDropDown.currentText()
+        maintenance = self.inputValueDropdown.currentText()=='Yes'
+
+        s.send_TrackModel_maintenance_status.emit(line, int(block), maintenance)
+
+    def send_commanded_speed_update(self):
+        print('sending speed')
+
+        line = self.lineDropDown.currentText()
+        block = self.blockDropDown.currentText()
+        speed = self.inputValueSpinBox.value()
+
+        s.send_TrackModel_commanded_speed.emit(line, int(block), speed)
 
     def send_failure_update(self):
         print('updating failure')
@@ -77,9 +207,6 @@ class TrackModelTestUI(QWidget):
 
         s.send_TrackModel_block_authority.emit(line, int(block), authority)
 
-    def send_commanded_speed_update(self):
-        pass
-
     def send_occupancy_update(self):
         line = self.lineDropDown.currentText()
         block = self.blockDropDown.currentText()
@@ -88,10 +215,22 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_track_occupancy.emit(line, int(block), occupancy)
 
     def populate_block_dropdown(self, text):
+        if text == '': return
         self.blockDropDown.clear()
-        for section in self.track[text]:
-            for block in self.track[text][section]:
-                self.blockDropDown.addItem(str(block))
+        if self.updateTypeDropdown.currentText() == "Switch Position":
+            for b in self.track[text]['switches']:
+                self.blockDropDown.addItem(str(b))
+
+        else:
+            for section in self.track[text]['sections']:
+                for block in self.track[text]['sections'][section]:
+                    self.blockDropDown.addItem(str(block))
+
+#    def populate_block_dropdown(self, text):
+#        self.blockDropDown.clear()
+#        for section in self.track[text]['sections']:
+#            for block in self.track[text]['sections'][section]:
+#                self.blockDropDown.addItem(str(block))
 
     def populate_line_dropdown(self):
         self.lineDropDown.clear()
@@ -103,13 +242,14 @@ class TrackModelTestUI(QWidget):
         uic.loadUi(path, self)
 
     def update_track_info(self, track):
-        self.track = dict()
-        for line in track:
-            self.track[line] = dict()
-            for section in track[line]:
-                self.track[line][section] = list()
-                for block in track[line][section]:
-                    self.track[line][section].append(int(block))
+        self.track = track
+#        print(track)
+#        for line in track:
+#            self.track[line] = dict()
+#            for section in track[line]['sections']:
+#                self.track[line][section] = list()
+#                for block in track[line]['sections'][section]:
+#                    self.track[line][section].append(int(block))
 
 
 if __name__ == "__main__":

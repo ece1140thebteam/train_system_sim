@@ -7,9 +7,6 @@ class Track():
         self.track_lines = dict()
         self.heater_on = False
 
-    def add_switch(self, line, start, connections):
-        self.track_lines[line].add_switch(start, connections)
-
     def turn_heater_off(self):
         self.heater_on = False
 

@@ -62,12 +62,14 @@ class signals(QObject):
   # Send throughput from Track Model test to Track Model
   send_TrackModel_track_occupancy         = pyqtSignal(str, int, bool)  #line, block, occupancy (true for occupied)
   send_TrackModel_commanded_speed         = pyqtSignal(str, int, int)   #line, block, speed
+  send_TrackModel_signal_status           = pyqtSignal(str, int, str)   #line, block, signal color
   send_TrackModel_railway_crossing_status = pyqtSignal(str, int, bool)  #line, block, rail crossing status (true for open)
   send_TrackModel_switch_position         = pyqtSignal(str, int, int)   #line, block, target for switch position
   send_TrackModel_failure_status          = pyqtSignal(str, int, str)  #line, block, maintenance bool (true for under maintenance)
   send_TrackModel_maintenance_status      = pyqtSignal(str, int, bool)  #line, block, maintenance bool (true for under maintenance)
   send_TrackModel_block_authority         = pyqtSignal(str, int, int)  #line, block, authority (int)
-
+  send_TrackModel_updated                 = pyqtSignal()  #line, block, authority (int)
+  send_TrackModel_get_block_info          = pyqtSignal(str, int, int, int) #line, current_block, previous block, train num
   #######################################################
   # Track Model to Train Model
   # Send throughput from Track Model test to Track Model

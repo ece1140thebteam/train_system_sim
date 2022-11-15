@@ -10,8 +10,6 @@ class TrackLine():
         self.switches = dict()
         self.stations = dict()  #{station: passengers}
 
-    def add_switch(self, start, connections):
-        self.switches[start] = connections
 
     def get_block(self, block_num):
         return self.blocks[block_num]

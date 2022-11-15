@@ -4,6 +4,18 @@ from configparser import SectionProxy
 from http.client import SWITCHING_PROTOCOLS
 from pdb import line_prefix
 
+class Switch():
+    def __init__(self, line, section, block, pos1, pos2):
+        self.section    = section
+        self.line       = line
+        self.block_num  = block
+        self.curr_pos   = pos1
+        self.pos1       = pos1
+        self.pos2       = pos2
+    
+    def update_switch_position(self, pos):
+        if pos == self.pos1 or pos == self.pos2:
+            self.curr_pos = pos
 
 class TrackBlock():
     def __init__(self, 
@@ -37,16 +49,17 @@ class TrackBlock():
         self.can_travel_to  = can_travel_to
         self.crossing_open  = None if not has_rail_crossing else False
         self.circuit_open   = True
-        self.signal         = "Green"
+        self.signal         = "Red"
         self.light          = "Off"
-        self.switch_pos     = switch if switch is None else switch[0]
+        self.switch_pos     = switch if switch is None else switch.curr_pos
         self.track_heater   = 'Off'
         self.failure_mode   = 'No Failures'
         self.beacon1        = None
         self.beacon2        = None
         self.authority      = 0
         self.maintenance_mode = False
-        print(self.can_travel_to)
+        self.commanded_speed = 0
+
         if self.station:
             # TODO Add side of track
             self.beacon1 = {

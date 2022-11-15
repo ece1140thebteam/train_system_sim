@@ -45,12 +45,32 @@
       </item>
       <item>
        <property name="text">
+        <string>Switch Position</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Maintenance</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>Authority</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>Failure</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Commanded Speed</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Signal</string>
        </property>
       </item>
      </widget>
@@ -117,7 +137,7 @@
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>260</y>
+     <y>130</y>
      <width>100</width>
      <height>32</height>
     </rect>
@@ -150,7 +170,56 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="inputValueDropdown"/>
+     <widget class="QComboBox" name="inputValueDropdown">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_7">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>100</y>
+     <width>141</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <widget class="QLabel" name="updateValueSpinboxLabel">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="inputValueSpinBox">
+      <property name="wrapping">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

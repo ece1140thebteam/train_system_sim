@@ -34,12 +34,15 @@ pittsburgh_weather = {
 }
 
 run_thread = True
-
+block_column        = 0
+signal_column       = 1
+occupancy_column    = 2
 class TrackModel(QWidget):
     default_track_file = 'default_track.csv'
 
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
+        self.time_elapsed_s = 0
         self.load_ui()
         self.track = Track.Track()
         self.load_track(TrackModel.default_track_file)
@@ -57,22 +60,33 @@ class TrackModel(QWidget):
         s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
         s.get_TrackModel_map_info.connect(self.get_track_info)
         s.send_TrackModel_block_authority.connect(self.update_block_authority)
-    
+        s.send_TrackModel_commanded_speed.connect(self.update_commanded_speed)
+        s.send_TrackModel_maintenance_status.connect(self.set_maintenance_mode)
+        s.send_TrackModel_signal_status.connect(self.update_signal)
+        s.send_TrackModel_get_block_info.connect(self.get_next_block)
+        s.send_TrackModel_switch_position.connect(self.update_switch_position)
+
     def get_track_info(self):
         track_dict = dict()
 
         for line in self.track.track_lines:
             track_dict[line] = dict()
+            track_dict[line]['sections'] = dict()
+            track_dict[line]['switches'] = dict()
+
             for section in self.track.track_lines[line].sections:
-                track_dict[line][section] = list()
+                track_dict[line]['sections'][section] = list()
                 for block in self.track.track_lines[line].sections[section]:
-                    track_dict[line][section].append(int(block))
+                    track_dict[line]['sections'][section].append(int(block))
+                    b = self.track.track_lines[line].blocks[block]
+                    if b.switch is not None:
+                        track_dict[line]['switches'][b.block_number] = [b.switch.pos1, b.switch.pos2]
         
         s.send_TrackModel_map_info.emit(track_dict)
 
     def handle_time_increment(self):
         # print('hello from the track model')
-        self.update_block_occupancy('blue', 12, False)
+        self.time_elapsed_s += 1
 
 
     def load_block_clicked_info(self, line, section, block):
@@ -89,7 +103,9 @@ class TrackModel(QWidget):
         block = self.displayed_block
 
         if block is None: return
-
+        if block.switch is not None:
+            sw = f'{block.switch.block_num}->{block.switch.curr_pos} ({block.switch.pos1 if block.switch.curr_pos != block.switch.pos1 else block.switch.pos2})'
+        else: sw = 'No switch'
         self.blockLineInfo.setText(block.line)
         self.blockNumberInfo.setText(str(block.block_number))
         self.blockSectionInfo.setText(block.section)
@@ -107,9 +123,10 @@ class TrackModel(QWidget):
         self.blockBeaconInfo.setText(str(block.beacon1))
         self.blockFailureModeInfo.setText(str(block.failure_mode))
         self.blockSwitchPositionInfo.setText(str(block.switch_pos))
-        self.blockSwitchInfo.setText(str(block.switch))
+        self.blockSwitchInfo.setText(sw)
         self.blockSignalInfo.setText(str(block.signal))
         self.blockTrackCircuitInfo.setText("Open" if block.circuit_open else "Closed")
+        self.blockCommandedSpeedInfo.setText(str(block.commanded_speed))
 
     def block_list_item_clicked(self, item):
         # if this is a block
@@ -123,7 +140,7 @@ class TrackModel(QWidget):
     def open_new_file(self):
         print('opening new file')
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.ExistingFile)
+        dlg.setFileMode(QFileDialog.AnyFile)
         # dlg.setFilter("csv(*.csv)")
         t = QFileDialog.getOpenFileName(dlg, "hello", os.getcwd(), "csv(*.csv)")
         
@@ -132,7 +149,7 @@ class TrackModel(QWidget):
             # notify others which track is loaded 
             self.load_track(track_file)
 
-    def update_block_color(self, line, block, color):
+    def update_block_color(self, line, block, color, column):
         num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
         for line_num in range(0, num_lines):
             l = self.blockListTreeWidget.invisibleRootItem().child(line_num)
@@ -145,28 +162,25 @@ class TrackModel(QWidget):
                     for block_num in range(0, num_blocks):
                         b = section.child(block_num)
                         if int(b.text(0).split(' ')[1]) == block:
-                            b.setBackground(0, color)
+                            b.setBackground(column, color)
 
     def update_failures(self, line, block, failure):
-        print('failure')
         if failure != 'None':
             color = QtGui.QColor(200, 0, 0, 255)
         else:
             color = QtGui.QColor(0, 0, 0, 0)
 
-        self.update_block_color(line, block, color)
+        self.update_block_color(line, block, color, block_column)
         self.track.track_lines[line].blocks[block].failure_mode = failure
         self.display_block_info()
 
-    def update_block_occupancy(self, line, block, occupancy):
-        print(f'updating {line} {block}')
-        
+    def update_block_occupancy(self, line, block, occupancy): 
         if occupancy:
             color = QtGui.QColor(0, 0, 140, 255)
         else:
             color = QtGui.QColor(0, 0, 0, 0)
 
-        self.update_block_color(line, block, color)
+        self.update_block_color(line, block, color, occupancy_column)
         self.track.track_lines[line].blocks[block].circuit_open = not occupancy
         self.display_block_info()
 
@@ -199,15 +213,6 @@ class TrackModel(QWidget):
                         underground = True
                     elif 'Station' in i:
                         station = i
-                    elif 'Switch' in i:
-                        # find all switch connections
-                        all = [int(x) for x in re.findall(r'\d+', i.lower().replace('yard', '0'))]
-                        if len(all) > 2:
-                            start = int(max(set(all), key = all.count))
-                            
-                            # to = [x for i, x in enumerate(all) if i!=start]
-                            to = [x for x in all if x != start]
-                            self.track.add_switch(line, start, to)
 
                 connections = block[10]
                 connections = connections.split(';')
@@ -224,7 +229,17 @@ class TrackModel(QWidget):
                     else:
                         block_travels_to.append(int(c))
                         # print(switch)
-                
+                if switch is not None:
+                    if len(switch)>1:
+                        switch = TrackBlock.Switch(
+                            line=line,
+                            section=block[1],
+                            block=block[2],
+                            pos1=switch[0],
+                            pos2=switch[1],
+                        )
+                    else:
+                        switch = None
                 if line not in tracklines:
                     tracklines[line] = dict()
                 if block[1] not in tracklines[line]:
@@ -250,22 +265,32 @@ class TrackModel(QWidget):
 
                 self.track.add_block(b)
         
-        # parse for display
+        self.display_track_tree()
+
+        s.send_TrackModel_updated.emit()
+        self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
+        self.blockListTreeWidget.expandAll()
+
+    def display_track_tree(self):
+        self.blockListTreeWidget.clear()
         items = []
-        for line in tracklines:
+        for line in self.track.track_lines:
             lineItem = QTreeWidgetItem([f'{line} line'])
-            for section in tracklines[line]:
+            for section in self.track.track_lines[line].sections:
                 sec = QTreeWidgetItem([f'Section {section}'])
-                for block in tracklines[line][section]:
+                for block in self.track.track_lines[line].sections[section]:
+                    blk = self.track.track_lines[line].blocks[block]
+                    if blk.switch is not None:
+                        pass
                     b = QTreeWidgetItem([f'Block {block}'])
                     sec.addChild(b)
                 # sec.expandAll();
                 lineItem.addChild(sec)
             items.append(lineItem)
-        
         self.blockListTreeWidget.insertTopLevelItems(0, items)
-        self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
-        self.blockListTreeWidget.expandAll()
+
+    def get_railroad_crossing_blocks(self):
+        pass
 
     def config_temp(self):
         month = datetime.datetime.now().month
@@ -301,7 +326,7 @@ class TrackModel(QWidget):
         uic.loadUi(path, self)
         # ui_file.close()
 
-    def update_list_color(self):
+    def update_list_color(self, column):
         num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
         # if self.i is None: self.i = 0
         self.b += 10
@@ -324,34 +349,59 @@ class TrackModel(QWidget):
                 for block_num in range(0, num_blocks):
                     block = section.child(block_num)
 
-                    block.setBackground(0, QtGui.QColor(self.r, self.g, self.b, 255))
+                    block.setBackground(column, QtGui.QColor(self.r, self.g, self.b, 255))
 
     def handle_timestep(self, ts):
         self.time_elapsed += 1
         print(f'Elapsed time: {self.time_elapsed}')
 
-
     def update_commanded_speed(self, line, block, speed):
-        pass
+        self.track.track_lines[line].blocks[block].commanded_speed = speed
+        self.display_block_info()
 
-    def update_authority(self, line, block, authority):
-        pass
+    def update_signal(self, line, block, sig):
+        if sig == 'Green':
+            color = QtGui.QColor(0, 255, 0, 255)
+        else:
+            color = QtGui.QColor(255, 0, 0, 255)
+
+        self.track.track_lines[line].blocks[block].signal = sig
+        self.display_block_info()
+        self.update_block_color(line, block, color, signal_column)
 
     def get_authority(self, line, block):
         pass
 
-    def get_next_block(self, line, current_block_num, train):
-        next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
+    def get_next_block(self, line, current_block_num, previous_block_num, train_num):
+        print('get next block')
+        if current_block_num == -1:
+            current_block_num = 1
+            next_block_num = 1
+        else:
+            if self.track.track_lines[line].blocks[current_block_num].switch is None:
+                next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
+                print(next_block_num)
+
+                if len(next_block_num) > 1:
+                    for block in next_block_num:
+                        if previous_block_num != abs(block): 
+                            next_block_num = block
+                else:
+                    next_block_num = next_block_num[0]
+            else:
+                next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
         block = self.track.track_lines[line].blocks[next_block_num]
         block_info = dict()
 
         # the block the train will enter
-        block_info['block_num'] = block.block_number
-        block_info['grade']     = block.grade
-        block_info['beacon']    = {'station_name' : block.station, 'station_side' : 'right'}
-        block_info['length']    = block.block_len
+        block_info['block_num']          = block.block_number
+        block_info['grade']              = block.block_grade
+        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'}
+        block_info['length']             = block.block_len
+        block_info['commanded_speed']    = block.commanded_speed
+        block_info['authority']          = block.authority
 
-        s.send_TrackModel_block_info.emit(train, block_info)
+        s.send_TrackModel_block_info.emit(train_num, block_info)
 
     # def get_block)_(self, line, block):
     #     # return true for occupied false for empty
@@ -360,11 +410,19 @@ class TrackModel(QWidget):
     def get_route(self, start, end):
         pass
 
-    def update_switch_position(self, line, block, block_target):
-        pass
+    def update_switch_position(self, line, block, position):
+        self.track.track_lines[line].blocks[block].switch.update_switch_position(position)
+        self.display_block_info()
 
-    def set_maintenance_mode(self, line, block, maintenance_mode):
-        pass
+    def set_maintenance_mode(self, line, block, in_maintenance):
+        if in_maintenance:
+            color = QtGui.QColor(204, 204, 0, 255)
+        else:
+            color = QtGui.QColor(0, 0, 0, 0)
+
+        self.update_block_color(line, block, color, block_column)
+        self.track.track_lines[line].blocks[block].maintenance_mode = in_maintenance
+        self.display_block_info()
 
     def get_ticket_sales(self, line):
         pass
