@@ -222,26 +222,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 
                 stations.append((block, time))
                 stationBlocks.append(block)
-            
-            authority = []
-        # if line == "Green":
-        #     for block in Train.green_route:
-        #         if block in stationBlocks:
-        #             self.green_authority[block] = 0
-        #             break
-        #         else:
-        #             self.green_authority[block] = 1
-
-        #     s.send_CTC_authority.emit('Green', self.green_authority)
-        # else:
-        #     for block in Train.green_route:
-        #         if block in stationBlocks:
-        #             self.red_authority[block] = 0
-        #             break
-        #         else:
-        #             self.red_authority[block] = 1
-
-        #     s.send_CTC_authority.emit('Red', self.red_authority)
 
         print(str(stations))
         print(str(self.green_authority))
