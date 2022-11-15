@@ -14,7 +14,7 @@ green_route = [0, 62, # J
 117, 118, 119, 120, 121, # V
 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, # W
 144, 145, 146, # X
-147, 147, 149, # Y
+147, 148, 149, # Y
 150, # Z
 28, 27, 26, 25, 24, 23, 22, 21, # F (Reverse)
 20, 19, 18, 17, # E (Reverse)
@@ -30,11 +30,15 @@ green_route = [0, 62, # J
 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # I
 58, 0]
 
+train_id = 0
+
 class Train():
-  def __init__(self):
-    self.id = 0
+  def __init__(self, destinations: list):
+    self.id = train_id
     self.line = ''
     self.current_block = -1
-    self.destination = -1
+    self.destinations = destinations
     self.arrival_time = 0
     self.departure_time = 0
+
+    train_id += 1

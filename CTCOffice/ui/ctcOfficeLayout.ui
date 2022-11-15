@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1191</width>
-    <height>729</height>
+    <width>1187</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -870,30 +870,9 @@
        </layout>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_selectLineGraph">
-        <item>
-         <property name="text">
-          <string>Green Line</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blue Line</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>Refresh Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_openTestUi">
-        <property name="text">
-         <string>OPEN TEST UI</string>
         </property>
        </widget>
       </item>
@@ -906,7 +885,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1191</width>
+     <width>1187</width>
      <height>22</height>
     </rect>
    </property>
