@@ -37,6 +37,7 @@ run_thread = True
 block_column        = 0
 signal_column       = 1
 occupancy_column    = 2
+numbers_re = re.compile(r'[0-9]+')
 class TrackModel(QWidget):
     default_track_file = 'default_track.csv'
 
@@ -87,7 +88,6 @@ class TrackModel(QWidget):
     def handle_time_increment(self):
         # print('hello from the track model')
         self.time_elapsed_s += 1
-
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
@@ -176,7 +176,7 @@ class TrackModel(QWidget):
 
     def update_block_occupancy(self, line, block, occupancy): 
         if occupancy:
-            color = QtGui.QColor(0, 0, 140, 255)
+            color = QtGui.QColor(0, 200, 0, 255)
         else:
             color = QtGui.QColor(0, 0, 0, 0)
 
@@ -197,6 +197,7 @@ class TrackModel(QWidget):
 
             for block in reader:
                 line = block[0]
+                blocknum = int(block[2])
                 infra = block[6]
 
                 inf_arr = infra.split(';')
@@ -207,12 +208,41 @@ class TrackModel(QWidget):
                 block_travels_to = []
                 
                 for i in inf_arr:
+                    i = i.strip()
                     if 'RAILWAY' in i:
                         railway_crossing = True
                     elif 'UNDERGROUND' in i:
                         underground = True
-                    elif 'Station' in i:
+                    elif 'STATION' in i:
                         station = i
+                    elif 'SWITCH' in i:
+                        # print(i)
+                        if 'FROM' in i:
+                            print('from yard, adding connection')
+                            print(i)
+                            self.track.yard.add_connection(line, blocknum)
+                        i=i.lower().replace('yard','0')
+                        block_matches = re.findall(numbers_re, i)
+                        positions = []
+                        for b in block_matches:
+                            if int(b) != blocknum and int(b) not in positions:
+                                positions.append(int(b))
+
+                        if len(positions)!=2:
+                            print('switch format incorrect')
+                            # if z1 is not blocknum:
+                        else:
+                            print(positions)
+                            switch = TrackBlock.Switch(
+                                line=line,
+                                section=block[1],
+                                block=blocknum,
+                                pos1=positions[0],
+                                pos2=positions[1],
+                            )
+
+                    elif not i.strip().isspace() and len(i.strip())>0:
+                        print(i)
 
                 connections = block[10]
                 connections = connections.split(';')
@@ -220,26 +250,24 @@ class TrackModel(QWidget):
                 # set switch connections within the block
                 for c in connections:
                     if '*' in c:
-                        val = int(c.replace('*',''))
-                        if switch is None:
-                            switch = [val]
-                        else:
-                            switch.append(val)
+                        con = c.lower().replace('yard','0')
+                        con = con.replace('*','')
+                        val = int(con)
                         block_travels_to.append(val*-1)
                     else:
                         block_travels_to.append(int(c))
-                        # print(switch)
-                if switch is not None:
-                    if len(switch)>1:
-                        switch = TrackBlock.Switch(
-                            line=line,
-                            section=block[1],
-                            block=block[2],
-                            pos1=switch[0],
-                            pos2=switch[1],
-                        )
-                    else:
-                        switch = None
+
+                # if switch is not None:
+                #     if len(switch)>1:
+                #         switch = TrackBlock.Switch(
+                #             line=line,
+                #             section=block[1],
+                #             block=block[2],
+                #             pos1=switch[0],
+                #             pos2=switch[1],
+                #         )
+                #     else:
+                #         switch = None
                 if line not in tracklines:
                     tracklines[line] = dict()
                 if block[1] not in tracklines[line]:
@@ -250,7 +278,7 @@ class TrackModel(QWidget):
                 b = TrackBlock.TrackBlock(
                     line = line,
                     section = block[1],
-                    block_number = block[2],
+                    block_number = blocknum,
                     block_len = block[3],
                     block_grade = block[4],
                     speed_limit = block[5],
@@ -374,9 +402,21 @@ class TrackModel(QWidget):
 
     def get_next_block(self, line, current_block_num, previous_block_num, train_num):
         print('get next block')
-        if current_block_num == -1:
-            current_block_num = 1
+        print(f'{current_block_num} {previous_block_num} {train_num}')
+        next_block_num = -1
+        if current_block_num == 0:  #dispatching from the yard
             next_block_num = 1
+            print(self.track.yard.get_connections(line))
+            for block in self.track.yard.get_connections(line):
+                print(block)
+                switch = self.track.track_lines[line].blocks[block].switch
+                print(switch.curr_pos)
+                next_block_num = block
+
+                # switch is in the right position
+                if switch.curr_pos != 0:
+                    print('switch is not in the right position')
+
         else:
             if self.track.track_lines[line].blocks[current_block_num].switch is None:
                 next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
@@ -385,11 +425,32 @@ class TrackModel(QWidget):
                 if len(next_block_num) > 1:
                     for block in next_block_num:
                         if previous_block_num != abs(block): 
-                            next_block_num = block
+                            next_block_num = abs(block)
                 else:
                     next_block_num = next_block_num[0]
+                
+                # accessed through a switch
+                if next_block_num < 0:
+                    b = abs(next_block_num)
+                    sw = self.track.track_lines[line].blocks[b].switch
+                    if sw.curr_pos != b:
+                        print('switch position not correct, train derailed')
+                    else:
+                        next_block_num = b
+
+
             else:
-                next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+                curr_b = self.track.track_lines[line].blocks[current_block_num]
+                if len(curr_b.can_travel_to) > 2:
+                    for block in curr_b.can_travel_to:
+                        if previous_block_num != abs(block) and block>0:
+                            print(block)
+                            next_block_num = block
+                            break
+                if next_block_num<0:
+                    print(curr_b.switch.curr_pos)
+                    next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+        
         block = self.track.track_lines[line].blocks[next_block_num]
         block_info = dict()
 
@@ -400,6 +461,7 @@ class TrackModel(QWidget):
         block_info['length']             = block.block_len
         block_info['commanded_speed']    = block.commanded_speed
         block_info['authority']          = block.authority
+        block_info['underground']        = block.underground
 
         s.send_TrackModel_block_info.emit(train_num, block_info)
 

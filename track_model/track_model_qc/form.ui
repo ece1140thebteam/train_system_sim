@@ -953,7 +953,7 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string>CommandedSpeed</string>
+       <string>Commanded Speed</string>
       </property>
       <property name="margin">
        <number>0</number>

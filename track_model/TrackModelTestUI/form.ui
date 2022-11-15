@@ -223,6 +223,22 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="dispatchTrainButton">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>230</y>
+     <width>271</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Dispatch Train from Yard to Selected Line</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
