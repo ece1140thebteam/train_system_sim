@@ -1,12 +1,12 @@
 from PyQt6 import QtGui
 
 import CTCOffice.ui.ctcOfficeLayout as ctcOfficeLayout
-from PyQt6.QtCore import *
+from PyQt6.QtCore import * 
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
-import sqlite3
-import time
+# import sqlite3
+# import time
 from signals import s
 import CTCOffice.Train as Train
 
@@ -14,8 +14,8 @@ from CTCOffice.testUiMain import MainTestWindow
 
 import CTCOffice.InitData as InitData
 
-mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
-cursor = mydb.cursor()
+# mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
+# cursor = mydb.cursor()
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -224,27 +224,29 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 stationBlocks.append(block)
             
             authority = []
-        if line == "Green":
-            for block in Train.green_route:
-                if block in stationBlocks:
-                    self.green_authority[block] = 0
-                    break
-                else:
-                    self.green_authority[block] = 1
+        # if line == "Green":
+        #     for block in Train.green_route:
+        #         if block in stationBlocks:
+        #             self.green_authority[block] = 0
+        #             break
+        #         else:
+        #             self.green_authority[block] = 1
 
-            s.send_CTC_authority.emit('Green', self.green_authority)
-        else:
-            for block in Train.green_route:
-                if block in stationBlocks:
-                    self.red_authority[block] = 0
-                    break
-                else:
-                    self.red_authority[block] = 1
+        #     s.send_CTC_authority.emit('Green', self.green_authority)
+        # else:
+        #     for block in Train.green_route:
+        #         if block in stationBlocks:
+        #             self.red_authority[block] = 0
+        #             break
+        #         else:
+        #             self.red_authority[block] = 1
 
-            s.send_CTC_authority.emit('Red', self.red_authority)
+        #     s.send_CTC_authority.emit('Red', self.red_authority)
 
         print(str(stations))
         print(str(self.green_authority))
+
+        Train.trains.create_train('Green', stationBlocks)
 
 
     # Update the comboBox of track_blocks

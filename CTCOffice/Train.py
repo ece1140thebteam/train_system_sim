@@ -1,3 +1,5 @@
+from signals import s
+
 green_route = [0, 62, # J
 63, 64, 65, 66, 67, 68, # K
 69, 70, 71, 72, 73, # L
@@ -30,15 +32,75 @@ green_route = [0, 62, # J
 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # I
 58, 0]
 
-train_id = 0
-
 class Train():
-  def __init__(self, destinations: list):
+  def __init__(self, line: str, destinations: list, train_id: int):
     self.id = train_id
-    self.line = ''
-    self.current_block = -1
+    self.line = line
+    self.current_block = 0
     self.destinations = destinations
-    self.arrival_time = 0
-    self.departure_time = 0
+  
+class Train_Sim():
+  def __init__(self):
+    self.next_train_id = 1
+    self.trains = {}
+    self.green_authority = [0] * 151
 
-    train_id += 1
+    s.send_TrackController_track_occupancy.connect(self.occupancies_update)
+    s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
+
+  def create_train(self, line, destinations):
+    train = Train(line, destinations, self.next_train_id)
+    self.trains.update({self.next_train_id: train})
+    self.next_train_id += 1
+    self.update_authority(train.id)
+
+  def occupancies_update(self, line, occupancies):
+    if line == 'Green':
+      for block in range(0, len(occupancies)):
+        if occupancies(block) == 1:
+          for train in self.trains.values():
+            if train.destinations[0] == block:
+              train.current_block = block
+              self.update_authority(train.id)
+  
+  def occupancy_update(self, line, block, occupancy):
+    if line == 'Green':
+      if occupancy == 1:
+        for train in self.trains.values():
+          if len(train.destinations) != 0:
+            if train.destinations[0] == block:
+              train.current_block = block
+              self.update_authority(train.id)
+  
+  def update_authority(self, train_id):
+    train = self.trains.get(train_id)
+    
+    if train.current_block == train.destinations[0]:
+      train.destinations.pop(0)
+
+    if(len(train.destinations) == 0):
+      # Set authority from current block to yard to 1
+      origin_block = train.current_block
+      dest_block = 0
+      self.set_authority(train.line, origin_block, dest_block)
+    else:
+      # Set authority from current block to next station to 1
+      origin_block = train.current_block
+      dest_block = train.destinations[0]
+      self.set_authority(train.line, origin_block, dest_block)
+
+  def set_authority(self, line, origin, destination):
+    if(line == 'Green'):
+      location = green_route.index(origin)
+
+      for i in range(location, len(green_route)):
+        block = green_route[i]
+        if block == destination:
+          self.green_authority[block] = 0
+          break
+        else:
+          self.green_authority[block] = 1
+
+      s.send_CTC_authority.emit('Green', self.green_authority)
+
+trains = Train_Sim()
