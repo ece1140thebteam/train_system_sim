@@ -52,8 +52,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.timer.setInterval(100)
       self.timer.timeout.connect(self.timer_timeout)
 
-      self.update_speed()
-      self.horizontalSlider.valueChanged.connect(self.update_speed)
+      # self.update_speed()
+      # self.horizontalSlider.valueChanged.connect(self.update_speed)
 
 # TODO: unconnect lines for module and add functions as indicated to open window
       # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
@@ -81,9 +81,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.test_windowCTC.show()
 
     def timer_timeout(self):
-      self.second += 0.1
+      self.second += 0.1 * self.horizontalSlider.value()
       self.label_time.setText(str(datetime.timedelta(seconds=round(self.second))))
-      s.timer_tick.emit()
+      s.timer_tick.emit(self.horizontalSlider.value())
     
     def pause_timer(self):
       if self.pushButton_start.isChecked():
@@ -114,9 +114,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def open_TrackModelTestUI(self):
       self.trackModelTestUI.show()
 
-    def update_speed(self):
-      self.label_speed.setText(str(self.horizontalSlider.value()))
-      self.timer.setInterval(100/self.horizontalSlider.value())
+    # def update_speed(self):
+    #   self.label_speed.setText(str(self.horizontalSlider.value()))
+    #   self.timer.setInterval(100/self.horizontalSlider.value())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -46,7 +46,7 @@ class Train_Sim():
     self.trains = {}
     self.green_authority = [0] * 151
     self.green_speeds = [0] * 151
-    self.station_trains = []
+    self.station_trains = {}
 
     self.second_count = 0
 
@@ -96,21 +96,28 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
-  def train_at_station(self):
+  def train_at_station(self, mult):
+    trains_departing = []
     for i in range(0, len(self.station_trains)):
       train = self.station_trains[i]
-      train [1] += 0.1
+      train [1] += 0.1 * mult
       if train[1] > 30:
+        trains_departing.append()
         self.update_authority(train[0])
+
   
   def update_authority(self, train_id):
     train = self.trains.get(train_id)
     
     # If there are still destinations left
     if len(train.destinations) != 0:
+      # If train is a station
       if train.current_block == train.destinations[0]:
+        # Remove station from list
         train.destinations.pop(0)
-        self.station_trains.append([train_id, 0])
+        # Add train to station_trains list
+        # self.station_trains.append([train_id, 0])
+        self.station_trains.update({train_id: 0})
         return
 
     if(len(train.destinations) == 0):

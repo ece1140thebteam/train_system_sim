@@ -106,7 +106,7 @@ class signals(QObject):
   send_TrainModel_temp = pyqtSignal(int) #temp command
   
   
-  timer_tick = pyqtSignal()
+  timer_tick = pyqtSignal(int) # Timer multiplier
 
 
 # Create a single instance of this class to be used in all modules. 
