@@ -54,7 +54,7 @@ class Train_Sim():
     s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
     s.send_TrackModel_track_occupancy.connect(self.single_occupancy_update)
 
-    s.timer_tick.connect(self.train_at_station)
+    # s.timer_tick.connect(self.train_at_station)
 
   def create_train(self, line, destinations):
     train = Train(line, destinations, self.next_train_id)
@@ -96,14 +96,14 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
-  def train_at_station(self, mult):
-    trains_departing = []
-    for i in range(0, len(self.station_trains)):
-      train = self.station_trains[i]
-      train [1] += 0.1 * mult
-      if train[1] > 30:
-        trains_departing.append()
-        self.update_authority(train[0])
+  # def train_at_station(self, mult):
+  #   trains_departing = []
+  #   for i in range(0, len(self.station_trains)):
+  #     train = self.station_trains[i]
+  #     train [1] += 0.1 * mult
+  #     if train[1] > 30:
+  #       trains_departing.append()
+  #       self.update_authority(train[0])
 
   
   def update_authority(self, train_id):
