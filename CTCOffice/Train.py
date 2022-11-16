@@ -97,7 +97,7 @@ class Train_Sim():
               self.update_authority(train.id)
   
   def train_at_station(self):
-    for i in range(1, len(self.station_trains)):
+    for i in range(0, len(self.station_trains)):
       train = self.station_trains[i]
       train [1] += 0.1
       if train[1] > 30:
@@ -110,7 +110,8 @@ class Train_Sim():
     if len(train.destinations) != 0:
       if train.current_block == train.destinations[0]:
         train.destinations.pop(0)
-        self.station_trains.append((train_id, 0))
+        self.station_trains.append([train_id, 0])
+        return
 
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1
