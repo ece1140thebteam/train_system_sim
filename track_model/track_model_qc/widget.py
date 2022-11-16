@@ -99,7 +99,7 @@ class TrackModel(QWidget):
         tp = sales/time_elapsed_h
         
         print(f'Line {line} onboarded {onboarded} passengers, throughput: {tp}')
-        s.send_TrackModel_throughput_signal.emit(line, tp)
+        s.send_TrackModel_throughput_signal.emit(line, int(tp))
         self.update_station_tree(line, block)
 
     def handle_time_increment(self):
