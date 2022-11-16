@@ -39,8 +39,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.red_authority = [0]
         self.green_authority = [0]
 
-        self.redSwitches = []
-        self.greenSwitches = []
+        self.redSwitches = ['9', '16', '27', '33', '38', '44', '52']
+        self.greenSwitches = ['13', '28', '57', '63', '77', '85']
         self.blueSwitches = []
 
         self.redCrossings = []
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.blueTrains = []
 
         self.init_get_blocks()
-        self.init_get_switches()
+        # self.init_get_switches()
         self.init_get_crossings()
         self.init_get_stations()
 
@@ -107,6 +107,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         # Track Signals
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
+        # Temporary connection to track model for occupancy
+        s.send_TrackModel_track_occupancy.connect(self.set_single_occupancy)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -549,6 +551,15 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             if occupancy['line'] == 'Green':
                 if occupancy['block'] != 0:
                     self.lines[1].get(occupancy['block']).occupancy = occupancy['occupancy']
+
+        self.get_line_data()
+    
+    # Temporarily connected to signal from track model
+    def set_single_occupancy(self, line, block, occupancy):
+        if line == 'Green':
+            self.lines[1].get(block).occupancy = int(occupancy)
+        else:
+            self.lines[0].get(block).occupancy = int(occupancy)
 
         self.get_line_data()
 

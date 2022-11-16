@@ -1,6 +1,6 @@
 from signals import s
 
-green_route = [0, 62, # J
+green_route = [0, # J
 63, 64, 65, 66, 67, 68, # K
 69, 70, 71, 72, 73, # L
 74, 75, 76, # M
@@ -30,7 +30,7 @@ green_route = [0, 62, # J
 29, 30, 31, 32, # G
 33, 34, 35, # H 
 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # I
-58, 0]
+57, 0]
 
 class Train():
   def __init__(self, line: str, destinations: list, train_id: int):
@@ -46,13 +46,15 @@ class Train_Sim():
     self.trains = {}
     self.green_authority = [0] * 151
     self.green_speeds = [0] * 151
+    self.station_trains = []
 
     self.second_count = 0
 
     s.send_TrackController_track_occupancy.connect(self.occupancy_update)
     s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
+    s.send_TrackModel_track_occupancy.connect(self.single_occupancy_update)
 
-    s.timer_tick.connect(self.wait_30)
+    s.timer_tick.connect(self.train_at_station)
 
   def create_train(self, line, destinations):
     train = Train(line, destinations, self.next_train_id)
@@ -61,22 +63,19 @@ class Train_Sim():
     self.update_authority(train.id)
     s.send_CTC_create_train.emit()
 
-  # def occupancies_update(self, line, occupancies):
-  #   if line == 'Green':
-  #     # For each block occupancy
-  #     for block in range(0, len(occupancies)):
-  #       # If block is occupied
-  #       if occupancies(block) == 1:
-  #         # For each train that exists
-  #         for train in self.trains.values():
-  #           # If train was 1 behind new occupancy or was in yard
-  #           # Set train block to current block
-  #           # Call update authority
-  #           prevBlock = green_route[train.route_block]
-  #           if (train.current_block == prevBlock) or (train.current_block == 0):
-  #             train.current_block = block
-  #             train.route_block += 1
-  #             self.update_authority(train.id)
+  def single_occupancy_update(self, line, block, occupancy):
+    if line == 'Green':
+      # If block is occupied
+      if int(occupancy) == 1:
+        # For each train that exists
+        for train in self.trains.values():
+          # If train was 1 behind new occupancy or was in yard
+          # Set train block to current block
+          # Call update authority
+          if (block == green_route[train.route_block + 1]) or (train.current_block == 0):
+            train.current_block = block
+            train.route_block += 1
+            self.update_authority(train.id)
   
   def occupancy_update(self, occupancies):
     for occupancy_i in occupancies:
@@ -97,11 +96,12 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
-  def reset_30(self):
-    self.second_count = 0
-
-  def wait_30(self):
-    self.second_count += 0.1
+  def train_at_station(self):
+    for i in range(1, len(self.station_trains)):
+      train = self.station_trains[i]
+      train [1] += 0.1
+      if train[1] > 30:
+        self.update_authority(train[0])
   
   def update_authority(self, train_id):
     train = self.trains.get(train_id)
@@ -110,6 +110,7 @@ class Train_Sim():
     if len(train.destinations) != 0:
       if train.current_block == train.destinations[0]:
         train.destinations.pop(0)
+        self.station_trains.append((train_id, 0))
 
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1
