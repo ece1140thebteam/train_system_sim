@@ -11,8 +11,10 @@ from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
 from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestUI
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
+from track_model.TrackModelTestUI.trackmodeltestui import TrackModelTestUI as TrackModelTestUI
+ 
 from signals import s
-
+from Wayside_Controller.main import MainWindow as TrackControllerWindow
 from Train_Model.TrainModel import TrainModel, TestTrainModel
 
 
@@ -21,6 +23,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
       
+      self.trackController = TrackControllerWindow()
       self.trainmodel = TrainModel()
       self.trainmodel_test = TestTrainModel(self.trainmodel)
       self.pushButton_ctc.clicked.connect(self.open_CTC)
@@ -50,11 +53,13 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.horizontalSlider.valueChanged.connect(self.update_speed)
 
 # TODO: unconnect lines for module and add functions as indicated to open window
-      # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
+      self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
       # self.pushButton_trackcontrol_test.clicked.connect(self.open_TrackController_test)
 
+      self.trackmodel = TrackModelGUI()
+      self.trackModelTestUI = TrackModelTestUI()
       self.pushButton_trackmodel.clicked.connect(self.open_TrackModel)
-      # self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModel_test)
+      self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModelTestUI)
       
       # self.pushButton_trainmodel.clicked.connect(self.open_TrainModel)
       # self.pushButton_trainmodel_test.clicked.connect(self.open_TrainModel_test)
@@ -70,8 +75,10 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       
       self.test_windowCTC.show()
 
+    def open_TrackController(self):
+      self.trackController.show()
+
     def timer_timeout(self):
-      print("Timer")
       s.timer_tick.emit()
     
     def pause_timer(self):
@@ -99,8 +106,10 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
   
     def open_TrackModel(self):
-      self.trackmodel_main_window = TrackModelGUI()
-      self.trackmodel_main_window.show()
+      self.trackmodel.show()
+
+    def open_TrackModelTestUI(self):
+      self.trackModelTestUI.show()
 
     def update_speed(self):
       self.label_speed.setText(str(self.horizontalSlider.value()))

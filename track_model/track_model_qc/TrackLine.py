@@ -9,9 +9,7 @@ class TrackLine():
         self.blocks   = dict()
         self.switches = dict()
         self.stations = dict()  #{station: passengers}
-
-    def add_switch(self, start, connections):
-        self.switches[start] = connections
+        self.total_sales = 0
 
     def get_block(self, block_num):
         return self.blocks[block_num]
@@ -20,6 +18,9 @@ class TrackLine():
         for block in self.sections[section]:
             block.maintenance_mode = mode
     
+    def set_failure_type(self, block, failure):
+        self.blocks[block].failure_mode = failure
+
     def add_block(self, block):
         if block.station is not None:
             self.stations[block.station] = random.randint(10,30)

@@ -42,7 +42,7 @@ class signals(QObject):
   #######################################################
   # Wayside to CTC 
   # Send track occupancy from Track Controller to CTC
-  send_TrackController_track_occupancy = pyqtSignal(str, list) # Line, occupancy (0=open, 1=occupied)
+  send_TrackController_track_occupancy = pyqtSignal(str, list, bool) # Line, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
   send_TrackController_crossing = pyqtSignal(str, list) # Line, status (0=deactivated, 1=activated)
@@ -53,12 +53,33 @@ class signals(QObject):
   #######################################################
   # Track Model to CTC
   # Send throughput from Track Model to CTC
-  send_TrackModel_throughput_signal = pyqtSignal(str, int)
+  send_TrackModel_throughput_signal = pyqtSignal(str, int) #line, throughput
+  send_TrackModel_map_info          = pyqtSignal(dict) 
+  get_TrackModel_map_info           = pyqtSignal()
 
   #######################################################
   # Track Model test
   # Send throughput from Track Model test to Track Model
-  send_TrackModel_track_occupancy = pyqtSignal(str, int) #line, block
+  send_TrackModel_track_occupancy         = pyqtSignal(str, int, bool)  #line, block, occupancy (true for occupied)
+  send_TrackModel_commanded_speed         = pyqtSignal(str, int, int)   #line, block, speed
+  send_TrackModel_signal_status           = pyqtSignal(str, int, str)   #line, block, signal color
+  send_TrackModel_railway_crossing_status = pyqtSignal(str, int, bool)  #line, block, rail crossing status (true for open)
+  send_TrackModel_switch_position         = pyqtSignal(str, int, int)   #line, block, target for switch position
+  send_TrackModel_failure_status          = pyqtSignal(str, int, str)  #line, block, maintenance bool (true for under maintenance)
+  send_TrackModel_maintenance_status      = pyqtSignal(str, int, bool)  #line, block, maintenance bool (true for under maintenance)
+  send_TrackModel_block_authority         = pyqtSignal(str, int, int)  #line, block, authority (int)
+  send_TrackModel_updated                 = pyqtSignal()  #line, block, authority (int)
+  send_TrackModel_get_next_block_info     = pyqtSignal(str, int, int, int) #line, current_block, previous block, train num
+  send_TrackModel_get_block_info          = pyqtSignal(str, int, int) #line, block, train num
+  
+  # Train send to track model when passengers board train
+  send_TrackModel_passengers_onboarded    = pyqtSignal(str, int, int) #line, block, passengers deboarded
+
+  #######################################################
+  # Track Model to Train Model
+  # Send throughput from Track Model test to Track Model
+  send_TrackModel_next_block_info = pyqtSignal(int, dict) #trainID, block info
+  send_TrackModel_block_info = pyqtSignal(int, dict) #trainID, block info
 
   #######################################################
   # Train Controller to Train Model

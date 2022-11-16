@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
-    <height>466</height>
+    <width>1067</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>310</x>
      <y>0</y>
      <width>151</width>
-     <height>464</height>
+     <height>501</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -391,7 +391,7 @@
      <x>0</x>
      <y>40</y>
      <width>311</width>
-     <height>421</height>
+     <height>461</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -402,9 +402,31 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+        <attribute name="headerCascadingSectionResizes">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="headerMinimumSectionSize">
+         <number>50</number>
+        </attribute>
+        <attribute name="headerDefaultSectionSize">
+         <number>100</number>
+        </attribute>
         <column>
          <property name="text">
           <string>Track</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Signal</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Occupancy</string>
          </property>
         </column>
        </widget>
@@ -488,7 +510,7 @@
      <x>460</x>
      <y>0</y>
      <width>160</width>
-     <height>466</height>
+     <height>501</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -829,7 +851,7 @@
      <x>620</x>
      <y>0</y>
      <width>160</width>
-     <height>466</height>
+     <height>501</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -845,6 +867,46 @@
     <property name="bottomMargin">
      <number>10</number>
     </property>
+    <item>
+     <widget class="QLabel" name="blockGradeTitle_33">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="text">
+       <string>Directions of Travel</string>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="blockDirectionsOfTravel">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <spacer name="verticalSpacer_19">
       <property name="orientation">
@@ -900,6 +962,59 @@
     </item>
     <item>
      <spacer name="verticalSpacer_15">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QLabel" name="blockGradeTitle_31">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="text">
+       <string>Commanded Speed</string>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="blockCommandedSpeedInfo">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_20">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -1086,6 +1201,98 @@
        </size>
       </property>
      </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_5">
+   <property name="geometry">
+    <rect>
+     <x>780</x>
+     <y>0</y>
+     <width>281</width>
+     <height>311</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QTreeWidget" name="stationTree">
+      <column>
+       <property name="text">
+        <string>Station</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Waiting</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Deboarded</string>
+       </property>
+      </column>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_6">
+   <property name="geometry">
+    <rect>
+     <x>780</x>
+     <y>310</y>
+     <width>281</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <item>
+     <widget class="QTreeWidget" name="switchPosTree">
+      <column>
+       <property name="text">
+        <string>Switch</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Block 1</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Block 2</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string/>
+       </property>
+      </column>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </item>
    </layout>
   </widget>
