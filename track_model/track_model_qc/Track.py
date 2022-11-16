@@ -1,14 +1,13 @@
 
 from . import TrackLine
+from . import Yard
 
 
 class Track():
     def __init__(self):
         self.track_lines = dict()
         self.heater_on = False
-
-    def add_switch(self, line, start, connections):
-        self.track_lines[line].add_switch(start, connections)
+        self.yard = Yard.Yard()
 
     def turn_heater_off(self):
         self.heater_on = False
