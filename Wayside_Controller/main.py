@@ -7,7 +7,9 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
-import ui.WaysideMainUI as WaysideMainUI    # import UI
+# signals used to communicate between modules
+from signals import s
+from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
@@ -16,7 +18,15 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       # Upload PLC button connections
       self.uploadPLC1.clicked.connect(self.getFile1)
-      
+      s.timer_tick.connect(self.handle_time_increment)
+      s.send_CTC_switch_position_signal.connect(self.update_switch_position)
+
+   def update_switch_position(self, line:str, positions:list):
+      pass
+   
+   def handle_time_increment(self):
+      print('hi')
+
    def getFile1(self):
 
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")

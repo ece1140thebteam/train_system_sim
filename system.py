@@ -12,7 +12,7 @@ from TrainController.TrainCTRLui.ui_driver.trainctrltestui import TrainCTRLTestU
 from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
 from signals import s
-
+from Wayside_Controller.main import MainWindow as TrackControllerWindow
 from Train_Model.TrainModel import TrainModel, TestTrainModel
 
 
@@ -21,6 +21,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
       
+      self.trackController = TrackControllerWindow()
       self.trainmodel = TrainModel()
       self.trainmodel_test = TestTrainModel(self.trainmodel)
       self.pushButton_ctc.clicked.connect(self.open_CTC)
@@ -50,7 +51,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.horizontalSlider.valueChanged.connect(self.update_speed)
 
 # TODO: unconnect lines for module and add functions as indicated to open window
-      # self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
+      self.pushButton_trackcontrol.clicked.connect(self.open_TrackController)
       # self.pushButton_trackcontrol_test.clicked.connect(self.open_TrackController_test)
 
       self.pushButton_trackmodel.clicked.connect(self.open_TrackModel)
@@ -69,6 +70,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def open_CTC_test(self):
       
       self.test_windowCTC.show()
+
+    def open_TrackController(self):
+      self.trackController.show()
 
     def timer_timeout(self):
       print("Timer")
