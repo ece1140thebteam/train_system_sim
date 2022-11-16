@@ -47,8 +47,12 @@ class Train_Sim():
     self.green_authority = [0] * 151
     self.green_speeds = [0] * 151
 
+    self.second_count = 0
+
     s.send_TrackController_track_occupancy.connect(self.occupancy_update)
     s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
+
+    s.timer_tick.connect(self.wait_30)
 
   def create_train(self, line, destinations):
     train = Train(line, destinations, self.next_train_id)
@@ -93,6 +97,12 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
+  def reset_30(self):
+    self.second_count = 0
+
+  def wait_30(self):
+    self.second_count += 0.1
+  
   def update_authority(self, train_id):
     train = self.trains.get(train_id)
     
@@ -117,7 +127,9 @@ class Train_Sim():
       location = green_route.index(origin)
       location = route_block
 
+      # List of dicts indicating authorities
       authorities = []
+      # List of dicts indicating speeds
       speeds = []
 
       # Set authority to 1 for location + 2 blocks ahead
@@ -131,7 +143,15 @@ class Train_Sim():
       speeds.append({'line': 'Green', 'block': prevBlock, 'speed': 0})
       
       for i in range(location, location + 3):
+        # If at end of route break out of loop (avoid bounds error)
+        if i > len(green_route):
+          break
+        
+        # Get block of route
         block = green_route[i]
+
+        # If the block is the current destination
+        # Set authority and speed to 0 and break out of loop
         if block == destination:
           self.green_authority[block] = 0
           self.green_speeds[block] = 0
@@ -139,6 +159,9 @@ class Train_Sim():
           authorities.append({'line': 'Green', 'block': block, 'authority': 0})
           speeds.append({'line': 'Green', 'block': block, 'speed': 0})
           break
+        
+        # If block is not destination
+        # Set authority and speed to 1 and default
         else:
           self.green_authority[block] = 1
           self.green_speeds[block] = 30
@@ -146,8 +169,8 @@ class Train_Sim():
           authorities.append({'line': 'Green', 'block': block, 'authority': 1})
           speeds.append({'line': 'Green', 'block': block, 'speed': 30})
 
-      # s.send_CTC_authority.emit('Green', self.green_authority)
+      # Emit authority and speed signals
       s.send_CTC_authority.emit(authorities)
-      s.send_CTC_suggested_speed.emit(line, self.green_speeds)
+      s.send_CTC_suggested_speed.emit(speeds)
 
 trains = Train_Sim()

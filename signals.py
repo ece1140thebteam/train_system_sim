@@ -34,7 +34,7 @@ class signals(QObject):
   send_CTC_maintenance_mode_signal = pyqtSignal(str, list) # Line, mode (0=disabled, 1=enables)
 
   # Send suggested speed from CTC to Track Controller
-  send_CTC_suggested_speed = pyqtSignal(str, list) # Line, speed
+  send_CTC_suggested_speed = pyqtSignal(list) # Line, speed
 
   # Send block authority from CTC to Track Controller
   send_CTC_authority = pyqtSignal(list) # Line, authority (0=no, 1=yes)

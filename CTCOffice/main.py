@@ -103,6 +103,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
+        s.send_TrackController_track_occupancy.connect(self.set_occupancy)
 
         # Track Signals
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
@@ -539,7 +540,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         
         print("Update throughput: " + line_name + str(throughput))
     
-    # Connected to signal from CTC Test
+    # Connected to signal from CTC Test and Wayside
     def set_occupancy(self, occupancies):
         for occupancy in occupancies:
             if occupancy['line'] == 'Red':
@@ -549,14 +550,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 if occupancy['block'] != 0:
                     self.lines[1].get(occupancy['block']).occupancy = occupancy['occupancy']
 
-        # if line == "Red":
-        #     self.lines[0].get(block_number).occupancy = occupancy
-        # elif line == "Green":
-        #     self.lines[1].get(block_number).occupancy = occupancy
-
         self.get_line_data()
-        
-        # print("Update Occupancy: " + line, str(block_number), str(occupancy))
 
     # Connected to signal from CTC Office
     def set_authorities(self, authorities):
@@ -569,24 +563,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                     self.lines[1].get(authority['block']).authority = authority['authority']
 
         self.get_line_data()
-
-    # Conncted to signal from Wayside
-    def set_occupancies(self, line, occupancies):
-
-
-        if line == "Red":
-            for block in range(0, len(occupancies)):
-                self.lines[0].get(block + 1).occupancy = occupancies[block]
-        if line == "Green":
-            for block in range(0, len(occupancies)):
-                self.lines[1].get(block + 1).occupancy = occupancies[block]
-
-        self.get_line_data()
-
-
-    def open_test_ui(self):
-        self.testUi = MainTestWindow()
-        self.testUi.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
