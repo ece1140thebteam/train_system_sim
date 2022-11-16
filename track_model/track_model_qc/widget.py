@@ -74,8 +74,9 @@ class TrackModel(QWidget):
 
         for line in self.track.track_lines:
             track_dict[line] = dict()
-            track_dict[line]['sections'] = dict()
-            track_dict[line]['switches'] = dict()
+            track_dict[line]['sections']    = dict()
+            track_dict[line]['switches']    = dict()
+            track_dict[line]['crossings']   = dict()
 
             for section in self.track.track_lines[line].sections:
                 track_dict[line]['sections'][section] = list()
@@ -87,8 +88,8 @@ class TrackModel(QWidget):
         
         s.send_TrackModel_map_info.emit(track_dict)
 
-    def passengers_onboarded(self, line, block):
-        onboarded = self.track.track_lines[line].blocks[block].passengers_onboarded()
+    def passengers_onboarded(self, line, block, deboarded):
+        onboarded = self.track.track_lines[line].blocks[block].passengers_onboarded(deboarded)
 
         self.track.track_lines[line].total_sales += onboarded
         sales = self.track.track_lines[line].total_sales
@@ -99,6 +100,7 @@ class TrackModel(QWidget):
         
         print(f'Line {line} onboarded {onboarded} passengers, throughput: {tp}')
         s.send_TrackModel_throughput_signal.emit(line, tp)
+        self.update_station_tree(line, block)
 
     def handle_time_increment(self):
         # timer called every 100ms
@@ -142,6 +144,7 @@ class TrackModel(QWidget):
         self.blockSignalInfo.setText(str(block.signal))
         self.blockTrackCircuitInfo.setText("Open" if block.circuit_open else "Closed")
         self.blockCommandedSpeedInfo.setText(str(block.commanded_speed))
+        self.blockDirectionsOfTravel.setText(str(block.can_travel_to))
 
     def block_list_item_clicked(self, item):
         # if this is a block
@@ -155,7 +158,7 @@ class TrackModel(QWidget):
     def open_new_file(self):
         print('opening new file')
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.AnyFile)
+        # dlg.setFileMode(QFileDialog.AnyFile)
         # dlg.setFilter("csv(*.csv)")
         t = QFileDialog.getOpenFileName(dlg, "hello", os.getcwd(), "csv(*.csv)")
         
@@ -177,7 +180,30 @@ class TrackModel(QWidget):
                     for block_num in range(0, num_blocks):
                         b = section.child(block_num)
                         if int(b.text(0).split(' ')[1]) == block:
-                            b.setBackground(column, color)
+                            b.setBackground(column, color)                         
+
+    def update_switch_tree_pos_color(self, line, block):
+        # print('updating station tree')
+        block = self.track.track_lines[line].blocks[block]
+        num_lines = self.switchPosTree.invisibleRootItem().childCount()
+        for line_num in range(0, num_lines):
+            l = self.switchPosTree.invisibleRootItem().child(line_num)
+            num_switches = l.childCount()
+            if l.text(0).split(' ')[0].lower() == line.lower():
+                for switch_num in range(0, num_switches):
+                    sw = l.child(switch_num)
+                    if int(sw.text(0)) == block.block_number:
+                        pos1Color = None
+                        pos2Color = None
+
+                        if block.switch.pos1 == block.switch.curr_pos:
+                            pos1Color = QtGui.QColor(0,170, 0, 255)
+                            pos2Color = QtGui.QColor(0,0, 0, 0)
+                        else:
+                            pos1Color = QtGui.QColor(0,0, 0, 0)
+                            pos2Color = QtGui.QColor(0,170, 0, 255)
+                        sw.setBackground(1, pos1Color)
+                        sw.setBackground(2, pos2Color)
 
     def update_failures(self, line, block, failure):
         if failure != 'None':
@@ -229,12 +255,12 @@ class TrackModel(QWidget):
                     elif 'UNDERGROUND' in i:
                         underground = True
                     elif 'STATION' in i:
-                        station = i
+                        station = i.replace('STATION','').replace(':','').strip()
                     elif 'SWITCH' in i:
                         # print(i)
                         if 'FROM' in i:
-                            print('from yard, adding connection')
-                            print(i)
+                            # print('from yard, adding connection')
+                            # print(i)
                             self.track.yard.add_connection(line, blocknum)
                         i=i.lower().replace('yard','0')
                         block_matches = re.findall(numbers_re, i)
@@ -247,7 +273,6 @@ class TrackModel(QWidget):
                             print('switch format incorrect')
                             # if z1 is not blocknum:
                         else:
-                            print(positions)
                             switch = TrackBlock.Switch(
                                 line=line,
                                 section=block[1],
@@ -309,10 +334,13 @@ class TrackModel(QWidget):
                 self.track.add_block(b)
         
         self.display_track_tree()
+        self.display_station_tree()
+        self.display_switch_tree()
 
         s.send_TrackModel_updated.emit()
-        self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
         self.blockListTreeWidget.expandAll()
+        self.stationTree.expandAll()
+
 
     def display_track_tree(self):
         self.blockListTreeWidget.clear()
@@ -331,6 +359,73 @@ class TrackModel(QWidget):
                 lineItem.addChild(sec)
             items.append(lineItem)
         self.blockListTreeWidget.insertTopLevelItems(0, items)
+        self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
+        self.blockListTreeWidget.header().resizeSection(0, 175)
+        self.blockListTreeWidget.header().resizeSection(1, 50)
+        self.blockListTreeWidget.header().resizeSection(2, 50)
+
+    def update_station_tree(self, line, block):
+        # print('updating station tree')
+        block = self.track.track_lines[line].blocks[block]
+        num_lines = self.stationTree.invisibleRootItem().childCount()
+        for line_num in range(0, num_lines):
+            l = self.stationTree.invisibleRootItem().child(line_num)
+            num_stations = l.childCount()
+            if l.text(0).split(' ')[0].lower() == line.lower():
+                for station_num in range(0, num_stations):
+                    station = l.child(station_num)
+                    if station.text(0) == block.station:
+                        station.setText(1, str(block.passengers_waiting))
+                        station.setText(2, str(block.passengers_deboarded))
+      
+    def display_station_tree(self):
+        self.stationTree.clear()
+        items = []
+        for line in self.track.track_lines:
+            lineItem = QTreeWidgetItem([f'{line} line'])
+            for section in self.track.track_lines[line].sections:
+                # sec = QTreeWidgetItem([f'Section {section}'])
+                for block in self.track.track_lines[line].sections[section]:
+                    blk = self.track.track_lines[line].blocks[block]
+                    if blk.station is not None:
+                        b = QTreeWidgetItem([str(blk.station), str(blk.passengers_waiting), str(blk.passengers_deboarded)])
+                        lineItem.addChild(b)
+            items.append(lineItem)
+        self.stationTree.insertTopLevelItems(0, items)
+        self.stationTree.header().resizeSection(0, 145)
+        self.stationTree.header().resizeSection(1, 50)
+        self.stationTree.header().resizeSection(2, 70)
+
+    def display_switch_tree(self):
+        self.switchPosTree.clear()
+        items = []
+        for line in self.track.track_lines:
+            lineItem = QTreeWidgetItem([f'{line} line'])
+            for section in self.track.track_lines[line].sections:
+                # sec = QTreeWidgetItem([f'Section {section}'])
+                for block in self.track.track_lines[line].sections[section]:
+                    blk = self.track.track_lines[line].blocks[block]
+                    if blk.switch is not None:
+                        b = QTreeWidgetItem([str(blk.block_number), str(blk.switch.pos1), str(blk.switch.pos2)])
+                        pos1Color = None
+                        pos2Color = None
+
+                        if blk.switch.pos1 == blk.switch.curr_pos:
+                            pos1Color = QtGui.QColor(0,170, 0, 255)
+                            pos2Color = QtGui.QColor(0,0, 0, 0)
+                        else:
+                            pos1Color = QtGui.QColor(0,0, 0, 0)
+                            pos2Color = QtGui.QColor(0,170, 0, 255)
+                        b.setBackground(1, pos1Color)
+                        b.setBackground(2, pos2Color)
+                        lineItem.addChild(b)
+
+            items.append(lineItem)
+
+        self.switchPosTree.insertTopLevelItems(0, items)
+        self.switchPosTree.header().resizeSection(0, 145)
+        self.switchPosTree.header().resizeSection(1, 50)
+        self.switchPosTree.header().resizeSection(2, 70)
 
     def get_railroad_crossing_blocks(self):
         pass
@@ -341,7 +436,7 @@ class TrackModel(QWidget):
         avg_month_temp = pittsburgh_weather[month]
 
         # assume it is hottest at 3:00pm, 15:00
-        dev = int(1/abs(hour-15)*24)
+        dev = int(1/(1+abs(hour-15))*24)
 
         # random pittsburgh temperature based on month
         temp_f = random.randint(avg_month_temp-int(dev/2), avg_month_temp+int(dev/2))
@@ -352,13 +447,13 @@ class TrackModel(QWidget):
     def update_temp_spin_box(self):
         if self.track.heater_on:
             if self.temperatureSpinBox.value() > 32:
-                print('Turning heater off')
+                # print('Turning heater off')
                 self.track.turn_heater_off()
                 self.display_block_info()
 
         else:
             if self.temperatureSpinBox.value() <= 32:
-                print('Turning heater on')
+                # print('Turning heater on')
                 self.track.turn_heater_on()
                 self.display_block_info()
 
@@ -369,34 +464,30 @@ class TrackModel(QWidget):
         uic.loadUi(path, self)
         # ui_file.close()
 
-    def update_list_color(self, column):
-        num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
-        # if self.i is None: self.i = 0
-        self.b += 10
-        if self.b > 255:
-            self.g += 10
-            self.b = 0
-        if self.g > 255:
-            self.g = 0
-            self.r += 10
-            self.r = self.r % 255
+    # def update_list_color(self, column):
+    #     num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+    #     # if self.i is None: self.i = 0
+    #     self.b += 10
+    #     if self.b > 255:
+    #         self.g += 10
+    #         self.b = 0
+    #     if self.g > 255:
+    #         self.g = 0
+    #         self.r += 10
+    #         self.r = self.r % 255
 
-        for line_num in range(0, num_lines):
-            line = self.blockListTreeWidget.invisibleRootItem().child(line_num)
-            num_sections = line.childCount()
+    #     for line_num in range(0, num_lines):
+    #         line = self.blockListTreeWidget.invisibleRootItem().child(line_num)
+    #         num_sections = line.childCount()
 
-            for section_num in range(0, num_sections):
-                section = line.child(section_num)
-                num_blocks = section.childCount()
+    #         for section_num in range(0, num_sections):
+    #             section = line.child(section_num)
+    #             num_blocks = section.childCount()
 
-                for block_num in range(0, num_blocks):
-                    block = section.child(block_num)
+    #             for block_num in range(0, num_blocks):
+    #                 block = section.child(block_num)
 
-                    block.setBackground(column, QtGui.QColor(self.r, self.g, self.b, 255))
-
-    def handle_timestep(self, ts):
-        self.time_elapsed += 1
-        print(f'Elapsed time: {self.time_elapsed}')
+    #                 block.setBackground(column, QtGui.QColor(self.r, self.g, self.b, 255))
 
     def update_commanded_speed(self, line, block, speed):
         self.track.track_lines[line].blocks[block].commanded_speed = speed
@@ -404,7 +495,7 @@ class TrackModel(QWidget):
 
     def update_signal(self, line, block, sig):
         if sig == 'Green':
-            color = QtGui.QColor(0, 255, 0, 255)
+            color = QtGui.QColor(0,255, 0, 255)
         else:
             color = QtGui.QColor(255, 0, 0, 255)
 
@@ -417,16 +508,16 @@ class TrackModel(QWidget):
     
 
     def get_next_block(self, line, current_block_num, previous_block_num, train_num):   
-        print('get next block')
+        # print('get next block')
         print(f'{current_block_num} {previous_block_num} {train_num}')
         next_block_num = -1
         if current_block_num == 0:  #dispatching from the yard
-            next_block_num = 1
-            print(self.track.yard.get_connections(line))
+            # next_block_num = 1
+            # print(self.track.yard.get_connections(line))
             for block in self.track.yard.get_connections(line):
-                print(block)
+                # print(block)
                 switch = self.track.track_lines[line].blocks[block].switch
-                print(switch.curr_pos)
+                # print(switch.curr_pos)
                 next_block_num = block
 
                 # switch is in the right position
@@ -441,7 +532,7 @@ class TrackModel(QWidget):
                 if len(next_block_num) > 1:
                     for block in next_block_num:
                         if previous_block_num != abs(block): 
-                            next_block_num = abs(block)
+                            next_block_num = block
                 else:
                     next_block_num = next_block_num[0]
                 
@@ -449,20 +540,32 @@ class TrackModel(QWidget):
                 if next_block_num < 0:
                     b = abs(next_block_num)
                     sw = self.track.track_lines[line].blocks[b].switch
-                    if sw.curr_pos != b:
+                    print('checking if switch position is correct')
+                    print(sw.curr_pos)
+                    if sw.curr_pos != b and sw.curr_pos != current_block_num:
                         print('switch position not correct, train derailed')
+                        s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
+                        return
                     else:
                         next_block_num = b
 
 
             else:
                 curr_b = self.track.track_lines[line].blocks[current_block_num]
+                
+                # bidirectional block with a switch
                 if len(curr_b.can_travel_to) > 2:
                     for block in curr_b.can_travel_to:
                         if previous_block_num != abs(block) and block>0:
                             print(block)
                             next_block_num = block
                             break
+
+                # switch says which track enters unidirectional block
+                elif len(curr_b.can_travel_to) == 1:
+                    next_block_num = curr_b.can_travel_to[0]
+
+                # block is traveling through the switch to the current position of the switch
                 if next_block_num<0:
                     print(curr_b.switch.curr_pos)
                     next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
@@ -511,6 +614,7 @@ class TrackModel(QWidget):
     def update_switch_position(self, line, block, position):
         self.track.track_lines[line].blocks[block].switch.update_switch_position(position)
         self.display_block_info()
+        self.update_switch_tree_pos_color(line, block)
 
     def set_maintenance_mode(self, line, block, in_maintenance):
         if in_maintenance:

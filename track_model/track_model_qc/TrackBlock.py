@@ -61,6 +61,7 @@ class TrackBlock():
         self.commanded_speed = self.speed_limit #TODO REMOVE
 
         self.passengers_waiting = random.randint(6, 16)
+        self.passengers_deboarded = 0
 
         if self.station:
             # TODO Add side of track
@@ -73,9 +74,11 @@ class TrackBlock():
 
             }
 
-    def passengers_onboarded(self):
+    def passengers_onboarded(self, deboarded):
         onboarded = self.passengers_waiting
         self.passengers_waiting = random.randint(6, 16)
+
+        self.passengers_deboarded = deboarded
 
         return onboarded
 

@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 import sys
+import random
 
 from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import QFile
@@ -28,6 +29,9 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_next_block_info.connect(self.receive_block_info)
         s.send_TrackModel_block_info.connect(self.receive_block_info)
         self.dispatchTrainButton.clicked.connect(self.test_train_run)
+        self.reset_run_train()
+
+    def reset_run_train(self):
         self.run_train = False
         self.current_block_info = None
         self.current_block = 0
@@ -38,10 +42,10 @@ class TrackModelTestUI(QWidget):
         self.current_line = self.lineDropDown.currentText()
 
         if self.dispatchTrainButton.isChecked():
-            print('start runnning')
+            # print('start runnning')
             self.run_train = True
         else:
-            print('stop runnning')
+            # print('stop runnning')
             self.run_train = False
     def connect_timer(self):
         s.timer_tick.connect(self.handle_time_increment)
@@ -51,20 +55,35 @@ class TrackModelTestUI(QWidget):
 
     def receive_block_info(self, train_num, block_info):
         # do these per block with multiple trains
+
+        # if its a new block
         if block_info['block_num'] != self.current_block:
+            if block_info['block_num'] == -1:
+                print(f'TRAIN DERAILED AT BLOCK {self.current_block}')
+                s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)
+                self.train_derailed()
+                return
+
             self.current_block_info = block_info
             self.traveled_in_block = 0
             self.previous_block = self.current_block
             self.current_block = self.current_block_info['block_num']
+            
+
 
         self.current_block_info = block_info
         self.stopped_at_station = False
-        print(block_info['block_num'])
-        print(block_info['grade'])
-        print(block_info['beacon'])
-        print(block_info['length'])
-        print(block_info['authority'])
-        print(block_info['commanded_speed'])
+        # print(block_info['block_num'])
+        # print(block_info['grade'])
+        # print(block_info['beacon'])
+        # print(block_info['length'])
+        # print(block_info['authority'])
+        # print(block_info['commanded_speed'])
+
+    def train_derailed(self):
+        self.dispatchTrainButton.setChecked(False)
+        self.run_train = False
+        self.reset_run_train()
 
     def handle_time_increment(self):
         if self.run_train:
@@ -74,7 +93,7 @@ class TrackModelTestUI(QWidget):
             # dispatch from yard
             if self.current_block_info == None:
                 #line, current_block, previous block, train num
-                print('dispatching train to '+line)
+                # print('dispatching train to '+line)
                 s.send_TrackModel_get_next_block_info.emit(line, 0, -1, 0)
                 return
             
@@ -86,7 +105,7 @@ class TrackModelTestUI(QWidget):
             
             if self.current_block_info['commanded_speed'] == 0 or self.current_block_info['authority']==0:
                 #wait until block speed and authority are > 0
-                print('waiting for authority or speed')
+                # print('waiting for authority or speed')
                 s.send_TrackModel_get_block_info.emit(line, self.current_block, 0) 
 
             distance = self.current_block_info['commanded_speed']*dt*self.current_block_info['authority']
@@ -97,7 +116,8 @@ class TrackModelTestUI(QWidget):
             if self.current_block_info['beacon']['station_name'] is not None:
                 if self.traveled_in_block > self.current_block_info['length']/2 and not self.stopped_at_station:
                     #stop onboard passengers
-                    s.send_TrackModel_passengers_onboarded.emit(line, self.current_block)
+                    passengers_deboarded = random.randint(1, 20)
+                    s.send_TrackModel_passengers_onboarded.emit(line, self.current_block, passengers_deboarded)
                     self.stopped_at_station = True
 
             if self.traveled_in_block > self.current_block_info['length']:
@@ -183,20 +203,20 @@ class TrackModelTestUI(QWidget):
         self.inputValueDropdown.addItem('None')
 
     def send_update(self):
-        print(self.updateTypeDropdown.currentText())
-        if self.updateTypeDropdown.currentText() == "Occupancy":
+        # print(self.updateTypeDropdown.currentText())
+        if self.updateTypeDropdown.currentText()    == "Occupancy":
             self.send_occupancy_update()
-        elif self.updateTypeDropdown.currentText() == "Failure":
+        elif self.updateTypeDropdown.currentText()  == "Failure":
             self.send_failure_update()
-        elif self.updateTypeDropdown.currentText() == "Authority":
+        elif self.updateTypeDropdown.currentText()  == "Authority":
             self.send_authority_update()
-        elif self.updateTypeDropdown.currentText() == "Commanded Speed":
+        elif self.updateTypeDropdown.currentText()  == "Commanded Speed":
             self.send_commanded_speed_update()
-        elif self.updateTypeDropdown.currentText() == "Maintenance":
+        elif self.updateTypeDropdown.currentText()  == "Maintenance":
             self.send_maintenance_update()
-        elif self.updateTypeDropdown.currentText() == "Signal":
+        elif self.updateTypeDropdown.currentText()  == "Signal":
             self.send_signal_update()
-        elif self.updateTypeDropdown.currentText() == "Switch Position":
+        elif self.updateTypeDropdown.currentText()  == "Switch Position":
             self.send_switch_position_update()
 
     def send_switch_position_update(self):
@@ -221,7 +241,7 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_maintenance_status.emit(line, int(block), maintenance)
 
     def send_commanded_speed_update(self):
-        print('sending speed')
+        # print('sending speed')
 
         line = self.lineDropDown.currentText()
         block = self.blockDropDown.currentText()
@@ -230,7 +250,7 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_commanded_speed.emit(line, int(block), speed)
 
     def send_failure_update(self):
-        print('updating failure')
+        # print('updating failure')
         line = self.lineDropDown.currentText()
         block = self.blockDropDown.currentText()
         failureType = self.inputValueDropdown.currentText()
@@ -238,7 +258,7 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_failure_status.emit(line, int(block), failureType)
 
     def send_authority_update(self):
-        print('authority upddate')
+        # print('authority upddate')
         line = self.lineDropDown.currentText()
         block = self.blockDropDown.currentText()
         authority = int(self.inputValueDropdown.currentText())
