@@ -58,6 +58,7 @@ class TrackModelTestUI(QWidget):
             self.current_block = self.current_block_info['block_num']
 
         self.current_block_info = block_info
+        self.stopped_at_station = False
         print(block_info['block_num'])
         print(block_info['grade'])
         print(block_info['beacon'])
@@ -91,6 +92,13 @@ class TrackModelTestUI(QWidget):
             distance = self.current_block_info['commanded_speed']*dt*self.current_block_info['authority']
 
             self.traveled_in_block += distance
+
+
+            if self.current_block_info['beacon']['station_name'] is not None:
+                if self.traveled_in_block > self.current_block_info['length']/2 and not self.stopped_at_station:
+                    #stop onboard passengers
+                    s.send_TrackModel_passengers_onboarded.emit(line, self.current_block)
+                    self.stopped_at_station = True
 
             if self.traveled_in_block > self.current_block_info['length']:
                 s.send_TrackModel_get_next_block_info.emit(line, self.current_block, self.previous_block, 0)

@@ -67,6 +67,8 @@ class TrackModel(QWidget):
         s.send_TrackModel_get_next_block_info.connect(self.get_next_block)
         s.send_TrackModel_switch_position.connect(self.update_switch_position)
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
+        s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
+
     def get_track_info(self):
         track_dict = dict()
 
@@ -85,9 +87,22 @@ class TrackModel(QWidget):
         
         s.send_TrackModel_map_info.emit(track_dict)
 
+    def passengers_onboarded(self, line, block):
+        onboarded = self.track.track_lines[line].blocks[block].passengers_onboarded()
+
+        self.track.track_lines[line].total_sales += onboarded
+        sales = self.track.track_lines[line].total_sales
+        time_elapsed_s = self.time_elapsed_s
+        time_elapsed_m = time_elapsed_s/60
+        time_elapsed_h = time_elapsed_m/60
+        tp = sales/time_elapsed_h
+        
+        print(f'Line {line} onboarded {onboarded} passengers, throughput: {tp}')
+        s.send_TrackModel_throughput_signal.emit(line, tp)
+
     def handle_time_increment(self):
-        # print('hello from the track model')
-        self.time_elapsed_s += 1
+        # timer called every 100ms
+        self.time_elapsed_s += .1
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
@@ -399,6 +414,7 @@ class TrackModel(QWidget):
 
     def get_authority(self, line, block):
         pass
+    
 
     def get_next_block(self, line, current_block_num, previous_block_num, train_num):   
         print('get next block')
@@ -464,6 +480,8 @@ class TrackModel(QWidget):
         block_info['underground']        = block.underground
         block_info['speed_limit']        = block.speed_limit
 
+        block_info['passengers_waiting'] = block.passengers_waiting
+
         print(block_info)
         s.send_TrackModel_next_block_info.emit(train_num, block_info)
 
@@ -507,17 +525,10 @@ class TrackModel(QWidget):
     def get_ticket_sales(self, line):
         pass
 
-# def make_changes(model):
-#     time.sleep(2)
-#     model.update_list_color()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = TrackModel()
-    # helper = HelperThread(parent=widget)
-    # helper.change_color.connect(widget.update_list_color)
-    # helper.start()
 
     widget.show()
     run_thread = False

@@ -9,7 +9,7 @@ class TrackLine():
         self.blocks   = dict()
         self.switches = dict()
         self.stations = dict()  #{station: passengers}
-
+        self.total_sales = 0
 
     def get_block(self, block_num):
         return self.blocks[block_num]

@@ -71,6 +71,10 @@ class signals(QObject):
   send_TrackModel_updated                 = pyqtSignal()  #line, block, authority (int)
   send_TrackModel_get_next_block_info     = pyqtSignal(str, int, int, int) #line, current_block, previous block, train num
   send_TrackModel_get_block_info          = pyqtSignal(str, int, int) #line, block, train num
+  
+  # Train send to track model when passengers board train
+  send_TrackModel_passengers_onboarded    = pyqtSignal(str, int) #line, block
+
   #######################################################
   # Track Model to Train Model
   # Send throughput from Track Model test to Track Model

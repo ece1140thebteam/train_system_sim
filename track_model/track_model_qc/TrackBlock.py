@@ -3,7 +3,7 @@
 from configparser import SectionProxy
 from http.client import SWITCHING_PROTOCOLS
 from pdb import line_prefix
-
+import random
 class Switch():
     def __init__(self, line, section, block, pos1, pos2):
         self.section    = section
@@ -56,9 +56,11 @@ class TrackBlock():
         self.failure_mode   = 'No Failures'
         self.beacon1        = None
         self.beacon2        = None
-        self.authority      = 1
+        self.authority      = 1 # TODO REMOVE
         self.maintenance_mode = False
         self.commanded_speed = self.speed_limit #TODO REMOVE
+
+        self.passengers_waiting = random.randint(6, 16)
 
         if self.station:
             # TODO Add side of track
@@ -70,6 +72,12 @@ class TrackBlock():
                 'station': self.station
 
             }
+
+    def passengers_onboarded(self):
+        onboarded = self.passengers_waiting
+        self.passengers_waiting = random.randint(6, 16)
+
+        return onboarded
 
     def update_failure(self,type):
         self.failure_mode = type
