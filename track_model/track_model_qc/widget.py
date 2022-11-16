@@ -436,7 +436,7 @@ class TrackModel(QWidget):
         avg_month_temp = pittsburgh_weather[month]
 
         # assume it is hottest at 3:00pm, 15:00
-        dev = int(1/abs(hour-15)*24)
+        dev = int(1/(1+abs(hour-15))*24)
 
         # random pittsburgh temperature based on month
         temp_f = random.randint(avg_month_temp-int(dev/2), avg_month_temp+int(dev/2))
