@@ -64,9 +64,9 @@ class TrackModel(QWidget):
         s.send_TrackModel_commanded_speed.connect(self.update_commanded_speed)
         s.send_TrackModel_maintenance_status.connect(self.set_maintenance_mode)
         s.send_TrackModel_signal_status.connect(self.update_signal)
-        s.send_TrackModel_get_block_info.connect(self.get_next_block)
+        s.send_TrackModel_get_next_block_info.connect(self.get_next_block)
         s.send_TrackModel_switch_position.connect(self.update_switch_position)
-
+        s.send_TrackModel_get_block_info.connect(self.get_block_info)
     def get_track_info(self):
         track_dict = dict()
 
@@ -400,7 +400,7 @@ class TrackModel(QWidget):
     def get_authority(self, line, block):
         pass
 
-    def get_next_block(self, line, current_block_num, previous_block_num, train_num):
+    def get_next_block(self, line, current_block_num, previous_block_num, train_num):   
         print('get next block')
         print(f'{current_block_num} {previous_block_num} {train_num}')
         next_block_num = -1
@@ -462,6 +462,24 @@ class TrackModel(QWidget):
         block_info['commanded_speed']    = block.commanded_speed
         block_info['authority']          = block.authority
         block_info['underground']        = block.underground
+        block_info['speed_limit']        = block.speed_limit
+
+        print(block_info)
+        s.send_TrackModel_next_block_info.emit(train_num, block_info)
+
+    def get_block_info(self, line, block, train_num):
+        block = self.track.track_lines[line].blocks[block]
+        block_info = dict()
+
+        # the block the train will enter
+        block_info['block_num']          = block.block_number
+        block_info['grade']              = block.block_grade
+        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'}
+        block_info['length']             = block.block_len
+        block_info['commanded_speed']    = block.commanded_speed
+        block_info['authority']          = block.authority
+        block_info['underground']        = block.underground
+        block_info['speed_limit']        = block.speed_limit
 
         s.send_TrackModel_block_info.emit(train_num, block_info)
 

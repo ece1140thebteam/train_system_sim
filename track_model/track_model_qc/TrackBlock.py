@@ -56,9 +56,9 @@ class TrackBlock():
         self.failure_mode   = 'No Failures'
         self.beacon1        = None
         self.beacon2        = None
-        self.authority      = 0
+        self.authority      = 1
         self.maintenance_mode = False
-        self.commanded_speed = 0
+        self.commanded_speed = self.speed_limit #TODO REMOVE
 
         if self.station:
             # TODO Add side of track

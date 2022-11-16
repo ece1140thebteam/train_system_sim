@@ -25,6 +25,7 @@ class TrackModelTestUI(QWidget):
 
         s.timer_tick.connect(self.handle_time_increment)
         
+        s.send_TrackModel_next_block_info.connect(self.receive_block_info)
         s.send_TrackModel_block_info.connect(self.receive_block_info)
         self.dispatchTrainButton.clicked.connect(self.test_train_run)
         self.run_train = False
@@ -37,8 +38,10 @@ class TrackModelTestUI(QWidget):
         self.current_line = self.lineDropDown.currentText()
 
         if self.dispatchTrainButton.isChecked():
+            print('start runnning')
             self.run_train = True
         else:
+            print('stop runnning')
             self.run_train = False
     def connect_timer(self):
         s.timer_tick.connect(self.handle_time_increment)
@@ -48,10 +51,13 @@ class TrackModelTestUI(QWidget):
 
     def receive_block_info(self, train_num, block_info):
         # do these per block with multiple trains
+        if block_info['block_num'] != self.current_block:
+            self.current_block_info = block_info
+            self.traveled_in_block = 0
+            self.previous_block = self.current_block
+            self.current_block = self.current_block_info['block_num']
+
         self.current_block_info = block_info
-        self.traveled_in_block = 0
-        self.previous_block = self.current_block
-        self.current_block = self.current_block_info['block_num']
         print(block_info['block_num'])
         print(block_info['grade'])
         print(block_info['beacon'])
@@ -61,13 +67,14 @@ class TrackModelTestUI(QWidget):
 
     def handle_time_increment(self):
         if self.run_train:
+            # print('timer')
             line = self.current_line
             dt = .1 #100 ms, TODO udpate
             # dispatch from yard
             if self.current_block_info == None:
                 #line, current_block, previous block, train num
                 print('dispatching train to '+line)
-                s.send_TrackModel_get_block_info.emit(line, 0, -1, 0)
+                s.send_TrackModel_get_next_block_info.emit(line, 0, -1, 0)
                 return
             
             if self.traveled_in_block == 0:
@@ -76,12 +83,17 @@ class TrackModelTestUI(QWidget):
                 if self.previous_block>0: 
                     s.send_TrackModel_track_occupancy.emit(line, self.previous_block, False) 
             
-            distance = self.current_block_info['commanded_speed']*dt
+            if self.current_block_info['commanded_speed'] == 0 or self.current_block_info['authority']==0:
+                #wait until block speed and authority are > 0
+                print('waiting for authority or speed')
+                s.send_TrackModel_get_block_info.emit(line, self.current_block, 0) 
+
+            distance = self.current_block_info['commanded_speed']*dt*self.current_block_info['authority']
 
             self.traveled_in_block += distance
 
             if self.traveled_in_block > self.current_block_info['length']:
-                s.send_TrackModel_get_block_info.emit(line, self.current_block, self.previous_block, 0)
+                s.send_TrackModel_get_next_block_info.emit(line, self.current_block, self.previous_block, 0)
 
     def block_num_changed(self, text):
         if self.updateTypeDropdown.currentText() == "Switch Position":
