@@ -73,7 +73,7 @@ class signals(QObject):
   send_TrackModel_get_block_info          = pyqtSignal(str, int, int) #line, block, train num
   
   # Train send to track model when passengers board train
-  send_TrackModel_passengers_onboarded    = pyqtSignal(str, int) #line, block
+  send_TrackModel_passengers_onboarded    = pyqtSignal(str, int, int) #line, block, passengers deboarded
 
   #######################################################
   # Track Model to Train Model
