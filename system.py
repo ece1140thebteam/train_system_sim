@@ -66,6 +66,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       # self.pushButton_traincontrol.clicked.connect(self.open_TrainController)
       # self.pushButton_traincontrol_test.clicked.connect(self.open_TrainController_test)
 
+      s.send_CTC_create_train.connect(self.open_traincontrol)
+
     def open_CTC(self):
       
       self.main_windowCTC.show()

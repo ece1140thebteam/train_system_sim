@@ -14,7 +14,7 @@ class signals(QObject):
   #######################################################
   # CTC Test 
   # Send track occupancy from Track Controller to CTC
-  send_CTC_test_track_occupancy = pyqtSignal(str, int, int) # Line, block, occupancy (0=open, 1=occupied)
+  send_CTC_test_track_occupancy = pyqtSignal(list) # Line, block, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
   send_CTC_test_crossing = pyqtSignal(str, int, int) # Line, block, status (0=deactivated, 1=activated)
@@ -28,7 +28,7 @@ class signals(QObject):
   #######################################################
   # CTC to Wayside 
   # Send switch position from CTC to Track Controller
-  send_CTC_switch_position_signal = pyqtSignal(str, list) # Line, position (0=normal, 1=reverse)
+  send_CTC_switch_position_signal = pyqtSignal(list) # Line, position (0=normal, 1=reverse)
 
   # Send maintenance mode from CTC to Track Controller
   send_CTC_maintenance_mode_signal = pyqtSignal(str, list) # Line, mode (0=disabled, 1=enables)
@@ -37,18 +37,22 @@ class signals(QObject):
   send_CTC_suggested_speed = pyqtSignal(str, list) # Line, speed
 
   # Send block authority from CTC to Track Controller
-  send_CTC_authority = pyqtSignal(str, list) # Line, authority (0=no, 1=yes)
+  send_CTC_authority = pyqtSignal(list) # Line, authority (0=no, 1=yes)
 
   #######################################################
   # Wayside to CTC 
   # Send track occupancy from Track Controller to CTC
-  send_TrackController_track_occupancy = pyqtSignal(str, list) # Line, occupancy (0=open, 1=occupied)
+  send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
   send_TrackController_crossing = pyqtSignal(str, list) # Line, status (0=deactivated, 1=activated)
 
   # Send track failure from Track Controller to CTC
   send_TrackController_failure = pyqtSignal(str, list) # Line, failure type
+
+  #######################################################
+  # CTC to Train Control
+  send_CTC_create_train = pyqtSignal()
 
   #######################################################
   # Track Model to CTC

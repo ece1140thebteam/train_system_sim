@@ -224,9 +224,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 stationBlocks.append(block)
 
         print(str(stations))
-        print(str(self.green_authority))
 
         Train.trains.create_train('Green', stationBlocks)
+        
 
 
     # Update the comboBox of track_blocks
@@ -540,29 +540,40 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         print("Update throughput: " + line_name + str(throughput))
     
     # Connected to signal from CTC Test
-    def set_occupancy(self, line, block_number, occupancy):
-        if line == "Red":
-            self.lines[0].get(block_number).occupancy = occupancy
-        elif line == "Green":
-            self.lines[1].get(block_number).occupancy = occupancy
+    def set_occupancy(self, occupancies):
+        for occupancy in occupancies:
+            if occupancy['line'] == 'Red':
+                if occupancy['block'] != 0:
+                    self.lines[0].get(occupancy['block']).occupancy = occupancy['occupancy']
+            if occupancy['line'] == 'Green':
+                if occupancy['block'] != 0:
+                    self.lines[1].get(occupancy['block']).occupancy = occupancy['occupancy']
+
+        # if line == "Red":
+        #     self.lines[0].get(block_number).occupancy = occupancy
+        # elif line == "Green":
+        #     self.lines[1].get(block_number).occupancy = occupancy
 
         self.get_line_data()
         
-        print("Update Occupancy: " + line, str(block_number), str(occupancy))
+        # print("Update Occupancy: " + line, str(block_number), str(occupancy))
 
     # Connected to signal from CTC Office
-    def set_authorities(self, line, authorities):
-        if line == "Red":
-            for block in range(1, len(authorities)):
-                self.lines[0].get(block).authority = authorities[block]
-        if line == "Green":
-            for block in range(1, len(authorities)):
-                self.lines[1].get(block).authority = authorities[block]
+    def set_authorities(self, authorities):
+        for authority in authorities:
+            if authority['line'] == 'Red':
+                if authority['block'] != 0:
+                    self.lines[0].get(authority['block']).authority = authority['authority']
+            if authority['line'] == 'Green':
+                if authority['block'] != 0:
+                    self.lines[1].get(authority['block']).authority = authority['authority']
 
         self.get_line_data()
 
     # Conncted to signal from Wayside
     def set_occupancies(self, line, occupancies):
+
+
         if line == "Red":
             for block in range(0, len(occupancies)):
                 self.lines[0].get(block + 1).occupancy = occupancies[block]
