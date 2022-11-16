@@ -1,0 +1,6 @@
+if (Block 5 AND 6)
+	Switch 5 to 6
+else if (Block 5 AND 11)
+	Switch 5 to 11
+else
+	Stop train
