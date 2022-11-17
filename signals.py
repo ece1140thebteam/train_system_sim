@@ -45,10 +45,10 @@ class signals(QObject):
   send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
-  send_TrackController_crossing = pyqtSignal(str, list) # Line, status (0=deactivated, 1=activated)
+  send_TrackController_crossing = pyqtSignal(list) # Line, status (0=deactivated, 1=activated)
 
   # Send track failure from Track Controller to CTC
-  send_TrackController_failure = pyqtSignal(str, list) # Line, failure type
+  send_TrackController_failure = pyqtSignal(list) # Line, failure type
 
   #######################################################
   # CTC to Train Control
