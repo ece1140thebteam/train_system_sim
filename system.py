@@ -1,4 +1,5 @@
 import sys
+import datetime
 
 import systemui as system
 from PyQt6.QtCore import *
@@ -22,6 +23,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def __init__(self, parent=None):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
+
+      self.second = 0
+      self.label_time.setText(str(round(self.second, 1)))
 
       #Create list of trains for indexing
       self.Trains = []
@@ -60,10 +64,10 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.timer.setInterval(100)
       self.timer.timeout.connect(self.timer_timeout)
 
-      self.update_speed()
-      self.horizontalSlider.valueChanged.connect(self.update_speed)
+      # self.update_speed()
+      # self.horizontalSlider.valueChanged.connect(self.update_speed)
 
-
+      s.send_CTC_create_train.connect(self.open_traincontrol)
 
     def open_CTC(self):
       
@@ -77,7 +81,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trackController.show()
 
     def timer_timeout(self):
-      s.timer_tick.emit()
+      self.second += 0.1 * self.horizontalSlider.value()
+      self.label_time.setText(str(datetime.timedelta(seconds=round(self.second))))
+      s.timer_tick.emit(self.horizontalSlider.value())
     
     def pause_timer(self):
       if self.pushButton_start.isChecked():
@@ -108,8 +114,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def open_TrackModelTestUI(self):
       self.trackModelTestUI.show()
 
-    def update_speed(self):
-      self.label_speed.setText(str(self.horizontalSlider.value()))
+    # def update_speed(self):
+    #   self.label_speed.setText(str(self.horizontalSlider.value()))
+    #   self.timer.setInterval(100/self.horizontalSlider.value())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

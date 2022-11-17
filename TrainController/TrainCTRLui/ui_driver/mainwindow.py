@@ -28,7 +28,7 @@ class TrainController(QMainWindow):
         self.auth = False
         self.cmdSpd = 0
         self.curSpd = 0
-        self.speedLim = 0
+        self.speedLim = 43
         self.driverCmd = 0
         
         self.engineFault = False
@@ -237,10 +237,22 @@ class TrainController(QMainWindow):
             s.send_TrainModel_powerOutput.emit(self.powOutput)
             
     
-    #Function used to interface with other modules/DB to get track signal
-    def getCur(self, cur):
-            self.curSpd = cur
-            self.curSpdAdjust()
+    #TODO:
+
+        #Get current speed, update power***
+    
+        #Get block authority, update power***
+
+        #Get commanded speed 
+    
+        #Get beacon data, open proper doors and activate intercom (show dialog too)
+
+        #Get passenger Ebrake activation, update power
+
+        #Get info when underground, turn on ext lights
+        
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
