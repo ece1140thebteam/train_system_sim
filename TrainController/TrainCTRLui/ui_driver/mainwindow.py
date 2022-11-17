@@ -95,6 +95,9 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
+        #Signals
+        s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
+
     
     #Manual Mode toggling function
     def setManMode(self):
@@ -143,7 +146,8 @@ class TrainController(QMainWindow):
         self.powerCalc()
     
     #Function to adjust current speed, is called externally
-    def curSpdAdjust(self):
+    def curSpdAdjust(self, spd):
+        self.curSpd = spd
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
         self.powerCalc()
@@ -173,7 +177,6 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setMaximum(self.speedLim)    
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            self.curSpd = self.driverCmd
             self.powerCalc()
 
     #Major Power calculation and Velocity adjustment method

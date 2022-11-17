@@ -16,18 +16,17 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QColumnView, QComboBox, QGridLayout,
-    QHBoxLayout, QHeaderView, QLabel, QLayout,
-    QMainWindow, QMenu, QMenuBar, QPushButton,
-    QScrollArea, QSizePolicy, QSpacerItem, QSpinBox,
-    QStatusBar, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHBoxLayout,
+    QHeaderView, QLabel, QLayout, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QSizePolicy,
+    QSpacerItem, QSpinBox, QStatusBar, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1191, 729)
+        MainWindow.resize(1187, 719)
         MainWindow.setStyleSheet(u"")
         self.actionCTC_Office = QAction(MainWindow)
         self.actionCTC_Office.setObjectName(u"actionCTC_Office")
@@ -216,54 +215,21 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_9.addWidget(self.comboBox_dispatchTrain_line)
 
-        self.label_24 = QLabel(self.centralwidget)
-        self.label_24.setObjectName(u"label_24")
-
-        self.verticalLayout_9.addWidget(self.label_24)
-
-        self.comboBox_dispatchTrain_station = QComboBox(self.centralwidget)
-        self.comboBox_dispatchTrain_station.setObjectName(u"comboBox_dispatchTrain_station")
-
-        self.verticalLayout_9.addWidget(self.comboBox_dispatchTrain_station)
-
         self.horizontalLayout_19 = QHBoxLayout()
         self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
-        self.label_29 = QLabel(self.centralwidget)
-        self.label_29.setObjectName(u"label_29")
-
-        self.horizontalLayout_19.addWidget(self.label_29)
-
-        self.spinBox_dispatchTrain_hour = QSpinBox(self.centralwidget)
-        self.spinBox_dispatchTrain_hour.setObjectName(u"spinBox_dispatchTrain_hour")
-        self.spinBox_dispatchTrain_hour.setMaximum(23)
-
-        self.horizontalLayout_19.addWidget(self.spinBox_dispatchTrain_hour)
-
-        self.spinBox_dispatchTrain_minute = QSpinBox(self.centralwidget)
-        self.spinBox_dispatchTrain_minute.setObjectName(u"spinBox_dispatchTrain_minute")
-        self.spinBox_dispatchTrain_minute.setMaximum(59)
-
-        self.horizontalLayout_19.addWidget(self.spinBox_dispatchTrain_minute)
-
 
         self.verticalLayout_9.addLayout(self.horizontalLayout_19)
 
-        self.scrollArea = QScrollArea(self.centralwidget)
-        self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents = QWidget()
-        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 200, 145))
-        self.horizontalLayout_18 = QHBoxLayout(self.scrollAreaWidgetContents)
-        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.columnView = QColumnView(self.scrollAreaWidgetContents)
-        self.columnView.setObjectName(u"columnView")
+        self.tableWidget_dispatch = QTableWidget(self.centralwidget)
+        if (self.tableWidget_dispatch.columnCount() < 2):
+            self.tableWidget_dispatch.setColumnCount(2)
+        __qtablewidgetitem = QTableWidgetItem()
+        self.tableWidget_dispatch.setHorizontalHeaderItem(0, __qtablewidgetitem)
+        __qtablewidgetitem1 = QTableWidgetItem()
+        self.tableWidget_dispatch.setHorizontalHeaderItem(1, __qtablewidgetitem1)
+        self.tableWidget_dispatch.setObjectName(u"tableWidget_dispatch")
 
-        self.horizontalLayout_18.addWidget(self.columnView)
-
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-
-        self.verticalLayout_9.addWidget(self.scrollArea)
+        self.verticalLayout_9.addWidget(self.tableWidget_dispatch)
 
         self.pushButton_dispatchTrains = QPushButton(self.centralwidget)
         self.pushButton_dispatchTrains.setObjectName(u"pushButton_dispatchTrains")
@@ -376,30 +342,30 @@ class Ui_MainWindow(object):
         self.tableWidget_2 = QTableWidget(self.centralwidget)
         if (self.tableWidget_2.columnCount() < 12):
             self.tableWidget_2.setColumnCount(12)
-        __qtablewidgetitem = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         __qtablewidgetitem2 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(2, __qtablewidgetitem2)
+        self.tableWidget_2.setHorizontalHeaderItem(0, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(3, __qtablewidgetitem3)
+        self.tableWidget_2.setHorizontalHeaderItem(1, __qtablewidgetitem3)
         __qtablewidgetitem4 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(4, __qtablewidgetitem4)
+        self.tableWidget_2.setHorizontalHeaderItem(2, __qtablewidgetitem4)
         __qtablewidgetitem5 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(5, __qtablewidgetitem5)
+        self.tableWidget_2.setHorizontalHeaderItem(3, __qtablewidgetitem5)
         __qtablewidgetitem6 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(6, __qtablewidgetitem6)
+        self.tableWidget_2.setHorizontalHeaderItem(4, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(7, __qtablewidgetitem7)
+        self.tableWidget_2.setHorizontalHeaderItem(5, __qtablewidgetitem7)
         __qtablewidgetitem8 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(8, __qtablewidgetitem8)
+        self.tableWidget_2.setHorizontalHeaderItem(6, __qtablewidgetitem8)
         __qtablewidgetitem9 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(9, __qtablewidgetitem9)
+        self.tableWidget_2.setHorizontalHeaderItem(7, __qtablewidgetitem9)
         __qtablewidgetitem10 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(10, __qtablewidgetitem10)
+        self.tableWidget_2.setHorizontalHeaderItem(8, __qtablewidgetitem10)
         __qtablewidgetitem11 = QTableWidgetItem()
-        self.tableWidget_2.setHorizontalHeaderItem(11, __qtablewidgetitem11)
+        self.tableWidget_2.setHorizontalHeaderItem(9, __qtablewidgetitem11)
+        __qtablewidgetitem12 = QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(10, __qtablewidgetitem12)
+        __qtablewidgetitem13 = QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(11, __qtablewidgetitem13)
         self.tableWidget_2.setObjectName(u"tableWidget_2")
         self.tableWidget_2.setEnabled(True)
         sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -417,30 +383,30 @@ class Ui_MainWindow(object):
         self.tableWidget = QTableWidget(self.centralwidget)
         if (self.tableWidget.columnCount() < 12):
             self.tableWidget.setColumnCount(12)
-        __qtablewidgetitem12 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem12)
-        __qtablewidgetitem13 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem13)
         __qtablewidgetitem14 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem14)
+        self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem14)
         __qtablewidgetitem15 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(3, __qtablewidgetitem15)
+        self.tableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem15)
         __qtablewidgetitem16 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(4, __qtablewidgetitem16)
+        self.tableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem16)
         __qtablewidgetitem17 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(5, __qtablewidgetitem17)
+        self.tableWidget.setHorizontalHeaderItem(3, __qtablewidgetitem17)
         __qtablewidgetitem18 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(6, __qtablewidgetitem18)
+        self.tableWidget.setHorizontalHeaderItem(4, __qtablewidgetitem18)
         __qtablewidgetitem19 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(7, __qtablewidgetitem19)
+        self.tableWidget.setHorizontalHeaderItem(5, __qtablewidgetitem19)
         __qtablewidgetitem20 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(8, __qtablewidgetitem20)
+        self.tableWidget.setHorizontalHeaderItem(6, __qtablewidgetitem20)
         __qtablewidgetitem21 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(9, __qtablewidgetitem21)
+        self.tableWidget.setHorizontalHeaderItem(7, __qtablewidgetitem21)
         __qtablewidgetitem22 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(10, __qtablewidgetitem22)
+        self.tableWidget.setHorizontalHeaderItem(8, __qtablewidgetitem22)
         __qtablewidgetitem23 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(11, __qtablewidgetitem23)
+        self.tableWidget.setHorizontalHeaderItem(9, __qtablewidgetitem23)
+        __qtablewidgetitem24 = QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(10, __qtablewidgetitem24)
+        __qtablewidgetitem25 = QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(11, __qtablewidgetitem25)
         self.tableWidget.setObjectName(u"tableWidget")
         self.tableWidget.horizontalHeader().setDefaultSectionSize(80)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
@@ -636,33 +602,21 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addLayout(self.verticalLayout_5)
 
-        self.comboBox_selectLineGraph = QComboBox(self.centralwidget)
-        self.comboBox_selectLineGraph.addItem("")
-        self.comboBox_selectLineGraph.addItem("")
-        self.comboBox_selectLineGraph.setObjectName(u"comboBox_selectLineGraph")
-
-        self.verticalLayout_6.addWidget(self.comboBox_selectLineGraph)
-
         self.pushButton = QPushButton(self.centralwidget)
         self.pushButton.setObjectName(u"pushButton")
 
         self.verticalLayout_6.addWidget(self.pushButton)
 
-        self.pushButton_openTestUi = QPushButton(self.centralwidget)
-        self.pushButton_openTestUi.setObjectName(u"pushButton_openTestUi")
-
-        self.verticalLayout_6.addWidget(self.pushButton_openTestUi)
-
 
         self.horizontalLayout_20.addLayout(self.verticalLayout_6)
 
-        self.horizontalLayout_20.setStretch(0, 1)
+        self.horizontalLayout_20.setStretch(0, 4)
         self.horizontalLayout_20.setStretch(1, 10)
         self.horizontalLayout_20.setStretch(2, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1191, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1187, 22))
         self.menuMain = QMenu(self.menubar)
         self.menuMain.setObjectName(u"menuMain")
         MainWindow.setMenuBar(self.menubar)
@@ -717,8 +671,10 @@ class Ui_MainWindow(object):
         self.comboBox_dispatchTrain_line.setItemText(1, QCoreApplication.translate("MainWindow", u"Green", None))
         self.comboBox_dispatchTrain_line.setItemText(2, QCoreApplication.translate("MainWindow", u"Blue", None))
 
-        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Station", None))
-        self.label_29.setText(QCoreApplication.translate("MainWindow", u"Time", None))
+        ___qtablewidgetitem = self.tableWidget_dispatch.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Station", None));
+        ___qtablewidgetitem1 = self.tableWidget_dispatch.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Time", None));
         self.pushButton_dispatchTrains.setText(QCoreApplication.translate("MainWindow", u"Dispatch Train", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Schedule Trains", None))
         self.comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Red Line", None))
@@ -735,54 +691,54 @@ class Ui_MainWindow(object):
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"Green Line", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Blue Line", None))
         self.BlueThroughput.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        ___qtablewidgetitem = self.tableWidget_2.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Block Number", None));
-        ___qtablewidgetitem1 = self.tableWidget_2.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Line", None));
-        ___qtablewidgetitem2 = self.tableWidget_2.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None));
-        ___qtablewidgetitem3 = self.tableWidget_2.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Authority", None));
-        ___qtablewidgetitem4 = self.tableWidget_2.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None));
-        ___qtablewidgetitem5 = self.tableWidget_2.horizontalHeaderItem(5)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Failure", None));
-        ___qtablewidgetitem6 = self.tableWidget_2.horizontalHeaderItem(6)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Crossing", None));
-        ___qtablewidgetitem7 = self.tableWidget_2.horizontalHeaderItem(7)
-        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Section", None));
-        ___qtablewidgetitem8 = self.tableWidget_2.horizontalHeaderItem(8)
-        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"Maintenance Mode", None));
-        ___qtablewidgetitem9 = self.tableWidget_2.horizontalHeaderItem(9)
-        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Infrastructure", None));
-        ___qtablewidgetitem10 = self.tableWidget_2.horizontalHeaderItem(10)
-        ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"Signal", None));
-        ___qtablewidgetitem11 = self.tableWidget_2.horizontalHeaderItem(11)
-        ___qtablewidgetitem11.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None));
-        ___qtablewidgetitem12 = self.tableWidget.horizontalHeaderItem(0)
-        ___qtablewidgetitem12.setText(QCoreApplication.translate("MainWindow", u"Block", None));
-        ___qtablewidgetitem13 = self.tableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem13.setText(QCoreApplication.translate("MainWindow", u"Line", None));
-        ___qtablewidgetitem14 = self.tableWidget.horizontalHeaderItem(2)
-        ___qtablewidgetitem14.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None));
-        ___qtablewidgetitem15 = self.tableWidget.horizontalHeaderItem(3)
-        ___qtablewidgetitem15.setText(QCoreApplication.translate("MainWindow", u"Authority", None));
-        ___qtablewidgetitem16 = self.tableWidget.horizontalHeaderItem(4)
-        ___qtablewidgetitem16.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None));
-        ___qtablewidgetitem17 = self.tableWidget.horizontalHeaderItem(5)
-        ___qtablewidgetitem17.setText(QCoreApplication.translate("MainWindow", u"Failure", None));
-        ___qtablewidgetitem18 = self.tableWidget.horizontalHeaderItem(6)
-        ___qtablewidgetitem18.setText(QCoreApplication.translate("MainWindow", u"Crossing", None));
-        ___qtablewidgetitem19 = self.tableWidget.horizontalHeaderItem(7)
-        ___qtablewidgetitem19.setText(QCoreApplication.translate("MainWindow", u"Section", None));
-        ___qtablewidgetitem20 = self.tableWidget.horizontalHeaderItem(8)
-        ___qtablewidgetitem20.setText(QCoreApplication.translate("MainWindow", u"Maintenance Mode", None));
-        ___qtablewidgetitem21 = self.tableWidget.horizontalHeaderItem(9)
-        ___qtablewidgetitem21.setText(QCoreApplication.translate("MainWindow", u"Infrastructure", None));
-        ___qtablewidgetitem22 = self.tableWidget.horizontalHeaderItem(10)
-        ___qtablewidgetitem22.setText(QCoreApplication.translate("MainWindow", u"Signal", None));
-        ___qtablewidgetitem23 = self.tableWidget.horizontalHeaderItem(11)
-        ___qtablewidgetitem23.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None));
+        ___qtablewidgetitem2 = self.tableWidget_2.horizontalHeaderItem(0)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Block Number", None));
+        ___qtablewidgetitem3 = self.tableWidget_2.horizontalHeaderItem(1)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Line", None));
+        ___qtablewidgetitem4 = self.tableWidget_2.horizontalHeaderItem(2)
+        ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None));
+        ___qtablewidgetitem5 = self.tableWidget_2.horizontalHeaderItem(3)
+        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Authority", None));
+        ___qtablewidgetitem6 = self.tableWidget_2.horizontalHeaderItem(4)
+        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None));
+        ___qtablewidgetitem7 = self.tableWidget_2.horizontalHeaderItem(5)
+        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Failure", None));
+        ___qtablewidgetitem8 = self.tableWidget_2.horizontalHeaderItem(6)
+        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"Crossing", None));
+        ___qtablewidgetitem9 = self.tableWidget_2.horizontalHeaderItem(7)
+        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Section", None));
+        ___qtablewidgetitem10 = self.tableWidget_2.horizontalHeaderItem(8)
+        ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"Maintenance Mode", None));
+        ___qtablewidgetitem11 = self.tableWidget_2.horizontalHeaderItem(9)
+        ___qtablewidgetitem11.setText(QCoreApplication.translate("MainWindow", u"Infrastructure", None));
+        ___qtablewidgetitem12 = self.tableWidget_2.horizontalHeaderItem(10)
+        ___qtablewidgetitem12.setText(QCoreApplication.translate("MainWindow", u"Signal", None));
+        ___qtablewidgetitem13 = self.tableWidget_2.horizontalHeaderItem(11)
+        ___qtablewidgetitem13.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None));
+        ___qtablewidgetitem14 = self.tableWidget.horizontalHeaderItem(0)
+        ___qtablewidgetitem14.setText(QCoreApplication.translate("MainWindow", u"Block", None));
+        ___qtablewidgetitem15 = self.tableWidget.horizontalHeaderItem(1)
+        ___qtablewidgetitem15.setText(QCoreApplication.translate("MainWindow", u"Line", None));
+        ___qtablewidgetitem16 = self.tableWidget.horizontalHeaderItem(2)
+        ___qtablewidgetitem16.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None));
+        ___qtablewidgetitem17 = self.tableWidget.horizontalHeaderItem(3)
+        ___qtablewidgetitem17.setText(QCoreApplication.translate("MainWindow", u"Authority", None));
+        ___qtablewidgetitem18 = self.tableWidget.horizontalHeaderItem(4)
+        ___qtablewidgetitem18.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None));
+        ___qtablewidgetitem19 = self.tableWidget.horizontalHeaderItem(5)
+        ___qtablewidgetitem19.setText(QCoreApplication.translate("MainWindow", u"Failure", None));
+        ___qtablewidgetitem20 = self.tableWidget.horizontalHeaderItem(6)
+        ___qtablewidgetitem20.setText(QCoreApplication.translate("MainWindow", u"Crossing", None));
+        ___qtablewidgetitem21 = self.tableWidget.horizontalHeaderItem(7)
+        ___qtablewidgetitem21.setText(QCoreApplication.translate("MainWindow", u"Section", None));
+        ___qtablewidgetitem22 = self.tableWidget.horizontalHeaderItem(8)
+        ___qtablewidgetitem22.setText(QCoreApplication.translate("MainWindow", u"Maintenance Mode", None));
+        ___qtablewidgetitem23 = self.tableWidget.horizontalHeaderItem(9)
+        ___qtablewidgetitem23.setText(QCoreApplication.translate("MainWindow", u"Infrastructure", None));
+        ___qtablewidgetitem24 = self.tableWidget.horizontalHeaderItem(10)
+        ___qtablewidgetitem24.setText(QCoreApplication.translate("MainWindow", u"Signal", None));
+        ___qtablewidgetitem25 = self.tableWidget.horizontalHeaderItem(11)
+        ___qtablewidgetitem25.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None));
         self.outputLabel.setText(QCoreApplication.translate("MainWindow", u"Output", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Change Speed", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Line", None))
@@ -807,11 +763,7 @@ class Ui_MainWindow(object):
 
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Time", None))
         self.pushButton_editStations.setText(QCoreApplication.translate("MainWindow", u"Update Station", None))
-        self.comboBox_selectLineGraph.setItemText(0, QCoreApplication.translate("MainWindow", u"Green Line", None))
-        self.comboBox_selectLineGraph.setItemText(1, QCoreApplication.translate("MainWindow", u"Blue Line", None))
-
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Refresh Data", None))
-        self.pushButton_openTestUi.setText(QCoreApplication.translate("MainWindow", u"OPEN TEST UI", None))
         self.menuMain.setTitle(QCoreApplication.translate("MainWindow", u"Window", None))
     # retranslateUi
 

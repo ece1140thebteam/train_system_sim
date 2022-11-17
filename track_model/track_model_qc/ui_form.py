@@ -23,10 +23,10 @@ class Ui_Widget(object):
     def setupUi(self, Widget):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(820, 466)
+        Widget.resize(1067, 510)
         self.verticalLayoutWidget = QWidget(Widget)
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.verticalLayoutWidget.setGeometry(QRect(310, 0, 151, 464))
+        self.verticalLayoutWidget.setGeometry(QRect(310, 0, 151, 501))
         self.verticalLayout = QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(10, 10, 10, 10)
@@ -169,7 +169,7 @@ class Ui_Widget(object):
 
         self.verticalLayoutWidget_2 = QWidget(Widget)
         self.verticalLayoutWidget_2.setObjectName(u"verticalLayoutWidget_2")
-        self.verticalLayoutWidget_2.setGeometry(QRect(0, 40, 311, 421))
+        self.verticalLayoutWidget_2.setGeometry(QRect(0, 40, 311, 461))
         self.verticalLayout_2 = QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -178,6 +178,10 @@ class Ui_Widget(object):
         self.blockListTreeWidget = QTreeWidget(self.verticalLayoutWidget_2)
         self.blockListTreeWidget.setObjectName(u"blockListTreeWidget")
         self.blockListTreeWidget.setEnabled(True)
+        self.blockListTreeWidget.setWordWrap(False)
+        self.blockListTreeWidget.header().setCascadingSectionResizes(False)
+        self.blockListTreeWidget.header().setMinimumSectionSize(50)
+        self.blockListTreeWidget.header().setDefaultSectionSize(100)
 
         self.horizontalLayout_5.addWidget(self.blockListTreeWidget)
 
@@ -220,7 +224,7 @@ class Ui_Widget(object):
 
         self.verticalLayoutWidget_3 = QWidget(Widget)
         self.verticalLayoutWidget_3.setObjectName(u"verticalLayoutWidget_3")
-        self.verticalLayoutWidget_3.setGeometry(QRect(460, 0, 160, 466))
+        self.verticalLayoutWidget_3.setGeometry(QRect(460, 0, 160, 501))
         self.verticalLayout_4 = QVBoxLayout(self.verticalLayoutWidget_3)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(10, 10, 10, 10)
@@ -348,10 +352,26 @@ class Ui_Widget(object):
 
         self.verticalLayoutWidget_4 = QWidget(Widget)
         self.verticalLayoutWidget_4.setObjectName(u"verticalLayoutWidget_4")
-        self.verticalLayoutWidget_4.setGeometry(QRect(620, 0, 160, 466))
+        self.verticalLayoutWidget_4.setGeometry(QRect(620, 0, 160, 501))
         self.verticalLayout_5 = QVBoxLayout(self.verticalLayoutWidget_4)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(10, 10, 10, 10)
+        self.blockGradeTitle_33 = QLabel(self.verticalLayoutWidget_4)
+        self.blockGradeTitle_33.setObjectName(u"blockGradeTitle_33")
+        self.blockGradeTitle_33.setMaximumSize(QSize(16777215, 20))
+        self.blockGradeTitle_33.setFont(font)
+        self.blockGradeTitle_33.setLineWidth(1)
+        self.blockGradeTitle_33.setMidLineWidth(0)
+        self.blockGradeTitle_33.setMargin(0)
+
+        self.verticalLayout_5.addWidget(self.blockGradeTitle_33)
+
+        self.blockDirectionsOfTravel = QLabel(self.verticalLayoutWidget_4)
+        self.blockDirectionsOfTravel.setObjectName(u"blockDirectionsOfTravel")
+        self.blockDirectionsOfTravel.setMaximumSize(QSize(16777215, 20))
+
+        self.verticalLayout_5.addWidget(self.blockDirectionsOfTravel)
+
         self.verticalSpacer_19 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_19)
@@ -375,6 +395,26 @@ class Ui_Widget(object):
         self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_15)
+
+        self.blockGradeTitle_31 = QLabel(self.verticalLayoutWidget_4)
+        self.blockGradeTitle_31.setObjectName(u"blockGradeTitle_31")
+        self.blockGradeTitle_31.setMaximumSize(QSize(16777215, 20))
+        self.blockGradeTitle_31.setFont(font)
+        self.blockGradeTitle_31.setLineWidth(1)
+        self.blockGradeTitle_31.setMidLineWidth(0)
+        self.blockGradeTitle_31.setMargin(0)
+
+        self.verticalLayout_5.addWidget(self.blockGradeTitle_31)
+
+        self.blockCommandedSpeedInfo = QLabel(self.verticalLayoutWidget_4)
+        self.blockCommandedSpeedInfo.setObjectName(u"blockCommandedSpeedInfo")
+        self.blockCommandedSpeedInfo.setMaximumSize(QSize(16777215, 20))
+
+        self.verticalLayout_5.addWidget(self.blockCommandedSpeedInfo)
+
+        self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_5.addItem(self.verticalSpacer_20)
 
         self.blockGradeTitle_32 = QLabel(self.verticalLayoutWidget_4)
         self.blockGradeTitle_32.setObjectName(u"blockGradeTitle_32")
@@ -444,6 +484,33 @@ class Ui_Widget(object):
 
         self.verticalLayout_5.addItem(self.verticalSpacer_21)
 
+        self.verticalLayoutWidget_5 = QWidget(Widget)
+        self.verticalLayoutWidget_5.setObjectName(u"verticalLayoutWidget_5")
+        self.verticalLayoutWidget_5.setGeometry(QRect(780, 0, 281, 311))
+        self.verticalLayout_3 = QVBoxLayout(self.verticalLayoutWidget_5)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.stationTree = QTreeWidget(self.verticalLayoutWidget_5)
+        __qtreewidgetitem = QTreeWidgetItem(self.stationTree)
+        __qtreewidgetitem.setFlags(Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsEnabled);
+        self.stationTree.setObjectName(u"stationTree")
+
+        self.verticalLayout_3.addWidget(self.stationTree)
+
+        self.verticalLayoutWidget_6 = QWidget(Widget)
+        self.verticalLayoutWidget_6.setObjectName(u"verticalLayoutWidget_6")
+        self.verticalLayoutWidget_6.setGeometry(QRect(780, 310, 281, 191))
+        self.verticalLayout_6 = QVBoxLayout(self.verticalLayoutWidget_6)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.switchPosTree = QTreeWidget(self.verticalLayoutWidget_6)
+        self.switchPosTree.headerItem().setText(3, "")
+        __qtreewidgetitem1 = QTreeWidgetItem(self.switchPosTree)
+        __qtreewidgetitem1.setFlags(Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsEnabled);
+        self.switchPosTree.setObjectName(u"switchPosTree")
+
+        self.verticalLayout_6.addWidget(self.switchPosTree)
+
 
         self.retranslateUi(Widget)
 
@@ -469,6 +536,8 @@ class Ui_Widget(object):
         self.blockGradeTitle_26.setText(QCoreApplication.translate("Widget", u"Track Heater", None))
         self.blockTrackHeaterInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         ___qtreewidgetitem = self.blockListTreeWidget.headerItem()
+        ___qtreewidgetitem.setText(2, QCoreApplication.translate("Widget", u"Occupancy", None));
+        ___qtreewidgetitem.setText(1, QCoreApplication.translate("Widget", u"Signal", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("Widget", u"Track", None));
         self.uploadTrackButton.setText(QCoreApplication.translate("Widget", u"Upload Track", None))
         self.label.setText(QCoreApplication.translate("Widget", u"Temperature \u00b0F", None))
@@ -486,8 +555,12 @@ class Ui_Widget(object):
         self.blockAuthorityInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_24.setText(QCoreApplication.translate("Widget", u"Maintenance Mode", None))
         self.blockMaintenanceModeInfo.setText(QCoreApplication.translate("Widget", u"-", None))
+        self.blockGradeTitle_33.setText(QCoreApplication.translate("Widget", u"Directions of Travel", None))
+        self.blockDirectionsOfTravel.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_30.setText(QCoreApplication.translate("Widget", u"Beacon", None))
         self.blockBeaconInfo.setText(QCoreApplication.translate("Widget", u"-", None))
+        self.blockGradeTitle_31.setText(QCoreApplication.translate("Widget", u"Commanded Speed", None))
+        self.blockCommandedSpeedInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_32.setText(QCoreApplication.translate("Widget", u"Failure Mode", None))
         self.blockFailureModeInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_34.setText(QCoreApplication.translate("Widget", u"Switch Position", None))
@@ -496,5 +569,23 @@ class Ui_Widget(object):
         self.blockSignalInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_38.setText(QCoreApplication.translate("Widget", u"Track Circuit", None))
         self.blockTrackCircuitInfo.setText(QCoreApplication.translate("Widget", u"-", None))
+        ___qtreewidgetitem1 = self.stationTree.headerItem()
+        ___qtreewidgetitem1.setText(2, QCoreApplication.translate("Widget", u"Deboarded", None));
+        ___qtreewidgetitem1.setText(1, QCoreApplication.translate("Widget", u"Waiting", None));
+        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("Widget", u"Station", None));
+
+        __sortingEnabled = self.stationTree.isSortingEnabled()
+        self.stationTree.setSortingEnabled(False)
+        self.stationTree.setSortingEnabled(__sortingEnabled)
+
+        ___qtreewidgetitem2 = self.switchPosTree.headerItem()
+        ___qtreewidgetitem2.setText(2, QCoreApplication.translate("Widget", u"Block 2", None));
+        ___qtreewidgetitem2.setText(1, QCoreApplication.translate("Widget", u"Block 1", None));
+        ___qtreewidgetitem2.setText(0, QCoreApplication.translate("Widget", u"Switch", None));
+
+        __sortingEnabled1 = self.switchPosTree.isSortingEnabled()
+        self.switchPosTree.setSortingEnabled(False)
+        self.switchPosTree.setSortingEnabled(__sortingEnabled1)
+
     # retranslateUi
 
