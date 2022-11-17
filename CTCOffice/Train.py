@@ -63,7 +63,7 @@ class Train_Sim():
     self.trains.update({self.next_train_id: train})
     self.next_train_id += 1
     self.update_authority(train.id)
-    s.send_CTC_create_train.emit()
+    s.send_CTC_create_train.emit(line)
 
   def single_occupancy_update(self, line, block, occupancy):
     if line == 'Green':
@@ -119,6 +119,13 @@ class Train_Sim():
         train.destinations.pop(0)
         # Set train dwelling to 1
         train.is_dwelling = 1
+
+        prevBlock = green_route[train.route_block-1]
+        authority = {'line': 'Green', 'block': prevBlock, 'authority': 0}
+        speed = {'line': 'Green', 'block': prevBlock, 'speed': 0}
+
+        s.send_CTC_authority.emit([authority])
+        s.send_CTC_suggested_speed.emit([speed])
         return
 
     if(len(train.destinations) == 0):
