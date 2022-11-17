@@ -119,9 +119,9 @@ class TrainModel(QMainWindow):
         
         #data
         self.friction = 0.01
-        self.length = 107
-        self.height = 11.2
-        self.width = 8.69
+        self.length = 32.2 #m
+        self.height = 3.42 #m
+        self.width = 2.65 #m
         self.passenger = 100
         self.crew = 2
         self.mass = 48.55 #metric ton
@@ -149,6 +149,9 @@ class TrainModel(QMainWindow):
         self.distance = 0
         self.tickrate = 0
         self.distance_traveled = 0
+        self.block = None
+        self.prev_block = None
+        self.auth = 1
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -201,14 +204,34 @@ class TrainModel(QMainWindow):
         self.ui.signalfail.clicked.connect(self.signal_failure)
 
         #signals
+        self.next_track()
         s.send_TrainModel_eLight.connect(self.light_set)
         s.send_TrainModel_iLight.connect(self.light_set)
         s.send_TrainModel_powerOutput.connect(self.power_set)
+        s.send_TrackModel_next_block_info.connect(self.update_blocks)
         s.timer_tick.connect(self.timer)
 
     def timer(self, mul):
         self.tickrate = 0.1*mul
         self.calc_speed()
+    
+    def next_track(self):
+        if self.block is None:
+            s.send_TrackModel_get_next_block_info.emit("Green", 0, -1, 0)
+        else:
+            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
+
+    def update_blocks(self, train, block):
+        self.prev_block = self.block
+        self.block = block
+        s.send_TrackModel_track_occupancy("Green", self.block['block_num'], True)
+        self.grade = self.block['grade']
+        self.speedcmd = self.block['commanded_speed']
+        self.auth = self.block['authority']
+        if (self.block['underground']):
+            self.lightcmd = True
+            self.light_set()
+        self.speedlmt = self.block['speed_limit']
 
     def e_brake(self):
         if self.ui.eBrake.isChecked() or self.ebrakecmd: 
@@ -320,6 +343,11 @@ class TrainModel(QMainWindow):
         self.distance = distance
         # calculating the total distance traveled by the train
         self.distance_traveled += distance
+        if (self.distance_traveled > self.block['length']):
+            self.distance_traveled -= self.block['length']
+            self.next_track()
+        if (self.distance_traveled > self.length):
+            s.send_TrackModel_track_occupancy.emit("Green", self.prev_block['block_num'], False)
 
     #test ui updates:
 

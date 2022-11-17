@@ -65,12 +65,17 @@ class TrackModelTestUI(QWidget):
                 s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)
                 self.train_derailed()
                 return
-
+            if 'yard' in block_info:
+                print('ARRIVED AT YARD')
+                s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)
+                self.train_derailed()
+                return
             self.current_block_info = block_info
             self.traveled_in_block = 0
             self.previous_block = self.current_block
             self.current_block = self.current_block_info['block_num']
             
+
 
 
         self.current_block_info = block_info
@@ -89,13 +94,13 @@ class TrackModelTestUI(QWidget):
 
     def handle_time_increment(self):
         if self.run_train:
-            if self.is_dwelling:
-                self.dwelling_t += .1
-                if self.dwelling_t < 30:
-                    return
-                else:
-                    self.dwelling_t = 0
-                    self.is_dwelling = False
+            # if self.is_dwelling:
+            #     self.dwelling_t += .1
+            #     if self.dwelling_t < 30:
+            #         return
+            #     else:
+            #         self.dwelling_t = 0
+            #         self.is_dwelling = False
 
             # print('timer')
             line = self.current_line

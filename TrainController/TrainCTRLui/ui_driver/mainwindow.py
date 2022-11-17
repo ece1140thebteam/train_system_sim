@@ -148,7 +148,7 @@ class TrainController(QMainWindow):
     #Function to adjust current speed, is called externally
     def curSpdAdjust(self, spd):
         self.curSpd = spd
-        curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
+        curStr = 'Current Speed: ' + str((self.curSpd)*2.23694) + ' MPH'
         self.ui.curSpd.setText(curStr)
         self.powerCalc()
 
