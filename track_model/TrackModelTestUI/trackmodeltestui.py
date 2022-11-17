@@ -79,7 +79,7 @@ class TrackModelTestUI(QWidget):
         # print(block_info['grade'])
         # print(block_info['beacon'])
         # print(block_info['length'])
-        # print(block_info['authority'])
+        # print(block_info['authority']) #1 or 0
         # print(block_info['commanded_speed'])
 
     def train_derailed(self):
