@@ -124,13 +124,23 @@ class Train_Sim():
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1
       origin_block = train.current_block
-      dest_block = -1
+      dest_block = 0
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block)
     else:
       # Set authority from current block to next station to 1
       origin_block = train.current_block
       dest_block = train.destinations[0]
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block)
+
+  def calculate_time_to_next(self, line, route_block, destination):
+    if(line == 'Green'):
+      blocks_to_travel = []
+      cur_block = green_route[route_block]
+      cur_route_index = route_block
+      while cur_block != destination:
+        blocks_to_travel.append(cur_block)
+        cur_route_index += 1
+        cur_block = green_route[cur_route_index]
 
   def set_authority_speed(self, line, route_block, origin, destination):
     if(line == 'Green'):

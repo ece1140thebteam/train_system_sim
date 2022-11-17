@@ -23,9 +23,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def __init__(self, parent=None):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
-      self.second = 0
+      self.second = 53100
 
-      self.label_time.setText(str(round(self.second, 1)))
+      self.label_time.setText(str(datetime.timedelta(seconds=round(self.second))))
       
       self.trackController = TrackControllerWindow()
       self.trainmodel = TrainModel()
