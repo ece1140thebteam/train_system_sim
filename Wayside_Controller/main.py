@@ -33,6 +33,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       # Send block authority from CTC to Track Controller
       s.send_CTC_authority.connect(self.ctc_set_authority) # [{'line':line, 'block':block, 'authority':0}]
 
+      s.send_TrackModel_tc_track_failure.connect(self.tm_set_block_failure)
+
       # Allocate blocks with corresponding controller
       for line in track_info:
          if line == 'Red':
@@ -57,6 +59,12 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             
       #s.timer_tick.connect(self.handle_time_increment)
       #s.send_CTC_switch_position_signal.connect(self.update_switch_position)
+   def tm_set_block_failure(self, line, block, failure):
+      # i
+      track_info[line][block]['failure'] = int(failure != 'None')
+      if failure == 'None': failure = ''
+      s.send_CTC_test_failure.emit(line, block, failure)
+   
    def ctc_set_switch_position(self, updates_list):
       controllers_to_update = []
       for update in updates_list:
