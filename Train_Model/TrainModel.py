@@ -148,6 +148,7 @@ class TrainModel(QMainWindow):
         self.sbrakecmd = False
         self.distance = 0
         self.tickrate = 0
+        self.distance_traveled = 0
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -245,7 +246,6 @@ class TrainModel(QMainWindow):
         self.ui.signalfailure.setText("Signal Failure: " + str(self.signalfail))
 
     def calc_accel(self):
-        print("accel")
         power = self.powercmd
 
         # handling if there is an engine failure caused by Murphy
@@ -256,6 +256,8 @@ class TrainModel(QMainWindow):
         angle = math.radians(self.grade)
 
         mass = self.mass*1000 #convert metric tons to kg
+
+        power *= 1000
 
         # calculating the force of the engine
         normal_force = mass * math.cos(angle) * 9.81
@@ -293,7 +295,6 @@ class TrainModel(QMainWindow):
             return
 
     def calc_speed(self):
-        print("speed")
         sample_time = self.tickrate
         # setting the prev speed
         self.prev_speed = self.speed
@@ -301,14 +302,24 @@ class TrainModel(QMainWindow):
         self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.accel*3.2808399)) + " ft/s^2")
         self.calc_accel()
         #self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.accel*3.2808399)) + " ft/s^2")
-        # calculating the new speed
+        #calculating the new speed
         self.speed = self.prev_speed + sample_time/2 * (self.accel + self.prev_accel)
-        # not allowing for negative velcoity values
+        #not allowing for negative velcoity values
         if (self.speed < 0):
             self.speed = 0
         #show speed
         s.send_TrainCtrl_speed.emit(self.speed)
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
+
+    def calculate_distance(self):
+        sample_time = self.tickrate
+        # calculating the distance traveled in the last time sample
+        distance = self.prev_speed * sample_time + 0.5 * self.accel * sample_time**2
+        if distance < 0:
+            distance = 0
+        self.distance = distance
+        # calculating the total distance traveled by the train
+        self.distance_traveled += distance
 
     #test ui updates:
 
