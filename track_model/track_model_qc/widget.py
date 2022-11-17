@@ -594,19 +594,34 @@ class TrackModel(QWidget):
                 print(block_options)
                 # bidirectional block that can travel to both of the switches
                 if len(block_options) > 1:
+                    found = False
                     for block in block_options:
                         if block>0:
-                            print(block)
                             next_block_num = block
-    
-                # switch says which track enters unidirectional block
-                elif len(curr_b.can_travel_to) == 1 or len(curr_b.can_travel_to) == 1:
-                    next_block_num = curr_b.can_travel_to[0]
+                            found = True
+
+                    # all options are through switch
+                    if not found:
+                        curr_pos = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos 
+                        if -1*curr_pos not in block_options:
+                            print('TRAIN DERAILED')
+                            s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
+                            return
+                        else:
+                            next_block_num = curr_pos 
+
+                elif len(block_options) == 1:
+                    next_block_num = block_options[0]
 
                 # block is traveling through the switch to the current position of the switch
                 if next_block_num<0:
                     print(curr_b.switch.curr_pos)
-                    next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+                    pos = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+                    if abs(next_block_num) == pos:
+                        next_block_num = pos
+                    else:
+                        s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
+                        return 
         
         if next_block_num == 0:
             block_info = dict()
