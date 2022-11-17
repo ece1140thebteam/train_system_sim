@@ -4,6 +4,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import QTimer 
 import math
+import random
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -92,7 +93,7 @@ class TestTrainModel(QMainWindow):
 
     def temp_set(self):
         self.train.tempcmd = self.ui.tempbox.value()
-        self.train.temp_set()
+        self.train.temp_set(self.train.tempcmd)
 
     def power_set(self):
         self.train.powercmd = self.ui.powerbox.value()*1000
@@ -129,15 +130,17 @@ class TrainModel(QMainWindow):
         self.accel = 0 #m/s^2
         self.prev_accel = 0
         self.prev_speed = 0
-        self.lights = False
+        self.ilight = False
+        self.elight = False
         self.rdoor = False
         self.ldoor = False
         self.temp = 70 # F
         self.ldoorcmd = False
         self.rdoorcmd = False
         self.speedcmd = 19 #m/s
-        self.speedlmt = 20 #m/s
-        self.lightcmd = False
+        self.speedlmt = 20 #m/s 
+        self.elightcmd = False
+        self.ilightcmd = False
         self.tempcmd = 70
         self.grade = 0
         self.enginefail = False
@@ -152,6 +155,8 @@ class TrainModel(QMainWindow):
         self.block = None
         self.prev_block = None
         self.auth = 1
+        self.beacon = None
+        self.atStation = False
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -161,14 +166,16 @@ class TrainModel(QMainWindow):
         self.ui.passenger.setText("Passengers: " + str(self.passenger))
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
         self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.accel*3.2808399)) + " ft/s^2")
-        self.ui.light.setText("Lights: Off")
+        self.ui.elight.setText("Exterior Lights: Off")
+        self.ui.ilight.setText("Interior Lights: Off")
         self.ui.rdoors.setText("Right Doors: Closed")
         self.ui.ldoors.setText("Left Doors: Closed")
         self.ui.temp.setText("Temperature: " + str(self.temp))
         self.ui.mass.setText("Mass: " + ("%.2f" % (self.mass*1.10231)) + " tons")
         self.ui.rdoorcmd.setText("Right Door Cmd: Off")
         self.ui.ldoorcmd.setText("Left Door Cmd: Off")
-        self.ui.lightcmd.setText("Light Command: Off")
+        self.ui.elightcmd.setText("Exterior Light Command: Off")
+        self.ui.ilightcmd.setText("Interior Light Command: Off")
         self.ui.ebrakecmd.setText("E Brake Command: Off")
         self.ui.sbrakecmd.setText("S Brake Command: Off")
         self.ui.powercmd.setText("Power Command: " + str(self.powercmd) + " W")
@@ -179,6 +186,9 @@ class TrainModel(QMainWindow):
         self.ui.brakefailure.setText("Brake Failure: " + str(self.brakefail))
         self.ui.enginefailure.setText("Engine Failure: " + str(self.enginefail))
         self.ui.signalfailure.setText("Signal Failure: " + str(self.signalfail))
+        self.ui.beacon.setText("Beacon: None")
+        self.ui.auth.setText("Authority: " + str(self.auth))
+        self.ui.station.setText("Station: None")
 
         #buttons
         self.ui.eBrake.setCheckable(True)
@@ -204,16 +214,37 @@ class TrainModel(QMainWindow):
         self.ui.signalfail.clicked.connect(self.signal_failure)
 
         #signals
-        s.send_TrainModel_eLight.connect(self.light_set)
-        s.send_TrainModel_iLight.connect(self.light_set)
+        s.send_TrainModel_eLight.connect(self.elight_set)
+        s.send_TrainModel_iLight.connect(self.ilight_set)
         s.send_TrainModel_powerOutput.connect(self.power_set)
+        s.send_TrainModel_lDoor.connect(self.left_door)
+        s.send_TrainModel_rDoor.connect(self.right_door)
         s.send_TrackModel_next_block_info.connect(self.update_blocks)
+        s.send_TrainModel_eBrake.connect(self.e_brake)
+        s.send_TrainModel_temp.connect(self.temp_set)
+        s.send_TrackModel_block_info.connect(self.update_blocks)
         s.timer_tick.connect(self.timer)
         self.next_track()
 
     def timer(self, mul):
         self.tickrate = 0.1*mul
         self.calc_speed()
+        if self.auth == 0:
+            self.current_track()
+            self.station()
+        if self.auth == 1 and self.atStation:
+            if self.beacon['station_side'] is 'right':
+                self.rdoorcmd = False
+                self.right_door()
+            else:
+                self.ldoorcmd = False
+                self.left_door()
+
+    def current_track(self):
+        if self.block is None:
+            s.send_TrackModel_get_block_info.emit("Green", 0, 0)
+        else:
+            s.send_TrackModel_get_block_info.emit("Green", self.block['block_num'], 0)
     
     def next_track(self):
         if self.block is None:
@@ -224,21 +255,46 @@ class TrainModel(QMainWindow):
             s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
 
     def update_blocks(self, train, block):
-        self.prev_block = self.block
-        self.block = block
+        if self.block != block:
+            self.prev_block = self.block
+            self.block = block
         s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
         self.grade_set()
         self.speedcmd = self.block['commanded_speed']
         self.auth = self.block['authority']
+        if (self.auth == 0):
+            self.sbrakecmd = True
+        else:
+            self.sbrakecmd = False
+        self.s_brake()
+        self.beacon = self.block['beacon']
         if (self.block['underground']):
-            self.lightcmd = True
-            self.light_set()
+            self.elightcmd = True
+            self.ilightcmd = True
+        else:
+            self.elightcmd = False
+            self.ilightcmd = False
+        self.elight_set(self.elightcmd)
+        self.ilight_set(self.ilightcmd)
         self.speedlmt = self.block['speed_limit']
         self.speed_lmt_set()
 
-    def e_brake(self):
-        if self.ui.eBrake.isChecked() or self.ebrakecmd: 
+    def station(self):
+        if not(self.atStation) and self.beacon['station_name'] != None:
+            self.atStation = True
+            self.passenger += self.block['passengers_waiting']
+            self.passenger -= random.randint(self.passenger/10, self.passenger/5)
+            if self.beacon['station_side'] is 'right':
+                self.rdoorcmd = True
+                self.right_door()
+            else:
+                self.ldoorcmd = True
+                self.left_door()
+
+
+    def e_brake(self, cmd = False):
+        if self.ui.eBrake.isChecked() or cmd: 
             self.ebrakecmd = True
             self.ui.ebrakecmd.setText("E Brake Command: On")
         else:
@@ -292,12 +348,12 @@ class TrainModel(QMainWindow):
         gravity_force = mass * math.sin(angle) * 9.81
         try:
             force = power / self.speed
-            force = force - friction_force - gravity_force
-            if (force > 20450):
-                force = 20450
+            force = force -  gravity_force - friction_force
+            if (force > 25000):
+                force = 25000
         except ZeroDivisionError:
             # edge case where the train is at zero speed and starting to move. Setting the force to max force
-            force = 20450
+            force = 25000
             if (power == 0):
                 force = 0
 
@@ -310,8 +366,8 @@ class TrainModel(QMainWindow):
         self.prev_accel = self.accel
         self.accel = force / mass
         # checking the acceleration limit
-        if (self.accel > 1):
-            self.accel = 1
+        if (self.accel > 0.5):
+            self.accel = 0.5
         # emergency brake is selected
         if (self.ebrakecmd):
             self.accel = -2.73
@@ -359,8 +415,8 @@ class TrainModel(QMainWindow):
 
     #test ui updates:
 
-    def right_door(self):
-        if (self.rdoorcmd):
+    def right_door(self, open):
+        if (open):
             self.rdoor = True
             self.ui.rdoors.setText("Right Doors: Open")
             self.ui.rdoorcmd.setText("Right Door Cmd: On")
@@ -369,8 +425,8 @@ class TrainModel(QMainWindow):
             self.ui.rdoors.setText("Right Doors: Closed")
             self.ui.rdoorcmd.setText("Right Door Cmd: Off")
 
-    def left_door(self):
-        if (self.ldoorcmd):
+    def left_door(self, open):
+        if (open):
             self.ldoor = True
             self.ui.ldoors.setText("Left Doors: Open")
             self.ui.ldoorcmd.setText("Left Door Cmd: On")
@@ -379,28 +435,36 @@ class TrainModel(QMainWindow):
             self.ui.ldoors.setText("Left Doors: Closed")
             self.ui.ldoorcmd.setText("Left Door Cmd: Off")
 
-    def light_set(self):
-        if self.lightcmd:
-            self.lights = True
-            self.ui.light.setText("Lights: On")
-            self.ui.lightcmd.setText("Light Command: On")
+    def elight_set(self, on):
+        if on:
+            self.elight = True
+            self.ui.elight.setText("Exterior Lights: On")
+            self.ui.elightcmd.setText("Exterior Light Command: On")
         else:
-            self.lights = False
-            self.ui.light.setText("Lights: Off")
-            self.ui.lightcmd.setText("Light Command: Off")
+            self.elight = False
+            self.ui.elight.setText("Exterior Lights: Off")
+            self.ui.elightcmd.setText("Exterior Light Command: Off")
+
+    def ilight_set(self, on):
+        if on:
+            self.ilight = True
+            self.ui.ilight.setText("Interior Lights: On")
+            self.ui.ilightcmd.setText("Interior Light Command: On")
+        else:
+            self.ilight = False
+            self.ui.ilight.setText("Interior Lights: Off")
+            self.ui.ilightcmd.setText("Interior Light Command: Off")
 
     def s_brake(self):
         if not(self.brakefail):
             if not(self.ebrakecmd):
                 if self.sbrakecmd: 
-                    self.sbrakecmd = True
                     self.ui.sbrakecmd.setText("S Brake Command: On")
                 else:
-                    self.sbrakecmd = False
                     self.ui.sbrakecmd.setText("S Brake Command: Off")
 
-    def temp_set(self):
-        self.temp = self.tempcmd
+    def temp_set(self, cmd):
+        self.temp = cmd
         self.ui.tempcmd.setText("Temperature Cmd: " + str(self.tempcmd) + " F")
         self.ui.temp.setText("Temperature: " + str(self.temp) + " F")
 
