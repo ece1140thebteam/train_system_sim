@@ -284,7 +284,9 @@ class TrainModel(QMainWindow):
         if not(self.atStation) and self.beacon['station_name'] != None:
             self.atStation = True
             self.passenger += self.block['passengers_waiting']
-            self.passenger -= random.randint(self.passenger/10, self.passenger/5)
+            deboarding = random.randint(self.passenger/10, self.passenger/5)
+            self.passenger -= deboarding
+            s.send_TrackModel_passengers_onboarded.emit("Green", self.block['block_num'], deboarding)
             if self.beacon['station_side'] is 'right':
                 self.rdoorcmd = True
                 self.right_door()
