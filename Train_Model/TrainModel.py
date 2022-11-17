@@ -235,10 +235,10 @@ class TrainModel(QMainWindow):
         if self.auth == 1 and self.atStation:
             if self.beacon['station_side'] is 'right':
                 self.rdoorcmd = False
-                self.right_door()
+                self.right_door(self.rdoorcmd)
             else:
                 self.ldoorcmd = False
-                self.left_door()
+                self.left_door(self.ldoorcmd)
 
     def current_track(self):
         if self.block is None:
@@ -283,16 +283,16 @@ class TrainModel(QMainWindow):
     def station(self):
         if not(self.atStation) and self.beacon['station_name'] != None:
             self.atStation = True
-            self.passenger += self.block['passengers_waiting']
-            deboarding = random.randint(self.passenger/10, self.passenger/5)
+            self.passenger += self.prev_block['passengers_waiting']
+            deboarding = random.randint(int(self.passenger/10), int(self.passenger/5))
             self.passenger -= deboarding
             s.send_TrackModel_passengers_onboarded.emit("Green", self.block['block_num'], deboarding)
             if self.beacon['station_side'] is 'right':
                 self.rdoorcmd = True
-                self.right_door()
+                self.right_door(self.rdoorcmd)
             else:
                 self.ldoorcmd = True
-                self.left_door()
+                self.left_door(self.ldoorcmd)
 
 
     def e_brake(self, cmd = False):

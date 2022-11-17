@@ -98,6 +98,7 @@ class TrainController(QMainWindow):
         #Signals
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
+        s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
 
     
     #Manual Mode toggling function
