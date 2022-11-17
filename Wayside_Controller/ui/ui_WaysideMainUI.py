@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1012, 632)
+        MainWindow.resize(1010, 625)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setEnabled(True)
@@ -192,32 +192,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_11.addWidget(self.blockSelect1, 0, 4, 1, 1)
 
-        self.trafficLightFrame1 = QFrame(self.tab1Frame)
-        self.trafficLightFrame1.setObjectName(u"trafficLightFrame1")
-        self.trafficLightFrame1.setAutoFillBackground(True)
-        self.trafficLightFrame1.setFrameShape(QFrame.Box)
-        self.trafficLightFrame1.setFrameShadow(QFrame.Raised)
-        self.trafficLightFrame1.setLineWidth(1)
-        self.trafficLightFrame1.setMidLineWidth(0)
-        self.verticalLayout_27 = QVBoxLayout(self.trafficLightFrame1)
-        self.verticalLayout_27.setObjectName(u"verticalLayout_27")
-        self.trafficLightLabel1 = QLabel(self.trafficLightFrame1)
-        self.trafficLightLabel1.setObjectName(u"trafficLightLabel1")
-        self.trafficLightLabel1.setFont(font1)
-        self.trafficLightLabel1.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_27.addWidget(self.trafficLightLabel1)
-
-        self.trafficLightValue1 = QLabel(self.trafficLightFrame1)
-        self.trafficLightValue1.setObjectName(u"trafficLightValue1")
-        self.trafficLightValue1.setFont(font1)
-        self.trafficLightValue1.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_27.addWidget(self.trafficLightValue1)
-
-
-        self.gridLayout_11.addWidget(self.trafficLightFrame1, 2, 4, 1, 1)
-
         self.occupancyFrame1 = QFrame(self.tab1Frame)
         self.occupancyFrame1.setObjectName(u"occupancyFrame1")
         self.occupancyFrame1.setAutoFillBackground(True)
@@ -303,20 +277,6 @@ class Ui_MainWindow(object):
         self.switchPositionFrame1.setMidLineWidth(0)
         self.gridLayout_10 = QGridLayout(self.switchPositionFrame1)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
-        self.switchFromValue1 = QLabel(self.switchPositionFrame1)
-        self.switchFromValue1.setObjectName(u"switchFromValue1")
-        self.switchFromValue1.setFont(font1)
-        self.switchFromValue1.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_10.addWidget(self.switchFromValue1, 1, 0, 1, 1)
-
-        self.switchToValue1 = QLabel(self.switchPositionFrame1)
-        self.switchToValue1.setObjectName(u"switchToValue1")
-        self.switchToValue1.setFont(font1)
-        self.switchToValue1.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_10.addWidget(self.switchToValue1, 1, 2, 1, 1)
-
         self.switchPositionLabel1 = QLabel(self.switchPositionFrame1)
         self.switchPositionLabel1.setObjectName(u"switchPositionLabel1")
         self.switchPositionLabel1.setFont(font1)
@@ -331,16 +291,72 @@ class Ui_MainWindow(object):
 
         self.gridLayout_10.addWidget(self.switchArrowLabel1, 1, 1, 1, 1)
 
-        self.switchButton1 = QPushButton(self.switchPositionFrame1)
-        self.switchButton1.setObjectName(u"switchButton1")
-        self.switchButton1.setEnabled(False)
-        self.switchButton1.setFont(font2)
-        self.switchButton1.setAutoDefault(False)
+        self.switchFromValue1 = QLabel(self.switchPositionFrame1)
+        self.switchFromValue1.setObjectName(u"switchFromValue1")
+        self.switchFromValue1.setFont(font1)
+        self.switchFromValue1.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_10.addWidget(self.switchButton1, 2, 1, 1, 1)
+        self.gridLayout_10.addWidget(self.switchFromValue1, 1, 0, 1, 1)
+
+        self.switchToValue1 = QLabel(self.switchPositionFrame1)
+        self.switchToValue1.setObjectName(u"switchToValue1")
+        self.switchToValue1.setFont(font1)
+        self.switchToValue1.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_10.addWidget(self.switchToValue1, 1, 2, 1, 1)
 
 
-        self.gridLayout_11.addWidget(self.switchPositionFrame1, 1, 1, 2, 1)
+        self.gridLayout_11.addWidget(self.switchPositionFrame1, 1, 1, 1, 1)
+
+        self.trafficLightFrame1 = QFrame(self.tab1Frame)
+        self.trafficLightFrame1.setObjectName(u"trafficLightFrame1")
+        self.trafficLightFrame1.setAutoFillBackground(True)
+        self.trafficLightFrame1.setFrameShape(QFrame.Box)
+        self.trafficLightFrame1.setFrameShadow(QFrame.Raised)
+        self.trafficLightFrame1.setLineWidth(1)
+        self.trafficLightFrame1.setMidLineWidth(0)
+        self.verticalLayout_27 = QVBoxLayout(self.trafficLightFrame1)
+        self.verticalLayout_27.setObjectName(u"verticalLayout_27")
+        self.trafficLightLabel1 = QLabel(self.trafficLightFrame1)
+        self.trafficLightLabel1.setObjectName(u"trafficLightLabel1")
+        self.trafficLightLabel1.setFont(font1)
+        self.trafficLightLabel1.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_27.addWidget(self.trafficLightLabel1)
+
+        self.trafficLightValue1 = QLabel(self.trafficLightFrame1)
+        self.trafficLightValue1.setObjectName(u"trafficLightValue1")
+        self.trafficLightValue1.setFont(font1)
+        self.trafficLightValue1.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_27.addWidget(self.trafficLightValue1)
+
+
+        self.gridLayout_11.addWidget(self.trafficLightFrame1, 2, 1, 1, 1)
+
+        self.maintenanceFrame1 = QFrame(self.tab1Frame)
+        self.maintenanceFrame1.setObjectName(u"maintenanceFrame1")
+        self.maintenanceFrame1.setAutoFillBackground(True)
+        self.maintenanceFrame1.setFrameShape(QFrame.Box)
+        self.maintenanceFrame1.setFrameShadow(QFrame.Raised)
+        self.verticalLayout = QVBoxLayout(self.maintenanceFrame1)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.maintenanceLabel1 = QLabel(self.maintenanceFrame1)
+        self.maintenanceLabel1.setObjectName(u"maintenanceLabel1")
+        self.maintenanceLabel1.setFont(font2)
+        self.maintenanceLabel1.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout.addWidget(self.maintenanceLabel1)
+
+        self.maintenanceValue1 = QLabel(self.maintenanceFrame1)
+        self.maintenanceValue1.setObjectName(u"maintenanceValue1")
+        self.maintenanceValue1.setFont(font2)
+        self.maintenanceValue1.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout.addWidget(self.maintenanceValue1)
+
+
+        self.gridLayout_11.addWidget(self.maintenanceFrame1, 2, 4, 1, 1)
 
 
         self.gridLayout_3.addWidget(self.tab1Frame, 0, 0, 1, 1)
@@ -453,6 +469,7 @@ class Ui_MainWindow(object):
         self.gridLayout_12.addWidget(self.trackLabel2, 0, 0, 1, 1)
 
         self.blockSelect2 = QComboBox(self.tab2Frame)
+        self.blockSelect2.addItem("")
         self.blockSelect2.setObjectName(u"blockSelect2")
         self.blockSelect2.setEnabled(True)
         self.blockSelect2.setFont(font1)
@@ -510,32 +527,6 @@ class Ui_MainWindow(object):
         self.displayPLC2.setFont(font3)
 
         self.gridLayout_12.addWidget(self.displayPLC2, 3, 0, 1, 5)
-
-        self.trafficLightFrame2 = QFrame(self.tab2Frame)
-        self.trafficLightFrame2.setObjectName(u"trafficLightFrame2")
-        self.trafficLightFrame2.setAutoFillBackground(True)
-        self.trafficLightFrame2.setFrameShape(QFrame.Box)
-        self.trafficLightFrame2.setFrameShadow(QFrame.Raised)
-        self.trafficLightFrame2.setLineWidth(1)
-        self.trafficLightFrame2.setMidLineWidth(0)
-        self.verticalLayout_34 = QVBoxLayout(self.trafficLightFrame2)
-        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
-        self.trafficLightLabel2 = QLabel(self.trafficLightFrame2)
-        self.trafficLightLabel2.setObjectName(u"trafficLightLabel2")
-        self.trafficLightLabel2.setFont(font1)
-        self.trafficLightLabel2.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_34.addWidget(self.trafficLightLabel2)
-
-        self.trafficLightValue2 = QLabel(self.trafficLightFrame2)
-        self.trafficLightValue2.setObjectName(u"trafficLightValue2")
-        self.trafficLightValue2.setFont(font1)
-        self.trafficLightValue2.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_34.addWidget(self.trafficLightValue2)
-
-
-        self.gridLayout_12.addWidget(self.trafficLightFrame2, 2, 4, 1, 1)
 
         self.commandedSpeedFrame2 = QFrame(self.tab2Frame)
         self.commandedSpeedFrame2.setObjectName(u"commandedSpeedFrame2")
@@ -603,19 +594,19 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addWidget(self.switchPositionLabel2, 0, 0, 1, 3)
 
-        self.switchArrowLabel2 = QLabel(self.switchPositionFrame2)
-        self.switchArrowLabel2.setObjectName(u"switchArrowLabel2")
-        self.switchArrowLabel2.setFont(font1)
-        self.switchArrowLabel2.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_13.addWidget(self.switchArrowLabel2, 1, 1, 1, 1)
-
         self.switchToValue2 = QLabel(self.switchPositionFrame2)
         self.switchToValue2.setObjectName(u"switchToValue2")
         self.switchToValue2.setFont(font1)
         self.switchToValue2.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_13.addWidget(self.switchToValue2, 1, 2, 1, 1)
+
+        self.switchArrowLabel2 = QLabel(self.switchPositionFrame2)
+        self.switchArrowLabel2.setObjectName(u"switchArrowLabel2")
+        self.switchArrowLabel2.setFont(font1)
+        self.switchArrowLabel2.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_13.addWidget(self.switchArrowLabel2, 1, 1, 1, 1)
 
         self.switchFromValue2 = QLabel(self.switchPositionFrame2)
         self.switchFromValue2.setObjectName(u"switchFromValue2")
@@ -624,15 +615,58 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addWidget(self.switchFromValue2, 1, 0, 1, 1)
 
-        self.switchButton2 = QPushButton(self.switchPositionFrame2)
-        self.switchButton2.setObjectName(u"switchButton2")
-        self.switchButton2.setEnabled(False)
-        self.switchButton2.setFont(font2)
 
-        self.gridLayout_13.addWidget(self.switchButton2, 2, 1, 1, 1)
+        self.gridLayout_12.addWidget(self.switchPositionFrame2, 1, 1, 1, 1)
+
+        self.trafficLightFrame2 = QFrame(self.tab2Frame)
+        self.trafficLightFrame2.setObjectName(u"trafficLightFrame2")
+        self.trafficLightFrame2.setAutoFillBackground(True)
+        self.trafficLightFrame2.setFrameShape(QFrame.Box)
+        self.trafficLightFrame2.setFrameShadow(QFrame.Raised)
+        self.trafficLightFrame2.setLineWidth(1)
+        self.trafficLightFrame2.setMidLineWidth(0)
+        self.verticalLayout_34 = QVBoxLayout(self.trafficLightFrame2)
+        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
+        self.trafficLightLabel2 = QLabel(self.trafficLightFrame2)
+        self.trafficLightLabel2.setObjectName(u"trafficLightLabel2")
+        self.trafficLightLabel2.setFont(font1)
+        self.trafficLightLabel2.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_34.addWidget(self.trafficLightLabel2)
+
+        self.trafficLightValue2 = QLabel(self.trafficLightFrame2)
+        self.trafficLightValue2.setObjectName(u"trafficLightValue2")
+        self.trafficLightValue2.setFont(font1)
+        self.trafficLightValue2.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_34.addWidget(self.trafficLightValue2)
 
 
-        self.gridLayout_12.addWidget(self.switchPositionFrame2, 1, 1, 2, 1)
+        self.gridLayout_12.addWidget(self.trafficLightFrame2, 2, 1, 1, 1)
+
+        self.maintenanceFrame2 = QFrame(self.tab2Frame)
+        self.maintenanceFrame2.setObjectName(u"maintenanceFrame2")
+        self.maintenanceFrame2.setAutoFillBackground(True)
+        self.maintenanceFrame2.setFrameShape(QFrame.Box)
+        self.maintenanceFrame2.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_2 = QVBoxLayout(self.maintenanceFrame2)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.maintenanceLabel2 = QLabel(self.maintenanceFrame2)
+        self.maintenanceLabel2.setObjectName(u"maintenanceLabel2")
+        self.maintenanceLabel2.setFont(font2)
+        self.maintenanceLabel2.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_2.addWidget(self.maintenanceLabel2)
+
+        self.maintenanceValue2 = QLabel(self.maintenanceFrame2)
+        self.maintenanceValue2.setObjectName(u"maintenanceValue2")
+        self.maintenanceValue2.setFont(font2)
+        self.maintenanceValue2.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_2.addWidget(self.maintenanceValue2)
+
+
+        self.gridLayout_12.addWidget(self.maintenanceFrame2, 2, 4, 1, 1)
 
 
         self.gridLayout_4.addWidget(self.tab2Frame, 0, 0, 1, 1)
@@ -745,6 +779,7 @@ class Ui_MainWindow(object):
         self.gridLayout_15.addWidget(self.trackLabel3, 0, 0, 1, 1)
 
         self.blockSelect3 = QComboBox(self.tab3Frame)
+        self.blockSelect3.addItem("")
         self.blockSelect3.setObjectName(u"blockSelect3")
         self.blockSelect3.setEnabled(True)
         self.blockSelect3.setFont(font1)
@@ -802,32 +837,6 @@ class Ui_MainWindow(object):
         self.displayPLC3.setFont(font3)
 
         self.gridLayout_15.addWidget(self.displayPLC3, 3, 0, 1, 5)
-
-        self.trafficLightFrame3 = QFrame(self.tab3Frame)
-        self.trafficLightFrame3.setObjectName(u"trafficLightFrame3")
-        self.trafficLightFrame3.setAutoFillBackground(True)
-        self.trafficLightFrame3.setFrameShape(QFrame.Box)
-        self.trafficLightFrame3.setFrameShadow(QFrame.Raised)
-        self.trafficLightFrame3.setLineWidth(1)
-        self.trafficLightFrame3.setMidLineWidth(0)
-        self.verticalLayout_41 = QVBoxLayout(self.trafficLightFrame3)
-        self.verticalLayout_41.setObjectName(u"verticalLayout_41")
-        self.trafficLightLabel3 = QLabel(self.trafficLightFrame3)
-        self.trafficLightLabel3.setObjectName(u"trafficLightLabel3")
-        self.trafficLightLabel3.setFont(font1)
-        self.trafficLightLabel3.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_41.addWidget(self.trafficLightLabel3)
-
-        self.trafficLightValue3 = QLabel(self.trafficLightFrame3)
-        self.trafficLightValue3.setObjectName(u"trafficLightValue3")
-        self.trafficLightValue3.setFont(font1)
-        self.trafficLightValue3.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_41.addWidget(self.trafficLightValue3)
-
-
-        self.gridLayout_15.addWidget(self.trafficLightFrame3, 2, 4, 1, 1)
 
         self.commandedSpeedFrame3 = QFrame(self.tab3Frame)
         self.commandedSpeedFrame3.setObjectName(u"commandedSpeedFrame3")
@@ -888,19 +897,19 @@ class Ui_MainWindow(object):
         self.switchPositionFrame3.setMidLineWidth(0)
         self.gridLayout_16 = QGridLayout(self.switchPositionFrame3)
         self.gridLayout_16.setObjectName(u"gridLayout_16")
+        self.switchPositionLabel3 = QLabel(self.switchPositionFrame3)
+        self.switchPositionLabel3.setObjectName(u"switchPositionLabel3")
+        self.switchPositionLabel3.setFont(font1)
+        self.switchPositionLabel3.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_16.addWidget(self.switchPositionLabel3, 0, 0, 1, 3)
+
         self.switchFromValue3 = QLabel(self.switchPositionFrame3)
         self.switchFromValue3.setObjectName(u"switchFromValue3")
         self.switchFromValue3.setFont(font1)
         self.switchFromValue3.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_16.addWidget(self.switchFromValue3, 1, 0, 1, 1)
-
-        self.switchArrowLabel3 = QLabel(self.switchPositionFrame3)
-        self.switchArrowLabel3.setObjectName(u"switchArrowLabel3")
-        self.switchArrowLabel3.setFont(font1)
-        self.switchArrowLabel3.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_16.addWidget(self.switchArrowLabel3, 1, 1, 1, 1)
 
         self.switchToValue3 = QLabel(self.switchPositionFrame3)
         self.switchToValue3.setObjectName(u"switchToValue3")
@@ -909,22 +918,65 @@ class Ui_MainWindow(object):
 
         self.gridLayout_16.addWidget(self.switchToValue3, 1, 2, 1, 1)
 
-        self.switchPositionLabel3 = QLabel(self.switchPositionFrame3)
-        self.switchPositionLabel3.setObjectName(u"switchPositionLabel3")
-        self.switchPositionLabel3.setFont(font1)
-        self.switchPositionLabel3.setAlignment(Qt.AlignCenter)
+        self.switchArrowLabel3 = QLabel(self.switchPositionFrame3)
+        self.switchArrowLabel3.setObjectName(u"switchArrowLabel3")
+        self.switchArrowLabel3.setFont(font1)
+        self.switchArrowLabel3.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_16.addWidget(self.switchPositionLabel3, 0, 0, 1, 3)
-
-        self.switchButton3 = QPushButton(self.switchPositionFrame3)
-        self.switchButton3.setObjectName(u"switchButton3")
-        self.switchButton3.setEnabled(False)
-        self.switchButton3.setFont(font2)
-
-        self.gridLayout_16.addWidget(self.switchButton3, 2, 1, 1, 1)
+        self.gridLayout_16.addWidget(self.switchArrowLabel3, 1, 1, 1, 1)
 
 
-        self.gridLayout_15.addWidget(self.switchPositionFrame3, 1, 1, 2, 1)
+        self.gridLayout_15.addWidget(self.switchPositionFrame3, 1, 1, 1, 1)
+
+        self.trafficLightFrame3 = QFrame(self.tab3Frame)
+        self.trafficLightFrame3.setObjectName(u"trafficLightFrame3")
+        self.trafficLightFrame3.setAutoFillBackground(True)
+        self.trafficLightFrame3.setFrameShape(QFrame.Box)
+        self.trafficLightFrame3.setFrameShadow(QFrame.Raised)
+        self.trafficLightFrame3.setLineWidth(1)
+        self.trafficLightFrame3.setMidLineWidth(0)
+        self.verticalLayout_41 = QVBoxLayout(self.trafficLightFrame3)
+        self.verticalLayout_41.setObjectName(u"verticalLayout_41")
+        self.trafficLightLabel3 = QLabel(self.trafficLightFrame3)
+        self.trafficLightLabel3.setObjectName(u"trafficLightLabel3")
+        self.trafficLightLabel3.setFont(font1)
+        self.trafficLightLabel3.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_41.addWidget(self.trafficLightLabel3)
+
+        self.trafficLightValue3 = QLabel(self.trafficLightFrame3)
+        self.trafficLightValue3.setObjectName(u"trafficLightValue3")
+        self.trafficLightValue3.setFont(font1)
+        self.trafficLightValue3.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_41.addWidget(self.trafficLightValue3)
+
+
+        self.gridLayout_15.addWidget(self.trafficLightFrame3, 2, 1, 1, 1)
+
+        self.maintenanceFrame3 = QFrame(self.tab3Frame)
+        self.maintenanceFrame3.setObjectName(u"maintenanceFrame3")
+        self.maintenanceFrame3.setAutoFillBackground(True)
+        self.maintenanceFrame3.setFrameShape(QFrame.Box)
+        self.maintenanceFrame3.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_3 = QVBoxLayout(self.maintenanceFrame3)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.maintenanceLabel3 = QLabel(self.maintenanceFrame3)
+        self.maintenanceLabel3.setObjectName(u"maintenanceLabel3")
+        self.maintenanceLabel3.setFont(font2)
+        self.maintenanceLabel3.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_3.addWidget(self.maintenanceLabel3)
+
+        self.maintenanceValue3 = QLabel(self.maintenanceFrame3)
+        self.maintenanceValue3.setObjectName(u"maintenanceValue3")
+        self.maintenanceValue3.setFont(font2)
+        self.maintenanceValue3.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_3.addWidget(self.maintenanceValue3)
+
+
+        self.gridLayout_15.addWidget(self.maintenanceFrame3, 2, 4, 1, 1)
 
 
         self.gridLayout_18.addWidget(self.tab3Frame, 0, 0, 1, 1)
@@ -4444,7 +4496,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -4467,19 +4519,20 @@ class Ui_MainWindow(object):
         self.blockSelect1.setItemText(0, "")
 
         self.blockSelect1.setCurrentText("")
-        self.trafficLightLabel1.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
-        self.trafficLightValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.occupancyLabel1.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None))
         self.occupancyValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.commandedSpeedLabel1.setText(QCoreApplication.translate("MainWindow", u"Commanded Speed", None))
         self.commandedSpeedValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.statusLabel1.setText(QCoreApplication.translate("MainWindow", u"Status", None))
         self.statusValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.switchFromValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.switchToValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.switchPositionLabel1.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None))
         self.switchArrowLabel1.setText(QCoreApplication.translate("MainWindow", u"to", None))
-        self.switchButton1.setText(QCoreApplication.translate("MainWindow", u"Move", None))
+        self.switchFromValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.switchToValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.trafficLightLabel1.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
+        self.trafficLightValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.maintenanceLabel1.setText(QCoreApplication.translate("MainWindow", u"Maintenance", None))
+        self.maintenanceValue1.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), QCoreApplication.translate("MainWindow", u"Wayside 1", None))
         self.blockLabel2.setText(QCoreApplication.translate("MainWindow", u"Block:", None))
         self.occupancyLabel2.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None))
@@ -4490,23 +4543,26 @@ class Ui_MainWindow(object):
         self.suggestedSpeedLabel2.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None))
         self.suggestedSpeedValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.trackLabel2.setText(QCoreApplication.translate("MainWindow", u"Track Line: Green", None))
+        self.blockSelect2.setItemText(0, "")
+
         self.blockSelect2.setCurrentText("")
         self.railwayCrossingLabel2.setText(QCoreApplication.translate("MainWindow", u"Railway Crossing", None))
         self.railwayGateLabel2.setText(QCoreApplication.translate("MainWindow", u"Gate:", None))
         self.railwayGateValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.railwayLightsLabel2.setText(QCoreApplication.translate("MainWindow", u"Lights:", None))
         self.railwayLightsValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.trafficLightLabel2.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
-        self.trafficLightValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.commandedSpeedLabel2.setText(QCoreApplication.translate("MainWindow", u"Commanded Speed", None))
         self.commandedSpeedValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.statusLabel2.setText(QCoreApplication.translate("MainWindow", u"Status", None))
         self.statusValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.switchPositionLabel2.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None))
-        self.switchArrowLabel2.setText(QCoreApplication.translate("MainWindow", u"to", None))
         self.switchToValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.switchArrowLabel2.setText(QCoreApplication.translate("MainWindow", u"to", None))
         self.switchFromValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.switchButton2.setText(QCoreApplication.translate("MainWindow", u"Move", None))
+        self.trafficLightLabel2.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
+        self.trafficLightValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.maintenanceLabel2.setText(QCoreApplication.translate("MainWindow", u"Maintenance", None))
+        self.maintenanceValue2.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), QCoreApplication.translate("MainWindow", u"Wayside 2", None))
         self.blockLabel3.setText(QCoreApplication.translate("MainWindow", u"Block:", None))
         self.occupancyLabel3.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None))
@@ -4517,23 +4573,26 @@ class Ui_MainWindow(object):
         self.suggestedSpeedLabel3.setText(QCoreApplication.translate("MainWindow", u"Suggested Speed", None))
         self.suggestedSpeedValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.trackLabel3.setText(QCoreApplication.translate("MainWindow", u"Track Line: Green", None))
+        self.blockSelect3.setItemText(0, "")
+
         self.blockSelect3.setCurrentText("")
         self.railwayCrossingLabel3.setText(QCoreApplication.translate("MainWindow", u"Railway Crossing", None))
         self.railwayGateLabel3.setText(QCoreApplication.translate("MainWindow", u"Gate:", None))
         self.railwayGateValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.railwayLightsLabel3.setText(QCoreApplication.translate("MainWindow", u"Lights:", None))
         self.railwayLightsValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.trafficLightLabel3.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
-        self.trafficLightValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.commandedSpeedLabel3.setText(QCoreApplication.translate("MainWindow", u"Commanded Speed", None))
         self.commandedSpeedValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.statusLabel3.setText(QCoreApplication.translate("MainWindow", u"Status", None))
         self.statusValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.switchFromValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
-        self.switchArrowLabel3.setText(QCoreApplication.translate("MainWindow", u"to", None))
-        self.switchToValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.switchPositionLabel3.setText(QCoreApplication.translate("MainWindow", u"Switch Position", None))
-        self.switchButton3.setText(QCoreApplication.translate("MainWindow", u"Move", None))
+        self.switchFromValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.switchToValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.switchArrowLabel3.setText(QCoreApplication.translate("MainWindow", u"to", None))
+        self.trafficLightLabel3.setText(QCoreApplication.translate("MainWindow", u"Traffic Light Color", None))
+        self.trafficLightValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
+        self.maintenanceLabel3.setText(QCoreApplication.translate("MainWindow", u"Maintenance", None))
+        self.maintenanceValue3.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab3), QCoreApplication.translate("MainWindow", u"Wayside 3", None))
         self.blockLabel4.setText(QCoreApplication.translate("MainWindow", u"Block:", None))
         self.occupancyLabel4.setText(QCoreApplication.translate("MainWindow", u"Occupancy", None))
