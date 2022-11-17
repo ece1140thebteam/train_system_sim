@@ -1,7 +1,8 @@
-from CTCOffice.LineInfo import LineInfo
-from CTCOffice.Blocks import Blocks
 import pandas as pd
+
 from CTCOffice.BlockInfo import BlockInfo
+from CTCOffice.Blocks import Blocks
+from CTCOffice.LineInfo import LineInfo
 
 file_name = 'CTCOffice/DataFiles/Track Layout & Vehicle Data vF2.xlsx'
 

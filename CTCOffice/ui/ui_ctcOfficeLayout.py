@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1195, 739)
+        MainWindow.resize(1191, 729)
         MainWindow.setStyleSheet(u"")
         self.actionCTC_Office = QAction(MainWindow)
         self.actionCTC_Office.setObjectName(u"actionCTC_Office")
@@ -253,7 +253,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 200, 155))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 200, 145))
         self.horizontalLayout_18 = QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
         self.columnView = QColumnView(self.scrollAreaWidgetContents)
@@ -629,42 +629,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addWidget(self.pushButton_editStations)
 
-        self.label_26 = QLabel(self.centralwidget)
-        self.label_26.setObjectName(u"label_26")
-        self.label_26.setFont(font)
-
-        self.verticalLayout_5.addWidget(self.label_26)
-
-        self.pushButton_startSim = QPushButton(self.centralwidget)
-        self.pushButton_startSim.setObjectName(u"pushButton_startSim")
-
-        self.verticalLayout_5.addWidget(self.pushButton_startSim)
-
-        self.pushButton_stopSim = QPushButton(self.centralwidget)
-        self.pushButton_stopSim.setObjectName(u"pushButton_stopSim")
-
-        self.verticalLayout_5.addWidget(self.pushButton_stopSim)
-
-        self.pushButton_resetSim = QPushButton(self.centralwidget)
-        self.pushButton_resetSim.setObjectName(u"pushButton_resetSim")
-
-        self.verticalLayout_5.addWidget(self.pushButton_resetSim)
-
-        self.label_simStatus = QLabel(self.centralwidget)
-        self.label_simStatus.setObjectName(u"label_simStatus")
-
-        self.verticalLayout_5.addWidget(self.label_simStatus)
-
-        self.label_31 = QLabel(self.centralwidget)
-        self.label_31.setObjectName(u"label_31")
-
-        self.verticalLayout_5.addWidget(self.label_31)
-
-        self.label_currentTime = QLabel(self.centralwidget)
-        self.label_currentTime.setObjectName(u"label_currentTime")
-
-        self.verticalLayout_5.addWidget(self.label_currentTime)
-
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_3)
@@ -698,7 +662,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1195, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1191, 22))
         self.menuMain = QMenu(self.menubar)
         self.menuMain.setObjectName(u"menuMain")
         MainWindow.setMenuBar(self.menubar)
@@ -843,13 +807,6 @@ class Ui_MainWindow(object):
 
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Time", None))
         self.pushButton_editStations.setText(QCoreApplication.translate("MainWindow", u"Update Station", None))
-        self.label_26.setText(QCoreApplication.translate("MainWindow", u"Simulation Timing", None))
-        self.pushButton_startSim.setText(QCoreApplication.translate("MainWindow", u"Start", None))
-        self.pushButton_stopSim.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.pushButton_resetSim.setText(QCoreApplication.translate("MainWindow", u"Reset", None))
-        self.label_simStatus.setText(QCoreApplication.translate("MainWindow", u"Stopped", None))
-        self.label_31.setText(QCoreApplication.translate("MainWindow", u"Current Time: ", None))
-        self.label_currentTime.setText(QCoreApplication.translate("MainWindow", u"0:00", None))
         self.comboBox_selectLineGraph.setItemText(0, QCoreApplication.translate("MainWindow", u"Green Line", None))
         self.comboBox_selectLineGraph.setItemText(1, QCoreApplication.translate("MainWindow", u"Blue Line", None))
 
