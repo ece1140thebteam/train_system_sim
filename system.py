@@ -54,6 +54,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
 
       # Train Controller Variables
+      self.Trains.append(TrainController())
       self.pushButton_traincontrol.clicked.connect(self.open_traincontrol)
       self.pushButton_traincontrol_test.clicked.connect(self.open_traincontrol_test)
       
@@ -98,7 +99,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
-      self.Trains.append(TrainController())
       self.Train = self.Trains[0]
       self.engWindow = engineerUI(self.Train)
       self.Train.show()
