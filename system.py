@@ -64,8 +64,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.timer.setInterval(100)
       self.timer.timeout.connect(self.timer_timeout)
 
-      # self.update_speed()
-      # self.horizontalSlider.valueChanged.connect(self.update_speed)
+      self.update_speed()
+      self.horizontalSlider.valueChanged.connect(self.update_speed)
 
       s.send_CTC_create_train.connect(self.open_traincontrol)
 
@@ -114,9 +114,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
     def open_TrackModelTestUI(self):
       self.trackModelTestUI.show()
 
-    # def update_speed(self):
-    #   self.label_speed.setText(str(self.horizontalSlider.value()))
-    #   self.timer.setInterval(100/self.horizontalSlider.value())
+    def update_speed(self):
+      self.label_speed.setText(str(self.horizontalSlider.value()))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
