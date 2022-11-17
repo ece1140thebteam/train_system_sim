@@ -267,19 +267,21 @@ class TrackModel(QWidget):
         self.display_block_info()
         s.send_TrackModel_tc_track_failure.emit(line, block, failure)
 
-    def update_block_occupancy(self, line, block, occupancy): 
-        if occupancy:
-            color = QtGui.QColor(0, 200, 0, 255)
-        else:
-            color = QtGui.QColor(0, 0, 0, 0)
+    def update_block_occupancy(self, line, block, occupancy):
+        if block in self.track.track_lines[line].blocks:
+            if occupancy:
+                color = QtGui.QColor(0, 200, 0, 255)
+            else:
+                color = QtGui.QColor(0, 0, 0, 0)
 
-        self.update_block_color(line, block, color, occupancy_column)
-        self.track.track_lines[line].blocks[block].circuit_open = not occupancy
-        self.display_block_info()
+            self.update_block_color(line, block, color, occupancy_column)
+            self.track.track_lines[line].blocks[block].circuit_open = not occupancy
+            self.display_block_info()
 
     def update_block_authority(self, line, block, authority):
-        self.track.track_lines[line].blocks[block].authority = authority
-        self.display_block_info()
+        if block in self.track.track_lines[line].blocks:
+            self.track.track_lines[line].blocks[block].authority = authority
+            self.display_block_info()
 
     def load_track(self, track_file):
         tracklines = dict()
@@ -542,8 +544,9 @@ class TrackModel(QWidget):
     #                 block.setBackground(column, QtGui.QColor(self.r, self.g, self.b, 255))
 
     def update_commanded_speed(self, line, block, speed):
-        self.track.track_lines[line].blocks[block].commanded_speed = speed
-        self.display_block_info()
+        if block in self.track.track_lines[line].blocks:
+            self.track.track_lines[line].blocks[block].commanded_speed = speed
+            self.display_block_info()
 
     def update_signal(self, line, block, sig):
         if sig == 'Green':

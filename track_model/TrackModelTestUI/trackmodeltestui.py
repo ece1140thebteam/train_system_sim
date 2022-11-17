@@ -134,7 +134,7 @@ class TrackModelTestUI(QWidget):
                     passengers_deboarded = random.randint(1, 20)
                     s.send_TrackModel_passengers_onboarded.emit(line, self.current_block, passengers_deboarded)
                     self.stopped_at_station = True
-                    print('train is dwelling')
+                    # print('train is dwelling')
                     self.is_dwelling = True
 
             if self.traveled_in_block > self.current_block_info['length']:

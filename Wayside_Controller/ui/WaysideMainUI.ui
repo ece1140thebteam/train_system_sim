@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
-    <height>632</height>
+    <width>1010</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab1">
        <attribute name="title">
@@ -359,65 +359,6 @@
              </item>
             </widget>
            </item>
-           <item row="2" column="4">
-            <widget class="QFrame" name="trafficLightFrame1">
-             <property name="autoFillBackground">
-              <bool>true</bool>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="midLineWidth">
-              <number>0</number>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_27">
-              <item>
-               <widget class="QLabel" name="trafficLightLabel1">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Traffic Light Color</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="trafficLightValue1">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="2" column="2">
             <widget class="QFrame" name="occupancyFrame1">
              <property name="autoFillBackground">
@@ -589,7 +530,7 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="1" rowspan="2">
+           <item row="1" column="1">
             <widget class="QFrame" name="switchPositionFrame1">
              <property name="autoFillBackground">
               <bool>true</bool>
@@ -607,44 +548,6 @@
               <number>0</number>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
-              <item row="1" column="0">
-               <widget class="QLabel" name="switchFromValue1">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="switchToValue1">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0" colspan="3">
                <widget class="QLabel" name="switchPositionLabel1">
                 <property name="font">
@@ -683,21 +586,145 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QPushButton" name="switchButton1">
-                <property name="enabled">
-                 <bool>false</bool>
+              <item row="1" column="0">
+               <widget class="QLabel" name="switchFromValue1">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
                 </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="switchToValue1">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QFrame" name="trafficLightFrame1">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>1</number>
+             </property>
+             <property name="midLineWidth">
+              <number>0</number>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_27">
+              <item>
+               <widget class="QLabel" name="trafficLightLabel1">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Traffic Light Color</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="trafficLightValue1">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="4">
+            <widget class="QFrame" name="maintenanceFrame1">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="maintenanceLabel1">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
-                 <string>Move</string>
+                 <string>Maintenance</string>
                 </property>
-                <property name="autoDefault">
-                 <bool>false</bool>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="maintenanceValue1">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -968,6 +995,11 @@
              <property name="currentText">
               <string/>
              </property>
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="1" column="0" rowspan="2">
@@ -1079,65 +1111,6 @@
                <pointsize>12</pointsize>
               </font>
              </property>
-            </widget>
-           </item>
-           <item row="2" column="4">
-            <widget class="QFrame" name="trafficLightFrame2">
-             <property name="autoFillBackground">
-              <bool>true</bool>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="midLineWidth">
-              <number>0</number>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_34">
-              <item>
-               <widget class="QLabel" name="trafficLightLabel2">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Traffic Light Color</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="trafficLightValue2">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </widget>
            </item>
            <item row="2" column="3">
@@ -1252,7 +1225,7 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="1" rowspan="2">
+           <item row="1" column="1">
             <widget class="QFrame" name="switchPositionFrame2">
              <property name="autoFillBackground">
               <bool>true</bool>
@@ -1289,25 +1262,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="switchArrowLabel2">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>to</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="2">
                <widget class="QLabel" name="switchToValue2">
                 <property name="font">
@@ -1321,6 +1275,25 @@
                 </property>
                 <property name="text">
                  <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="switchArrowLabel2">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>to</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1346,18 +1319,107 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QPushButton" name="switchButton2">
-                <property name="enabled">
-                 <bool>false</bool>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QFrame" name="trafficLightFrame2">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>1</number>
+             </property>
+             <property name="midLineWidth">
+              <number>0</number>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_34">
+              <item>
+               <widget class="QLabel" name="trafficLightLabel2">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
                 </property>
+                <property name="text">
+                 <string>Traffic Light Color</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="trafficLightValue2">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="4">
+            <widget class="QFrame" name="maintenanceFrame2">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QLabel" name="maintenanceLabel2">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
-                 <string>Move</string>
+                 <string>Maintenance</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="maintenanceValue2">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -1628,6 +1690,11 @@
              <property name="currentText">
               <string/>
              </property>
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="1" column="0" rowspan="2">
@@ -1739,65 +1806,6 @@
                <pointsize>12</pointsize>
               </font>
              </property>
-            </widget>
-           </item>
-           <item row="2" column="4">
-            <widget class="QFrame" name="trafficLightFrame3">
-             <property name="autoFillBackground">
-              <bool>true</bool>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="midLineWidth">
-              <number>0</number>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_41">
-              <item>
-               <widget class="QLabel" name="trafficLightLabel3">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Traffic Light Color</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="trafficLightValue3">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </widget>
            </item>
            <item row="2" column="3">
@@ -1912,7 +1920,7 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="1" rowspan="2">
+           <item row="1" column="1">
             <widget class="QFrame" name="switchPositionFrame3">
              <property name="autoFillBackground">
               <bool>true</bool>
@@ -1930,8 +1938,46 @@
               <number>0</number>
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
+              <item row="0" column="0" colspan="3">
+               <widget class="QLabel" name="switchPositionLabel3">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Switch Position</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="switchFromValue3">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="switchToValue3">
                 <property name="font">
                  <font>
                   <family>Arial</family>
@@ -1968,8 +2014,48 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="switchToValue3">
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QFrame" name="trafficLightFrame3">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>1</number>
+             </property>
+             <property name="midLineWidth">
+              <number>0</number>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_41">
+              <item>
+               <widget class="QLabel" name="trafficLightLabel3">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Traffic Light Color</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="trafficLightValue3">
                 <property name="font">
                  <font>
                   <family>Arial</family>
@@ -1987,37 +2073,48 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0" colspan="3">
-               <widget class="QLabel" name="switchPositionLabel3">
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="4">
+            <widget class="QFrame" name="maintenanceFrame3">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Box</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QLabel" name="maintenanceLabel3">
                 <property name="font">
                  <font>
-                  <family>Arial</family>
                   <pointsize>10</pointsize>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
                  </font>
                 </property>
                 <property name="text">
-                 <string>Switch Position</string>
+                 <string>Maintenance</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QPushButton" name="switchButton3">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
+              <item>
+               <widget class="QLabel" name="maintenanceValue3">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
-                 <string>Move</string>
+                 <string>-</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
