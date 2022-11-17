@@ -174,11 +174,11 @@ class TrainModel(QMainWindow):
         self.ui.mass.setText("Mass: " + ("%.2f" % (self.mass*1.10231)) + " tons")
         self.ui.rdoorcmd.setText("Right Door Cmd: Off")
         self.ui.ldoorcmd.setText("Left Door Cmd: Off")
-        self.ui.elightcmd.setText("Exterior Light Command: Off")
-        self.ui.ilightcmd.setText("Interior Light Command: Off")
+        self.ui.elightcmd.setText("E-Light Command: Off")
+        self.ui.ilightcmd.setText("I-Light Command: Off")
         self.ui.ebrakecmd.setText("E Brake Command: Off")
         self.ui.sbrakecmd.setText("S Brake Command: Off")
-        self.ui.powercmd.setText("Power Command: " + str(self.powercmd) + " W")
+        self.ui.powercmd.setText("Power Command: " + ("%.2f" % (self.powercmd)) + " W")
         self.ui.tempcmd.setText("Temperature Cmd: " + str(self.tempcmd) + " F")
         self.ui.speedcmd.setText("Speed Command: " + str(int(self.speedcmd*2.23694)) + " mph")
         self.ui.speedlmt.setText("Speed Limit: " + str(int(self.speedlmt*2.23694)) + " mph")
@@ -270,6 +270,7 @@ class TrainModel(QMainWindow):
             self.sbrakecmd = False
         self.s_brake()
         self.beacon = self.block['beacon']
+        self.beacon_set()
         if (self.block['underground']):
             self.elightcmd = True
             self.ilightcmd = True
@@ -294,6 +295,16 @@ class TrainModel(QMainWindow):
             else:
                 self.ldoorcmd = True
                 self.left_door(self.ldoorcmd)
+
+    def beacon_set(self):
+        station = self.beacon['station_name']
+        if (station is None):
+            self.ui.beacon.setText("Beacon: None")
+            self.ui.station.setText("Station: None")
+        else:
+            self.ui.beacon.setText("Beacon: " + self.beacon['station_side'])
+            self.ui.station.setText("Station: " + station)
+        self.ui.auth.setText("Authority: " + str(self.auth))
 
 
     def e_brake(self, cmd = False):
@@ -442,21 +453,21 @@ class TrainModel(QMainWindow):
         if on:
             self.elight = True
             self.ui.elight.setText("Exterior Lights: On")
-            self.ui.elightcmd.setText("Exterior Light Command: On")
+            self.ui.elightcmd.setText("E-Light Command: On")
         else:
             self.elight = False
             self.ui.elight.setText("Exterior Lights: Off")
-            self.ui.elightcmd.setText("Exterior Light Command: Off")
+            self.ui.elightcmd.setText("E-Light Command: Off")
 
     def ilight_set(self, on):
         if on:
             self.ilight = True
             self.ui.ilight.setText("Interior Lights: On")
-            self.ui.ilightcmd.setText("Interior Light Command: On")
+            self.ui.ilightcmd.setText("I-Light Command: On")
         else:
             self.ilight = False
             self.ui.ilight.setText("Interior Lights: Off")
-            self.ui.ilightcmd.setText("Interior Light Command: Off")
+            self.ui.ilightcmd.setText("I-Light Command: Off")
 
     def s_brake(self):
         if not(self.brakefail):
@@ -473,7 +484,7 @@ class TrainModel(QMainWindow):
 
     def power_set(self, power):
         self.powercmd = power
-        self.ui.powercmd.setText("Power Command: " + str(self.powercmd) + " W")
+        self.ui.powercmd.setText("Power Command: " + ("%.2f" % (self.powercmd)) + " W")
 
     def grade_set(self):
         self.ui.grade.setText("Grade: " + str(self.grade) + " deg")
