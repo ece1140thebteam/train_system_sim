@@ -149,13 +149,6 @@ class TrainModel(QMainWindow):
         self.distance = 0
         self.tickrate = 0
 
-        #timer set up for speed calculation
-        self.update_timer = QTimer()
-        self.update_timer.setInterval(250) # milliseconds i believe
-        self.update_timer.setSingleShot(False)
-        self.update_timer.timeout.connect(self.calc_speed)
-        self.update_timer.start()
-
         #text
         self.ui.length.setText("Length: " + str(self.length))
         self.ui.height.setText("Height: " + str(self.height))
@@ -214,7 +207,7 @@ class TrainModel(QMainWindow):
 
     def timer(self, mul):
         self.tickrate = 0.1*mul
-        self.calc_accel()
+        self.calc_speed()
 
     def e_brake(self):
         if self.ui.eBrake.isChecked() or self.ebrakecmd: 
@@ -252,6 +245,7 @@ class TrainModel(QMainWindow):
         self.ui.signalfailure.setText("Signal Failure: " + str(self.signalfail))
 
     def calc_accel(self):
+        print("accel")
         power = self.powercmd
 
         # handling if there is an engine failure caused by Murphy
@@ -299,6 +293,7 @@ class TrainModel(QMainWindow):
             return
 
     def calc_speed(self):
+        print("speed")
         sample_time = self.tickrate
         # setting the prev speed
         self.prev_speed = self.speed

@@ -150,6 +150,7 @@ class TrainController(QMainWindow):
         self.curSpd = spd
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
+        print("speed adjust")
         self.powerCalc()
 
     #Function to adjust speed limit, is called externally
@@ -181,6 +182,7 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
+        print("power")
         if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
@@ -193,7 +195,7 @@ class TrainController(QMainWindow):
             self.ui.eBrakeBtn.setChecked(True)
             #Send brake states to Train Model and display popup to user indicating fault
             s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-            s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
             self.faultDialog.show()
 
         else: #No Faults Found
@@ -221,13 +223,13 @@ class TrainController(QMainWindow):
                     self.ui.sBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 elif self.ui.sBrakeBtn.isChecked():
                     brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 else:
                     print('No Brakes Enabled, calculating power...')
                 brakeDialog.exec()

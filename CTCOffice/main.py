@@ -123,7 +123,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_dispatchTrains.setDisabled(True)
 
     def schedule_trains(self):
-        fileName = self.label.text();
+        fileName = self.label.text()
         self.outputLabel.setText("Scheduling Trains from file: " + fileName)
 
     # Set the switch position for given line and block and store in database
