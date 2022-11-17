@@ -26,7 +26,7 @@ class TrainController(QMainWindow):
         self.powOutput = 0
         self.temp = 70
         self.auth = True
-        self.cmdSpd = 0
+        self.cmdSpd = 1
         self.curSpd = 0
         self.speedLim = 43
         self.driverCmd = 0
@@ -146,7 +146,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.cmdSpd)
         else:
             self.ui.speedSlider.setMaximum(self.speedLim)
-        # self.powerCalc()
+        self.powerCalc()
     
     #Function to adjust current speed, is called externally
     def curSpdAdjust(self, spd):

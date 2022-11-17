@@ -379,8 +379,8 @@ class TrainModel(QMainWindow):
             self.ui.ldoors.setText("Left Doors: Closed")
             self.ui.ldoorcmd.setText("Left Door Cmd: Off")
 
-    def light_set(self, on):
-        if (on):
+    def light_set(self):
+        if self.lightcmd:
             self.lights = True
             self.ui.light.setText("Lights: On")
             self.ui.lightcmd.setText("Light Command: On")
