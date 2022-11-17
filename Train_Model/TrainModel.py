@@ -12,6 +12,7 @@ import math
 #     pyuic6 -o form.py -x form.ui
 from .ui_form import Ui_TrainModel
 from .ui_form_test import Ui_testTrainModel
+from signals import s
 
 class TestTrainModel(QMainWindow):
     def __init__(self, Train, parent=None):
@@ -145,13 +146,9 @@ class TrainModel(QMainWindow):
         self.powercmd = 50000 # Watts
         self.ebrakecmd = False
         self.sbrakecmd = False
-
-        #timer set up for speed calculation
-        self.update_timer = QTimer()
-        self.update_timer.setInterval(250) # milliseconds i believe
-        self.update_timer.setSingleShot(False)
-        self.update_timer.timeout.connect(self.calc_speed)
-        self.update_timer.start()
+        self.distance = 0
+        self.tickrate = 0
+        self.distance_traveled = 0
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -203,6 +200,15 @@ class TrainModel(QMainWindow):
         self.ui.enginefail.clicked.connect(self.engine_failure)
         self.ui.signalfail.clicked.connect(self.signal_failure)
 
+        #signals
+        s.send_TrainModel_eLight.connect(self.light_set)
+        s.send_TrainModel_iLight.connect(self.light_set)
+        s.send_TrainModel_powerOutput.connect(self.power_set)
+        s.timer_tick.connect(self.timer)
+
+    def timer(self, mul):
+        self.tickrate = 0.1*mul
+        self.calc_speed()
 
     def e_brake(self):
         if self.ui.eBrake.isChecked() or self.ebrakecmd: 
@@ -215,22 +221,28 @@ class TrainModel(QMainWindow):
     def engine_failure(self):
         if self.ui.enginefail.isChecked():
             self.enginefail = True
+            s.send_TrainCtrl_failure.emit(self.enginefail, "Engine")
         else:
             self.enginefail = False
+            s.send_TrainCtrl_failure.emit(False, "None")
         self.ui.enginefailure.setText("Engine Failure: " + str(self.enginefail))
     
     def brake_failure(self):
         if self.ui.brakefail.isChecked():
             self.brakefail = True
+            s.send_TrainCtrl_failure.emit(self.brakefail, "Brake")
         else:
             self.brakefail = False
+            s.send_TrainCtrl_failure.emit(False, "None")
         self.ui.brakefailure.setText("Brake Failure: " + str(self.brakefail))
 
     def signal_failure(self):
         if self.ui.signalfail.isChecked():
             self.signalfail = True
+            s.send_TrainCtrl_failure.emit(self.signalfail, "Signal")
         else:
             self.signalfail = False
+            s.send_TrainCtrl_failure.emit(False, "None")
         self.ui.signalfailure.setText("Signal Failure: " + str(self.signalfail))
 
     def calc_accel(self):
@@ -244,6 +256,8 @@ class TrainModel(QMainWindow):
         angle = math.radians(self.grade)
 
         mass = self.mass*1000 #convert metric tons to kg
+
+        power *= 1000
 
         # calculating the force of the engine
         normal_force = mass * math.cos(angle) * 9.81
@@ -281,20 +295,31 @@ class TrainModel(QMainWindow):
             return
 
     def calc_speed(self):
-        sample_time = 0.25
+        sample_time = self.tickrate
         # setting the prev speed
         self.prev_speed = self.speed
         # calculating the new acceleration
         self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.accel*3.2808399)) + " ft/s^2")
         self.calc_accel()
         #self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.accel*3.2808399)) + " ft/s^2")
-        # calculating the new speed
+        #calculating the new speed
         self.speed = self.prev_speed + sample_time/2 * (self.accel + self.prev_accel)
-        # not allowing for negative velcoity values
+        #not allowing for negative velcoity values
         if (self.speed < 0):
             self.speed = 0
         #show speed
+        s.send_TrainCtrl_speed.emit(self.speed)
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
+
+    def calculate_distance(self):
+        sample_time = self.tickrate
+        # calculating the distance traveled in the last time sample
+        distance = self.prev_speed * sample_time + 0.5 * self.accel * sample_time**2
+        if distance < 0:
+            distance = 0
+        self.distance = distance
+        # calculating the total distance traveled by the train
+        self.distance_traveled += distance
 
     #test ui updates:
 
@@ -318,8 +343,8 @@ class TrainModel(QMainWindow):
             self.ui.ldoors.setText("Left Doors: Closed")
             self.ui.ldoorcmd.setText("Left Door Cmd: Off")
 
-    def light_set(self):
-        if (self.lightcmd):
+    def light_set(self, on):
+        if (on):
             self.lights = True
             self.ui.light.setText("Lights: On")
             self.ui.lightcmd.setText("Light Command: On")
@@ -343,7 +368,8 @@ class TrainModel(QMainWindow):
         self.ui.tempcmd.setText("Temperature Cmd: " + str(self.tempcmd) + " F")
         self.ui.temp.setText("Temperature: " + str(self.temp) + " F")
 
-    def power_set(self):
+    def power_set(self, power):
+        self.powercmd = power
         self.ui.powercmd.setText("Power Command: " + str(self.powercmd) + " W")
 
     def grade_set(self):
@@ -352,7 +378,6 @@ class TrainModel(QMainWindow):
     def speed_cmd_set(self):
         self.ui.speedcmd.setText("Speed Command: " + str(int(self.speedcmd*2.23694)) + " mph")
         
-    
     def speed_lmt_set(self):
         self.ui.speedlmt.setText("Speed Limit: " + str(int(self.speedlmt*2.23694)) + " mph")
 
