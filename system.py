@@ -29,6 +29,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
       #Create list of trains for indexing
       self.Trains = []
+      self.Trains.append(TrainController())
 
       # CTC variables
       self.main_windowCTC = MainWindowCTC()
@@ -98,7 +99,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
-      self.Trains.append(TrainController())
+      # self.Trains.append(TrainController())
       self.Train = self.Trains[0]
       self.engWindow = engineerUI(self.Train)
       self.Train.show()
