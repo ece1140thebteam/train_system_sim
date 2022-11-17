@@ -194,7 +194,7 @@ class Train_Sim():
           self.green_speeds[block] = 30
 
           authorities.append({'line': 'Green', 'block': block, 'authority': 1})
-          speeds.append({'line': 'Green', 'block': block, 'speed': 30})
+          speeds.append({'line': 'Green', 'block': block, 'speed': 30*1.609})
 
       # Emit authority and speed signals
       s.send_CTC_authority.emit(authorities)
