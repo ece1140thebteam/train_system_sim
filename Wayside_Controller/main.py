@@ -17,7 +17,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
       super(MainWindow, self).__init__(parent)
       self.setupUi(self)
-
+      self.controllers = dict()
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
@@ -335,42 +335,64 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
    def run_controllerx(self, controller_num):
-      print(f'running wayside controller {controller_num}')
-      #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
-   
-   def update_authority(self, line, block, authority):
-      track_info[line][block]['authority'] = authority
+      print(self.controllers)
+      print(controller_num)
+      if controller_num in self.controllers:
+         print(self.controllers[controller_num])
+         print(f'running wayside controller {controller_num}')
 
-      self.run_controllerx(track_info[line][block]['controller'])
-      print('track controller authority updated')
+         for statement in self.controllers[controller_num]:
+            exec(statement)
+      else:
+         print('no plc uploaded for that controllers')
+      #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
+
+      if controller_num == 1:
+         if track_info['Green'][0]['occupancy'] == 1:
+            track_info['Green'][63]['switch'] == 1
+
+   
 
 
 
    def getFile1(self):
-
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
+      self.controllers[1] = []
       if filename[0] != '':
          with open(filename[0], 'r') as file:
-            self.displayPLC1.setText(file.read())
+            self.controllers[1] = file.readlines()
+            plc = ''
+            for line in self.controllers[1]: plc+=line
+            self.displayPLC1.setText(plc)
+      print(self.controllers[1])
 
 
    def getFile2(self):
-
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
+      self.controllers[2] = []
       if filename[0] != '':
          with open(filename[0], 'r') as file:
+            self.controllers[2] = file.readlines()
+            plc = ''
+            for line in self.controllers[2]: plc+=line
             self.displayPLC2.setText(file.read())
+      print(self.controllers[2])
 
 
    def getFile3(self):
 
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
+      self.controllers[3] = []
       if filename[0] != '':
          with open(filename[0], 'r') as file:
+            self.controllers[3] = file.readlines()
+            plc = ''
+            for line in self.controllers[3]: plc+=line
             self.displayPLC3.setText(file.read())
+      print(self.controllers[3])
 
 
 
