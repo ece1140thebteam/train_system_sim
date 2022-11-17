@@ -231,8 +231,9 @@ class TrainController(QMainWindow):
                     #If power becomes negative, set to 0 and engage SBrake
                     if pow < 0:
                         pow = 0
-                        self.ui.sBrakeBtn.setChecked(True)
-                        s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                        if self.dispatch == True:
+                            self.ui.sBrakeBtn.setChecked(True)
+                            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                     else:
                         if self.ui.sBrakeBtn.isChecked():
                             self.ui.sBrakeBtn.setChecked(False)
