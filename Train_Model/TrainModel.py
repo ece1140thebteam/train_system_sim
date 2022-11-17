@@ -226,12 +226,14 @@ class TrainModel(QMainWindow):
         self.block = block
         s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
+        self.grade_set()
         self.speedcmd = self.block['commanded_speed']
         self.auth = self.block['authority']
         if (self.block['underground']):
             self.lightcmd = True
             self.light_set()
         self.speedlmt = self.block['speed_limit']
+        self.speed_lmt_set()
 
     def e_brake(self):
         if self.ui.eBrake.isChecked() or self.ebrakecmd: 
@@ -332,6 +334,7 @@ class TrainModel(QMainWindow):
             self.speed = 0
         #show speed
         s.send_TrainCtrl_speed.emit(self.speed)
+
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
         self.calculate_distance
 
