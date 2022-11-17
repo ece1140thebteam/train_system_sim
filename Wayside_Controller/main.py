@@ -327,7 +327,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         #s.send_TrackController_switch_pos.emit(line, block, sw)
+         s.send_TrackController_switch_pos.emit(line, block, sw)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -343,11 +343,12 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          for statement in self.controllers[controller_num]:
             exec(statement)
-         for line in self.track_info:
+         for line in track_info:
             if line =='Green':
-               for block in self.track_info[line]:
-                  if self.track_info[line][block]['controller'] == controller_num:
+               for block in track_info[line]:
+                  if track_info[line][block]['controller'] == controller_num:
                      print('updating')
+                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch'])
       else:
          print('no plc uploaded for that controllers')
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
@@ -382,7 +383,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             self.controllers[2] = file.readlines()
             plc = ''
             for line in self.controllers[2]: plc+=line
-            self.displayPLC2.setText(file.read())
+            self.displayPLC2.setText(plc)
       print(self.controllers[2])
 
 
@@ -396,7 +397,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             self.controllers[3] = file.readlines()
             plc = ''
             for line in self.controllers[3]: plc+=line
-            self.displayPLC3.setText(file.read())
+            self.displayPLC3.setText(plc)
       print(self.controllers[3])
 
 
