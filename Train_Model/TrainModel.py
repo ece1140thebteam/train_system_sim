@@ -233,6 +233,7 @@ class TrainModel(QMainWindow):
             self.current_track()
             self.station()
         if self.auth == 1 and self.atStation:
+            self.atStation = False
             if self.beacon['station_side'] is 'right':
                 self.rdoorcmd = False
                 self.right_door(self.rdoorcmd)
