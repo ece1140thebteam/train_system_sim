@@ -25,7 +25,7 @@ class TrainController(QMainWindow):
         self.maxPow = 120000 #120kW, per the Datasheet
         self.powOutput = 0
         self.temp = 70
-        self.auth = False
+        self.auth = True
         self.cmdSpd = 0
         self.curSpd = 0
         self.speedLim = 43
@@ -97,6 +97,7 @@ class TrainController(QMainWindow):
 
         #Signals
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
+        s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
 
     
     #Manual Mode toggling function
@@ -136,7 +137,9 @@ class TrainController(QMainWindow):
         s.send_TrainModel_temp.emit(self.temp)
 
     #Function to adjust commanded speed, is called externally
-    def cmdSpdAdjust(self):
+    def cmdSpdAdjust(self, id, info):
+        self.cmdSpd = info['commanded_speed']
+        self.auth = info['authority']
         cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
         if self.speedLim > self.cmdSpd:
@@ -164,7 +167,7 @@ class TrainController(QMainWindow):
     #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
         if not self.auth:
-            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging ebrake')
+            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
             self.powOutput = 0
             self.ui.speedSlider.setDisabled(True)
             self.ui.speedSlider.setValue(0)
