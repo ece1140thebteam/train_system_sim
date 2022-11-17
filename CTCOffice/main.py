@@ -106,6 +106,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
+        # TODO: Send switch positions from track controller and connect to self.set_switches
+        # TODO: Send signal states from track controller and connect to self.set_signals
+        
+        # TODO: Check dict key for crossing
+        s.send_TrackController_crossing.connect(self.set_crossings)
 
         # Track Signals
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
@@ -577,6 +582,33 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                     self.lines[1].get(speed['block']).suggested_speed = speed['speed']
 
         self.get_line_data()
+
+    def set_switches(self, switches):
+        for switch in switches:
+            if switch['line'] == 'Red':
+                if switch['block'] != 0:
+                    self.lines[0].get(switch['block']).switch_position = switch['switch']
+            if switch['line'] == 'Green':
+                if switch['block'] != 0:
+                    self.lines[1].get(switch['block']).switch_position = switch['switch']
+    
+    def set_signals(self, signals):
+        for signal in signals:
+            if signal['line'] == 'Red':
+                if signal['block'] != 0:
+                    self.lines[0].get(signal['block']).signal_state = signal['signal']
+            if signal['line'] == 'Green':
+                if signal['block'] != 0:
+                    self.lines[1].get(signal['block']).signal_state = signal['signal']
+
+    def set_crossings(self, crossings):
+        for crossing in crossings:
+            if crossing['line'] == 'Red':
+                if crossing['block'] != 0:
+                    self.lines[0].get(crossing['block']).crossing = crossing['crossing']
+            if crossing['line'] == 'Green':
+                if crossing['block'] != 0:
+                    self.lines[1].get(crossing['block']).crossing = crossing['crossing']
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

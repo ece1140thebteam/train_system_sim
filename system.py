@@ -29,6 +29,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
       #Create list of trains for indexing
       self.Trains = []
+      self.Trains.append(TrainController())
 
       # CTC variables
       self.main_windowCTC = MainWindowCTC()
