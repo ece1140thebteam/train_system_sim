@@ -265,6 +265,7 @@ class TrackModel(QWidget):
         self.update_block_color(line, block, color, block_column)
         self.track.track_lines[line].blocks[block].failure_mode = failure
         self.display_block_info()
+        s.send_TrackModel_tc_track_failure.emit(line, block, failure)
 
     def update_block_occupancy(self, line, block, occupancy): 
         if occupancy:
