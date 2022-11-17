@@ -274,9 +274,9 @@ class TrainController(QMainWindow):
     
     #TODO:
 
-        #Handle Service Brake operation in automatic mode.
+        #Handle Service Brake operation in automatic mode: Make sure it gets disabled when power goes positive
     
-        #Get beacon data, open proper doors and activate intercom (show dialog too)
+        #Get beacon data, open proper doors and activate intercom when at station (show dialog too)
 
         #Get passenger Ebrake activation, update power
 
