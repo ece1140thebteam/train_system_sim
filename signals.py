@@ -87,10 +87,9 @@ class signals(QObject):
 
   #######################################################
   # Train Model to Train Controller
-  # Block info
-  send_TrainCtrl_ebrake = pyqtSignal(bool)
-  send_TrainCtrl_failure = pyqtSignal(bool, str)
-  send_TrainCtrl_speed = pyqtSignal(float)
+  send_TrainCtrl_ebrake = pyqtSignal(bool) #ebrake
+  send_TrainCtrl_failure = pyqtSignal(bool, str) #failure on/off then failure type
+  send_TrainCtrl_speed = pyqtSignal(float) #train currrent speed
 
   #######################################################
   # Train Controller to Train Model

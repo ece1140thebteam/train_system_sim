@@ -80,7 +80,12 @@ class TrackModelTestUI(QWidget):
 
         self.current_block_info = block_info
         self.stopped_at_station = False
-
+        # print(block_info['block_num'])
+        # print(block_info['grade'])
+        # print(block_info['beacon'])
+        # print(block_info['length'])
+        # print(block_info['authority'])
+        # print(block_info['commanded_speed'])
 
     def train_derailed(self):
         self.dispatchTrainButton.setChecked(False)
