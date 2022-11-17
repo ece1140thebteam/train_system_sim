@@ -28,7 +28,7 @@ class TrainController(QMainWindow):
         self.auth = True
         self.cmdSpd = 1
         self.curSpd = 0
-        self.speedLim = 43
+        self.speedLim = 70
         self.driverCmd = 0
         self.dispatch = False
         
@@ -153,10 +153,10 @@ class TrainController(QMainWindow):
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, id, info):
-        self.cmdSpd = int(info['commanded_speed']*0.621371)
+        self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
         self.dispatch = True
-        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
+        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd*0.621371) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
         if self.speedLim > self.cmdSpd:
             self.ui.speedSlider.setMaximum(self.cmdSpd)
