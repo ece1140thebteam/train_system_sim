@@ -264,7 +264,9 @@ class TrainController(QMainWindow):
                         s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                     else:
                         print('No Brakes Enabled, calculating power...')
-                        
+                else:
+                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())      
                 
                 self.powOutput = pow
                 s.send_TrainModel_powerOutput.emit(self.powOutput)
