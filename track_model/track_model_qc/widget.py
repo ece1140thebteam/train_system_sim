@@ -68,6 +68,31 @@ class TrackModel(QWidget):
         s.send_TrackModel_switch_position.connect(self.update_switch_position)
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
+        s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
+        # self.print_track_info_dict()
+
+    def print_track_info_dict(self):
+        track_dict = dict()
+
+        for line in self.track.track_lines:
+            track_dict[line] = dict()
+
+            for block in self.track.track_lines[line].blocks:
+                b = self.track.track_lines[line].blocks[block]
+                track_dict[line][block] = {
+                    'authority': 0,
+                    'switch_pos': None if b.switch is None else 0,
+                    'failure': 0,
+                    'suggested_speed': 0,
+                    'track_crossing': None if not b.has_rail_crossing else 0,
+                    'traffic_light': 0,
+                    'commanded_speed': 0,
+                    'maintenance': 0,
+                    'occupancy': 0
+                }
+
+               
+        print(track_dict)
 
     def get_track_info(self):
         track_dict = dict()
@@ -102,6 +127,17 @@ class TrackModel(QWidget):
         s.send_TrackModel_throughput_signal.emit(line, int(tp))
         self.update_station_tree(line, block)
 
+    def tc_set_switch_pos(self, line, block, pos):
+        sw = -1
+        if pos == 0:
+            sw = self.track.track_lines[line].blocks[block].switch.pos1
+        elif pos == 1:
+            sw = self.track.track_lines[line].blocks[block].switch.pos2
+
+        else:
+            print('ERROR')
+        self.update_switch_position(line, block, sw)
+    
     def handle_time_increment(self):
         # timer called every 100ms
         self.time_elapsed_s += .1
@@ -144,7 +180,22 @@ class TrackModel(QWidget):
         self.blockSignalInfo.setText(str(block.signal))
         self.blockTrackCircuitInfo.setText("Open" if block.circuit_open else "Closed")
         self.blockCommandedSpeedInfo.setText(str(block.commanded_speed))
-        self.blockDirectionsOfTravel.setText(str(block.can_travel_to))
+
+        travstr = ''
+        for val in block.can_travel_to:
+            if val > 0:
+                travstr += str(val)
+                travstr += ', '
+            if val == 0:
+                travstr += '*YARD, '
+
+        for val in block.can_travel_to:
+            if val < 0:
+                travstr += f'*{val}, '
+        
+        travstr = travstr.strip().strip(',')
+                
+        self.blockDirectionsOfTravel.setText(travstr)
 
     def block_list_item_clicked(self, item):
         # if this is a block
@@ -214,6 +265,7 @@ class TrackModel(QWidget):
         self.update_block_color(line, block, color, block_column)
         self.track.track_lines[line].blocks[block].failure_mode = failure
         self.display_block_info()
+        s.send_TrackModel_tc_track_failure.emit(line, block, failure)
 
     def update_block_occupancy(self, line, block, occupancy): 
         if occupancy:
@@ -277,8 +329,8 @@ class TrackModel(QWidget):
                                 line=line,
                                 section=block[1],
                                 block=blocknum,
-                                pos1=positions[0],
-                                pos2=positions[1],
+                                pos1=min(positions[0], positions[1]),
+                                pos2=max(positions[1], positions[0]),
                             )
 
                     elif not i.strip().isspace() and len(i.strip())>0:
@@ -549,27 +601,48 @@ class TrackModel(QWidget):
                     else:
                         next_block_num = b
 
-
             else:
                 curr_b = self.track.track_lines[line].blocks[current_block_num]
-                
-                # bidirectional block with a switch
-                if len(curr_b.can_travel_to) > 2:
-                    for block in curr_b.can_travel_to:
-                        if previous_block_num != abs(block) and block>0:
-                            print(block)
+                block_options = [b for b in curr_b.can_travel_to if abs(b) != previous_block_num]
+                print(block_options)
+                # bidirectional block that can travel to both of the switches
+                if len(block_options) > 1:
+                    found = False
+                    for block in block_options:
+                        if block>0:
                             next_block_num = block
-                            break
+                            found = True
 
-                # switch says which track enters unidirectional block
-                elif len(curr_b.can_travel_to) == 1:
-                    next_block_num = curr_b.can_travel_to[0]
+                    # all options are through switch
+                    if not found:
+                        curr_pos = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos 
+                        if -1*curr_pos not in block_options:
+                            print('TRAIN DERAILED')
+                            s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
+                            return
+                        else:
+                            next_block_num = curr_pos 
+
+                elif len(block_options) == 1:
+                    next_block_num = block_options[0]
 
                 # block is traveling through the switch to the current position of the switch
                 if next_block_num<0:
                     print(curr_b.switch.curr_pos)
-                    next_block_num = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+                    pos = self.track.track_lines[line].blocks[current_block_num].switch.curr_pos
+                    if abs(next_block_num) == pos:
+                        next_block_num = pos
+                    else:
+                        s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
+                        return 
         
+        if next_block_num == 0:
+            block_info = dict()
+            block_info['block_num'] = 0
+            block_info['yard'] = True
+            return
+
+
         block = self.track.track_lines[line].blocks[next_block_num]
         block_info = dict()
 

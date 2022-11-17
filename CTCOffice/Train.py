@@ -36,9 +36,11 @@ class Train():
   def __init__(self, line: str, destinations: list, train_id: int):
     self.id = train_id
     self.line = line
-    self.current_block = 0
-    self.route_block = 0
+    self.current_block = 63
+    self.route_block = 1
     self.destinations = destinations
+    self.is_dwelling = 0
+    self.dwelling_t = 0
   
 class Train_Sim():
   def __init__(self):
@@ -54,14 +56,14 @@ class Train_Sim():
     s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
     s.send_TrackModel_track_occupancy.connect(self.single_occupancy_update)
 
-    # s.timer_tick.connect(self.train_at_station)
+    s.timer_tick.connect(self.train_at_station)
 
   def create_train(self, line, destinations):
     train = Train(line, destinations, self.next_train_id)
     self.trains.update({self.next_train_id: train})
     self.next_train_id += 1
     self.update_authority(train.id)
-    s.send_CTC_create_train.emit()
+    s.send_CTC_create_train.emit(line)
 
   def single_occupancy_update(self, line, block, occupancy):
     if line == 'Green':
@@ -96,14 +98,14 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
-  # def train_at_station(self, mult):
-  #   trains_departing = []
-  #   for i in range(0, len(self.station_trains)):
-  #     train = self.station_trains[i]
-  #     train [1] += 0.1 * mult
-  #     if train[1] > 30:
-  #       trains_departing.append()
-  #       self.update_authority(train[0])
+  def train_at_station(self, mult):
+    for train in self.trains.values():
+      if train.is_dwelling == 1:
+        train.dwelling_t += (0.1 * mult)
+        if train.dwelling_t > 30:
+          train.is_dwelling == 0
+          train.dwelling_t = 0
+          self.update_authority(train.id)
 
   
   def update_authority(self, train_id):
@@ -115,21 +117,37 @@ class Train_Sim():
       if train.current_block == train.destinations[0]:
         # Remove station from list
         train.destinations.pop(0)
-        # Add train to station_trains list
-        # self.station_trains.append([train_id, 0])
-        self.station_trains.update({train_id: 0})
-        return
+        # Set train dwelling to 1
+        # train.is_dwelling = 1
+
+        prevBlock = green_route[train.route_block-1]
+        authority = {'line': 'Green', 'block': prevBlock, 'authority': 0}
+        speed = {'line': 'Green', 'block': prevBlock, 'speed': 0}
+
+        s.send_CTC_authority.emit([authority])
+        s.send_CTC_suggested_speed.emit([speed])
+        # return
 
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1
       origin_block = train.current_block
-      dest_block = -1
+      dest_block = 0
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block)
     else:
       # Set authority from current block to next station to 1
       origin_block = train.current_block
       dest_block = train.destinations[0]
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block)
+
+  def calculate_time_to_next(self, line, route_block, destination):
+    if(line == 'Green'):
+      blocks_to_travel = []
+      cur_block = green_route[route_block]
+      cur_route_index = route_block
+      while cur_block != destination:
+        blocks_to_travel.append(cur_block)
+        cur_route_index += 1
+        cur_block = green_route[cur_route_index]
 
   def set_authority_speed(self, line, route_block, origin, destination):
     if(line == 'Green'):

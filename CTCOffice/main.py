@@ -101,9 +101,16 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_CTC_test_crossing.connect(self.update_crossing)
         s.send_CTC_test_track_occupancy.connect(self.set_occupancy)
 
+        s.send_CTC_suggested_speed.connect(self.set_speeds)
+
         # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
+        # TODO: Send switch positions from track controller and connect to self.set_switches
+        # TODO: Send signal states from track controller and connect to self.set_signals
+        
+        # TODO: Check dict key for crossing
+        s.send_TrackController_crossing.connect(self.set_crossings)
 
         # Track Signals
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
@@ -123,7 +130,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_dispatchTrains.setDisabled(True)
 
     def schedule_trains(self):
-        fileName = self.label.text();
+        fileName = self.label.text()
         self.outputLabel.setText("Scheduling Trains from file: " + fileName)
 
     # Set the switch position for given line and block and store in database
@@ -139,21 +146,15 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             state = 0
         else:
             state = 1
+
+        switch_dict = {'line':line, 'block':int(switch), 'switch':state}
+
+        s.send_CTC_switch_position_signal.emit([switch_dict])
         
         if line == "Red":
             self.lines[0].get(int(switch)).switch_position = state
-            positions = []
-            for block in self.lines[0]:
-                positions.append(self.lines[0].get(block).switch_position)
-
-            s.send_CTC_switch_position_signal.emit(line, positions) # Emit signal to set positions
         elif line == "Green":
             self.lines[1].get(int(switch)).switch_position = state
-            positions = []
-            for block in self.lines[1]:
-                positions.append(self.lines[1].get(block).switch_position)
-
-            s.send_CTC_switch_position_signal.emit(line, positions) # Emit signal to set positions
 
         self.get_line_data() # Update displayed tables
 
@@ -171,32 +172,28 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         else:
             state = 0
 
+        maintenance_dict = {'line':line, 'block':int(block), 'mode':state}
+
+        s.send_CTC_maintenance_mode_signal.emit([maintenance_dict])
+
         if line == "Red":
             self.lines[0].get(int(block)).maintenance_mode = state
-            modes = []
-            for block in self.lines[0]:
-                modes.append(self.lines[0].get(block).maintenance_mode)
-
-            s.send_CTC_maintenance_mode_signal.emit(line, modes) # Emit signal to set maintenance 
         elif line == "Green":
             self.lines[1].get(int(block)).maintenance_mode = state
-            modes = []
-            for block in self.lines[1]:
-                modes.append(self.lines[1].get(block).maintenance_mode)
-
-            s.send_CTC_maintenance_mode_signal.emit(line, modes) # Emit signal to set maintenance
 
         self.get_line_data() # Update displayed tables
 
     def change_speed(self):
         line = self.comboBox_changeSpeed_line.currentText()
-        train = self.comboBox_changeSpeed_train.currentText()
+        block = self.comboBox_changeSpeed_train.currentText()
         speed = self.spinBox_changeSpeed_speed.value()
 
-        print("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
-        self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to speed: " + str(speed) + "mph")
+        print("Setting Line " + line + " block #: " + block + " to speed: " + str(speed) + "mph")
+        self.outputLabel.setText("Setting Line " + line + " block #: " + block + " to speed: " + str(speed) + "mph")
 
-        s.send_CTC_suggested_speed.emit(line, int(train), int(speed))
+        speed_dict = {'line':line, 'block':int(block), 'speed':speed}
+
+        s.send_CTC_suggested_speed.emit([speed_dict])
 
     def edit_stations(self):
         line = self.comboBox_editStations_line.currentText()
@@ -286,11 +283,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         train_box = self.comboBox_changeSpeed_train
         train_box.clear()
         if self.comboBox_changeSpeed_line.currentText() == "Red":
-            train_box.addItems(self.redTrains)
+            train_box.addItems(self.redBlocks)
         elif self.comboBox_changeSpeed_line.currentText() == "Green":
-            train_box.addItems(self.greenTrains)
+            train_box.addItems(self.greenBlocks)
         elif self.comboBox_changeSpeed_line.currentText() == "Blue":
-            train_box.addItems(self.blueTrains)
+            train_box.addItems(self.blueBlocks)
 
     # Update the comboBox of stations for dispatch
     # Called when the line is changed for edit stations
@@ -574,6 +571,44 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                     self.lines[1].get(authority['block']).authority = authority['authority']
 
         self.get_line_data()
+    
+    def set_speeds(self, speeds):
+        for speed in speeds:
+            if speed['line'] == 'Red':
+                if speed['block'] != 0:
+                    self.lines[0].get(speed['block']).suggested_speed = speed['speed']
+            if speed['line'] == 'Green':
+                if speed['block'] != 0:
+                    self.lines[1].get(speed['block']).suggested_speed = speed['speed']
+
+        self.get_line_data()
+
+    def set_switches(self, switches):
+        for switch in switches:
+            if switch['line'] == 'Red':
+                if switch['block'] != 0:
+                    self.lines[0].get(switch['block']).switch_position = switch['switch']
+            if switch['line'] == 'Green':
+                if switch['block'] != 0:
+                    self.lines[1].get(switch['block']).switch_position = switch['switch']
+    
+    def set_signals(self, signals):
+        for signal in signals:
+            if signal['line'] == 'Red':
+                if signal['block'] != 0:
+                    self.lines[0].get(signal['block']).signal_state = signal['signal']
+            if signal['line'] == 'Green':
+                if signal['block'] != 0:
+                    self.lines[1].get(signal['block']).signal_state = signal['signal']
+
+    def set_crossings(self, crossings):
+        for crossing in crossings:
+            if crossing['line'] == 'Red':
+                if crossing['block'] != 0:
+                    self.lines[0].get(crossing['block']).crossing = crossing['crossing']
+            if crossing['line'] == 'Green':
+                if crossing['block'] != 0:
+                    self.lines[1].get(crossing['block']).crossing = crossing['crossing']
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
