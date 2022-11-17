@@ -37,6 +37,8 @@ class TrackModelTestUI(QWidget):
         self.current_block = 0
         self.previous_block = 0
         self.traveled_in_block = 0
+        self.is_dwelling = False
+        self.dwelling_t  = 0
 
     def test_train_run(self):
         self.current_line = self.lineDropDown.currentText()
@@ -87,6 +89,14 @@ class TrackModelTestUI(QWidget):
 
     def handle_time_increment(self):
         if self.run_train:
+            if self.is_dwelling:
+                self.dwelling_t += .1
+                if self.dwelling_t < 30:
+                    return
+                else:
+                    self.dwelling_t = 0
+                    self.is_dwelling = False
+
             # print('timer')
             line = self.current_line
             dt = .1 #100 ms, TODO udpate
@@ -119,6 +129,8 @@ class TrackModelTestUI(QWidget):
                     passengers_deboarded = random.randint(1, 20)
                     s.send_TrackModel_passengers_onboarded.emit(line, self.current_block, passengers_deboarded)
                     self.stopped_at_station = True
+                    print('train is dwelling')
+                    self.is_dwelling = True
 
             if self.traveled_in_block > self.current_block_info['length']:
                 s.send_TrackModel_get_next_block_info.emit(line, self.current_block, self.previous_block, 0)

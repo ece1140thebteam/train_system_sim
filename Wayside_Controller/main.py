@@ -41,7 +41,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       pass
 
    def handle_time_increment(self):
-      print('hi')
+      # print('hi')
+      pass
 
    def getFile1(self):
 

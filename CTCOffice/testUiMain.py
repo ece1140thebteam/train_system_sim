@@ -123,7 +123,8 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         else:
             status = 0
 
-        s.send_CTC_test_track_occupancy.emit(line, int(blockNumber), status)
+        # s.send_CTC_test_track_occupancy.emit(line, int(blockNumber), status)
+        s.send_CTC_test_track_occupancy.emit([{'line':line, 'block':int(blockNumber), 'occupancy':status}])
 
     def get_crossings(self):
         cursor.execute(

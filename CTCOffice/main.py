@@ -1,20 +1,21 @@
 from PyQt6 import QtGui
 
 import CTCOffice.ui.ctcOfficeLayout as ctcOfficeLayout
-from PyQt6.QtCore import *
+from PyQt6.QtCore import * 
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
-import sqlite3
-import time
+# import sqlite3
+# import time
 from signals import s
+import CTCOffice.Train as Train
 
 from CTCOffice.testUiMain import MainTestWindow
 
 import CTCOffice.InitData as InitData
 
-mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
-cursor = mydb.cursor()
+# mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
+# cursor = mydb.cursor()
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -35,8 +36,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.greenBlocks = []
         self.blueBlocks = []
 
-        self.redSwitches = []
-        self.greenSwitches = []
+        self.red_authority = [0]
+        self.green_authority = [0]
+
+        self.redSwitches = ['9', '16', '27', '33', '38', '44', '52']
+        self.greenSwitches = ['13', '28', '57', '63', '77', '85']
         self.blueSwitches = []
 
         self.redCrossings = []
@@ -44,32 +48,31 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.blueCrossings = []
 
         self.redStations = []
+        self.redStationBlocks = [7, 16, 21, 25, 35, 45, 48, 60]
         self.greenStations = []
+        self.greenStationBlocks = [2, 9, 16, 22, 31, 39, 48, 57, 65, 73, 77, 88, 96, 105, 114, 123, 132, 141]
         self.blueStations = []
 
         self.redTrains = []
         self.greenTrains = []
         self.blueTrains = []
 
-        self.get_blocks()
-        self.get_switches()
-        self.get_crossings()
-        self.get_stations()
+        self.init_get_blocks()
+        # self.init_get_switches()
+        self.init_get_crossings()
+        self.init_get_stations()
 
         self.init_switch_positions()
         self.init_crossings()
 
-        # self.get_throughput()
-        self.get_trains()
-
         # Initialize Components
         self.set_manual_mode()
-        self.update_maintenance()
-        self.update_switches()
-        self.update_stations()
-        self.update_dispatch_stations()
-        self.update_stations_trains()
-        self.update_speed_trains()
+        self.update_maintenance_combobox()
+        self.update_switches_combobox()
+        self.update_stations_combobox()
+        self.update_dispatch_stations_combobox()
+        self.update_stations_trains_combobox()
+        self.update_speed_trains_combobox()
 
         self.get_line_data()
 
@@ -79,23 +82,33 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_trackMaintenance.clicked.connect(self.set_maintenance)
         self.pushButton_changeSpeed.clicked.connect(self.change_speed)
         self.pushButton_editStations.clicked.connect(self.edit_stations)
-        self.pushButton.clicked.connect(self.get_line_data)
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
         self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
 
         # ComboBox Connections
-        self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance)
-        self.comboBox_controlSwitch_Line.currentTextChanged.connect(self.update_switches)
-        self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations)
-        self.comboBox_dispatchTrain_line.currentTextChanged.connect(self.update_dispatch_stations)
-        self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains)
-        self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains)
+        self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance_combobox)
+        self.comboBox_controlSwitch_Line.currentTextChanged.connect(self.update_switches_combobox)
+        self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_combobox)
+        self.comboBox_dispatchTrain_line.currentTextChanged.connect(self.update_dispatch_stations_combobox)
+        self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains_combobox)
+        self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains_combobox)
 
+        # Signal Connections
+        # Test Signals
         s.send_CTC_test_throughput_signal.connect(self.update_throughput)
         s.send_CTC_test_failure.connect(self.update_failure)
         s.send_CTC_test_crossing.connect(self.update_crossing)
         s.send_CTC_test_track_occupancy.connect(self.set_occupancy)
+
+        # Wayside Signals
+        s.send_CTC_authority.connect(self.set_authorities)
+        s.send_TrackController_track_occupancy.connect(self.set_occupancy)
+
+        # Track Signals
+        s.send_TrackModel_throughput_signal.connect(self.update_throughput)
+        # Temporary connection to track model for occupancy
+        s.send_TrackModel_track_occupancy.connect(self.set_single_occupancy)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -200,19 +213,28 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
         stations = []
+        stationBlocks = []
 
         for row in range(0, self.tableWidget_dispatch.rowCount()):
             time = self.tableWidget_dispatch.item(row, 1).text()
             if time != '':
-                stations.append((row, time))
+                if line == "Green":
+                    block = self.greenStationBlocks[row]
+                else:
+                    block = self.redStationBlocks[row]
+                
+                stations.append((block, time))
+                stationBlocks.append(block)
 
         print(str(stations))
 
-            
+        Train.trains.create_train('Green', stationBlocks)
+        
+
 
     # Update the comboBox of track_blocks
     # Called when the line is changed for maintenance
-    def update_maintenance(self):
+    def update_maintenance_combobox(self):
         block_box = self.comboBox_trackMaintenance_blockNumber
         block_box.clear()
         if self.comboBox_trackMaintenance_line.currentText() == "Red":
@@ -224,7 +246,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Update the comboBox of switches
     # Called when the line is changed for switch control
-    def update_switches(self):
+    def update_switches_combobox(self):
         switch_box = self.comboBox_controlSwitch_switch
         switch_box.clear()
         if self.comboBox_controlSwitch_Line.currentText() == "Red":
@@ -236,7 +258,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Update the comboBox of stations
     # Called when the line is changed for edit stations
-    def update_stations(self):
+    def update_stations_combobox(self):
         station_box = self.comboBox_editStations_station
         station_box.clear()
         if self.comboBox_editStations_line.currentText() == "Red":
@@ -248,7 +270,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Update the comboBox of trains
     # Called when the line is changed for edit stations
-    def update_stations_trains(self):
+    def update_stations_trains_combobox(self):
         train_box = self.comboBox_editStations_train
         train_box.clear()
         if self.comboBox_editStations_line.currentText() == "Red":
@@ -260,7 +282,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Update the comboBox of trains
     # Called when the line is changed for change speed
-    def update_speed_trains(self):
+    def update_speed_trains_combobox(self):
         train_box = self.comboBox_changeSpeed_train
         train_box.clear()
         if self.comboBox_changeSpeed_line.currentText() == "Red":
@@ -272,7 +294,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Update the comboBox of stations for dispatch
     # Called when the line is changed for edit stations
-    def update_dispatch_stations(self):
+    def update_dispatch_stations_combobox(self):
         if self.comboBox_dispatchTrain_line.currentText() == "Red":
             self.tableWidget_dispatch.setRowCount(len(self.redStations))
             for row in range(0, len(self.redStations)):
@@ -287,22 +309,23 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 self.tableWidget_dispatch.setItem(row, 0, QTableWidgetItem(station))
                 self.tableWidget_dispatch.setItem(row, 1, QTableWidgetItem())
 
-
     # Get all blocks for a line
     # Called once on init of window
-    def get_blocks(self):
+    def init_get_blocks(self):
         for line in self.lines:
             for block in line:
                 if line.get(block).line == 'Red':
                     self.redBlocks.append(str(block))
+                    self.red_authority.append(0)
                 if line.get(block).line == 'Green':
                     self.greenBlocks.append(str(block))
+                    self.green_authority.append(0)
                 if line.get(block).line == 'Blue':
                     self.blueBlocks.append(str(block))
 
     # Get all switches for a line by filtering on Infrastructure substring
     # Called once on init of window
-    def get_switches(self):
+    def init_get_switches(self):
         for line in self.lines:
             for block in line:
                 if line.get(block).line == 'Red':
@@ -317,7 +340,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Get all stations for a line by filtering on Infrastructure substring
     # Called once on init of window
-    def get_stations(self): 
+    def init_get_stations(self): 
         for line in self.lines:
             for block in line:
                 if line.get(block).line == 'Red':
@@ -332,7 +355,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
     # Get all crossings for a line by filtering on Infrastructure match
     # Called once on init of window
-    def get_crossings(self):
+    def init_get_crossings(self):
         for line in self.lines:
             for block in line:
                 if line.get(block).line == 'Red':
@@ -387,6 +410,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
             else:
                 self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
+
+            if block.authority != 0:
+                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(189, 252, 194))
+            else:
+                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
 
             # Maintenance
             if block.maintenance_mode != 0:
@@ -444,6 +472,12 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             else:
                 self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
 
+            # Authority
+            if block.authority != 0:
+                self.tableWidget.item(row, 3).setBackground(QtGui.QColor(189, 252, 194))
+            else:
+                self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+
             # Switch
             if block.switch_position is None:
                 self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
@@ -466,44 +500,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             else:
                 self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
-    def get_trains(self):
-        cursor.execute("SELECT Train_ID FROM trains WHERE line = 'Red'")
-        trains = cursor.fetchall()
-        for train in trains:
-            self.redTrains.append(str(train[0]))
-
-        cursor.execute("SELECT Train_ID FROM trains WHERE line = 'Green'")
-        trains = cursor.fetchall()
-        for train in trains:
-            self.greenTrains.append(str(train[0]))
-
-        cursor.execute("SELECT Train_ID FROM trains WHERE line = 'Blue'")
-        trains = cursor.fetchall()
-        for train in trains:
-            self.blueTrains.append(str(train[0]))
-
-        self.update_speed_trains()
-        self.update_stations_trains()
-
-    # Helper method to call get_line_data and get_throughput
-    # These methods are called every time the timer expires
-    def update_data(self):
-        self.get_line_data()
-        mydb.commit()
-
-        if self.simRunning == 1:
-            self.elapsedTime = time.time() - self.startTime
-            self.label_currentTime.setText(time.strftime("%H:%M:%S", time.gmtime(self.elapsedTime)))
-        else:
-            self.label_currentTime.setText(time.strftime("%H:%M:%S", time.gmtime(0)))
-
     def open_file(self):
         filename = QFileDialog.getOpenFileName(self, 'Open File')
         print(filename)
         self.label.setText(str(filename[0]))
         self.outputLabel.setText(("Opened file: " + str(filename[0])))
 
-    # Function calls for Class Objects
+    # Connected to signal from CTC Test
     def update_failure(self, line, block_number, failure):
         if line == "Red":
             self.lines[0].get(block_number).failure = failure
@@ -514,6 +517,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         print("Update Failure: " + line, str(block_number), failure)
 
+    # Connected to signal from CTC Test
     def update_crossing(self, line, block_number, crossing):
         if line == "Red":
             self.lines[0].get(block_number).set_crossing(crossing)
@@ -524,6 +528,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         print("Update Crossing: " + line + str(block_number) + str(crossing))
 
+    # Connected to signal from CTC Test and Track Model
     def update_throughput(self, line_name: str, throughput):
         if line_name == 'Red':
             self.throughputs[0].setThroughput(throughput)
@@ -536,28 +541,43 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.BlueThroughput.setText(str(self.throughputs[2].get_throughput()))
         
         print("Update throughput: " + line_name + str(throughput))
-
-    def set_occupancy(self, line, block_number, occupancy):
-        if line == "Red":
-            self.lines[0].get(block_number).occupancy = occupancy
-        elif line == "Green":
-            self.lines[1].get(block_number).occupancy = occupancy
+    
+    # Connected to signal from CTC Test and Wayside
+    def set_occupancy(self, occupancies):
+        for occupancy in occupancies:
+            if occupancy['line'] == 'Red':
+                if occupancy['block'] != 0:
+                    self.lines[0].get(occupancy['block']).occupancy = occupancy['occupancy']
+            if occupancy['line'] == 'Green':
+                if occupancy['block'] != 0:
+                    self.lines[1].get(occupancy['block']).occupancy = occupancy['occupancy']
 
         self.get_line_data()
-        
-        print("Update Occupancy: " + line, str(block_number), str(occupancy))
+    
+    # Temporarily connected to signal from track model
+    def set_single_occupancy(self, line, block, occupancy):
+        if line == 'Green':
+            self.lines[1].get(block).occupancy = int(occupancy)
+        else:
+            self.lines[0].get(block).occupancy = int(occupancy)
 
-    def open_test_ui(self):
-        self.testUi = MainTestWindow()
-        self.testUi.show()
+        self.get_line_data()
+
+    # Connected to signal from CTC Office
+    def set_authorities(self, authorities):
+        for authority in authorities:
+            if authority['line'] == 'Red':
+                if authority['block'] != 0:
+                    self.lines[0].get(authority['block']).authority = authority['authority']
+            if authority['line'] == 'Green':
+                if authority['block'] != 0:
+                    self.lines[1].get(authority['block']).authority = authority['authority']
+
+        self.get_line_data()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-
-    timer = QTimer()
-    timer.timeout.connect(window.update_data)
-    timer.start(1000)
 
     sys.exit(app.exec())

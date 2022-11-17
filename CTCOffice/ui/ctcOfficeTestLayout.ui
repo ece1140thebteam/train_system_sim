@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>449</width>
-    <height>300</height>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,17 +44,17 @@
           <widget class="QComboBox" name="comboBox_occupancy_Line">
            <item>
             <property name="text">
-             <string>Blue</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Red</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
             </property>
            </item>
           </widget>
@@ -137,17 +137,17 @@
           <widget class="QComboBox" name="comboBox_crossing_line">
            <item>
             <property name="text">
-             <string>Blue</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Red</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
             </property>
            </item>
           </widget>
@@ -234,17 +234,17 @@
           <widget class="QComboBox" name="comboBox_trackFailure_line">
            <item>
             <property name="text">
-             <string>Blue</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Red</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
             </property>
            </item>
           </widget>
@@ -337,17 +337,17 @@
           <widget class="QComboBox" name="comboBox_setThroughput_line">
            <item>
             <property name="text">
-             <string>Blue</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Red</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
             </property>
            </item>
           </widget>
