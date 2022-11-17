@@ -299,6 +299,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
+      
+
 
    def ctc_set_authority(self, updates_list):
       controllers_to_update = []
@@ -326,6 +328,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          for statement in self.controllers[controller_num]:
             exec(statement)
+         for line in self.track_info:
+            if line =='Green':
+               for block in self.track_info[line]:
+                  if self.track_info[line][block]['controller'] == controller_num:
+                     print('updating')
       else:
          print('no plc uploaded for that controllers')
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
