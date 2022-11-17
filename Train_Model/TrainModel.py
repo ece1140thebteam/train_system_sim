@@ -204,12 +204,12 @@ class TrainModel(QMainWindow):
         self.ui.signalfail.clicked.connect(self.signal_failure)
 
         #signals
-        self.next_track()
         s.send_TrainModel_eLight.connect(self.light_set)
         s.send_TrainModel_iLight.connect(self.light_set)
         s.send_TrainModel_powerOutput.connect(self.power_set)
         s.send_TrackModel_next_block_info.connect(self.update_blocks)
         s.timer_tick.connect(self.timer)
+        self.next_track()
 
     def timer(self, mul):
         self.tickrate = 0.1*mul
@@ -218,6 +218,8 @@ class TrainModel(QMainWindow):
     def next_track(self):
         if self.block is None:
             s.send_TrackModel_get_next_block_info.emit("Green", 0, -1, 0)
+        elif self.prev_block is None:
+            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], 0, 0)
         else:
             s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
 
@@ -226,12 +228,14 @@ class TrainModel(QMainWindow):
         self.block = block
         s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
+        self.grade_set()
         self.speedcmd = self.block['commanded_speed']
         self.auth = self.block['authority']
         if (self.block['underground']):
             self.lightcmd = True
             self.light_set()
         self.speedlmt = self.block['speed_limit']
+        self.speed_lmt_set()
 
     def e_brake(self):
         if self.ui.eBrake.isChecked() or self.ebrakecmd: 
@@ -332,8 +336,9 @@ class TrainModel(QMainWindow):
             self.speed = 0
         #show speed
         s.send_TrainCtrl_speed.emit(self.speed)
+
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
-        self.calculate_distance
+        self.calculate_distance()
 
     def calculate_distance(self):
         sample_time = self.tickrate
@@ -344,10 +349,12 @@ class TrainModel(QMainWindow):
         self.distance = distance
         # calculating the total distance traveled by the train
         self.distance_traveled += distance
+        if self.block is None:
+            return
         if (self.distance_traveled > self.block['length']):
             self.distance_traveled -= self.block['length']
             self.next_track()
-        if (self.distance_traveled > self.length):
+        if (self.distance_traveled > self.length) and (self.prev_block != None):
             s.send_TrackModel_track_occupancy.emit("Green", self.prev_block['block_num'], False)
 
     #test ui updates:
