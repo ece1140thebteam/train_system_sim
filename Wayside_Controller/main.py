@@ -9,7 +9,9 @@ from PyQt6.QtWidgets import *
 
 # signals used to communicate between modules
 from signals import s
+
 from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
+from Wayside_Controller.blockInfo import track_info as track_info
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
@@ -18,26 +20,34 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       # Upload PLC button connections
       self.uploadPLC1.clicked.connect(self.getFile1)
-      self.track_info = {
-         'Green': {
-            1: { 'authority': 0, 'occupancy': 0, 'maintenance': False, 'suggested_speed': 0, 'track_failure': False, 'switch_pos': None}
-         },
-         'Red': {
-            1: { 'authority': 0, 'occupancy': 0, 'maintenance': False, 'suggested_speed': 0, 'track_failure': False, 'switch_pos': None}
-         }
-      }
 
-      gree_b1_auth = self.track_info['Green'][1]['authority']
+      # Allocate blocks with corresponding controller
+      for line in track_info:
+         if line == 'Red':
+            pass
+         elif line == 'Green':
+            for block in track_info[line]:
+               if block == 0 or (block >= 36 and block <= 73):
+                     track_info['Green'][block]['controller'] = 1
+               elif block >= 74 and block <= 143:
+                  track_info['Green'][block]['controller'] = 2
+               elif (block >= 1 and block <= 35) or (block >= 144 and block <= 150):
+                  track_info['Green'][block]['controller'] = 3
 
-      for line in self.track_info:
-         print(line)
-         for block in self.track_info[line]:
-            print(self.track_info[line][block])
+               #print(track_info[line][block]['controller'])
+      
+             
+
+      #blockinfo = track_info['Green'][block]
+      #authority = blockinfo['authority']
+      #track_info['Green'][block]['']
+
             
-      s.timer_tick.connect(self.handle_time_increment)
-      s.send_CTC_switch_position_signal.connect(self.update_switch_position)
+      #s.timer_tick.connect(self.handle_time_increment)
+      #s.send_CTC_switch_position_signal.connect(self.update_switch_position)
 
-   def update_switch_position(self, line:str, positions:list):
+
+   def update_switch_position(self, list):
       pass
 
    def handle_time_increment(self):
@@ -51,6 +61,21 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if filename[0] != '':
          with open(filename[0], 'r') as file:
             self.displayPLC1.setText(file.read())
+
+
+def run_plc1():
+   pass
+    #switch_pos = track["Red"][0]['authority'] && track["Red"][0]['authority'] && 
+
+def run_controller_x(controller_num):
+    if controller_num == 1:
+        run_plc1()
+
+def update_occupancy(line, block, occ):
+    track_info[line][block]['occupancy'] = occ
+
+    run_controller_x(track_info[line][block]['controller'])
+
 
 
 
