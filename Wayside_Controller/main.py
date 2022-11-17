@@ -17,7 +17,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
       super(MainWindow, self).__init__(parent)
       self.setupUi(self)
-
+      self.controllers = dict()
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.blockSelect1.currentTextChanged.connect(self.displayController1Block)
@@ -246,6 +246,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       track_info[line][block]['failure'] = int(failure != 'None')
       if failure == 'None': failure = ''
       s.send_CTC_test_failure.emit(line, block, failure)
+      self.run_controllerx(track_info[line][block]['controller'])
    
    def ctc_set_switch_position(self, updates_list):
       controllers_to_update = []
@@ -317,7 +318,16 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          self.run_controllerx(controller)
 
    def run_controllerx(self, controller_num):
-      print(f'running wayside controller {controller_num}')
+      print(self.controllers)
+      print(controller_num)
+      if controller_num in self.controllers:
+         print(self.controllers[controller_num])
+         print(f'running wayside controller {controller_num}')
+
+         for statement in self.controllers[controller_num]:
+            exec(statement)
+      else:
+         print('no plc uploaded for that controllers')
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
 
    def update_block_occupancy(self, line, block, occupancy):
@@ -340,13 +350,16 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       pass
 
    def getFile1(self):
-
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
+      self.controllers[1] = []
       if filename[0] != '':
          with open(filename[0], 'r') as file:
-            self.displayPLC1.setText(file.read())
-
+            self.controllers[1] = file.readlines()
+            plc = ''
+            for line in self.controllers[1]: plc+=line
+            self.displayPLC1.setText(plc)
+      print(self.controllers[1])
 
 def run_plc1():
    pass
