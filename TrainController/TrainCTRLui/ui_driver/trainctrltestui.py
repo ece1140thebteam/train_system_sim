@@ -97,7 +97,9 @@ class TrainCTRLTestUI(QWidget):
         self.Train.cmdSpd = self.cmdSpd
         tempStr = 'Commanded Speed: ' + str(self.cmdSpd) + 'MPH'
         self.ui.cmdLabel.setText(tempStr)
-        self.Train.cmdSpdAdjust()
+        self.Train.ui.cmdSpd.setText(tempStr)
+        self.Train.ui.speedSlider.setMaximum(self.Train.cmdSpd)
+        self.Train.powerCalc()
         self.powUpdate
 
     def curInput(self):
