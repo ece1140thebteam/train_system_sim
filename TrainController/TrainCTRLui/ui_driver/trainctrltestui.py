@@ -105,7 +105,7 @@ class TrainCTRLTestUI(QWidget):
         self.Train.curSpd = self.curSpd
         tempStr = 'Current Speed: ' + str(self.curSpd) + 'MPH'
         self.ui.curInputLabel.setText(tempStr)
-        self.Train.curSpdAdjust()
+        self.Train.curSpdAdjust(self.curSpd)
         self.powUpdate()
 
     def spdLimInput(self):

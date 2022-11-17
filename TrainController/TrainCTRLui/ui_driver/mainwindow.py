@@ -19,8 +19,8 @@ class TrainController(QMainWindow):
 
 
         #Initialization of internal variables
-        self.Kp = 1
-        self.Ki = 0.5
+        self.Kp = 35
+        self.Ki = 1
 
         self.maxPow = 120000 #120kW, per the Datasheet
         self.powOutput = 0
@@ -28,7 +28,7 @@ class TrainController(QMainWindow):
         self.auth = False
         self.cmdSpd = 0
         self.curSpd = 0
-        self.speedLim = 0
+        self.speedLim = 43
         self.driverCmd = 0
         
         self.engineFault = False
@@ -95,6 +95,9 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
+        #Signals
+        s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
+
     
     #Manual Mode toggling function
     def setManMode(self):
@@ -143,7 +146,8 @@ class TrainController(QMainWindow):
         self.powerCalc()
     
     #Function to adjust current speed, is called externally
-    def curSpdAdjust(self):
+    def curSpdAdjust(self, spd):
+        self.curSpd = spd
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
         self.powerCalc()
@@ -173,11 +177,11 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setMaximum(self.speedLim)    
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            self.curSpd = self.driverCmd
             self.powerCalc()
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
+        print("powerCalc")
         if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
@@ -190,7 +194,7 @@ class TrainController(QMainWindow):
             self.ui.eBrakeBtn.setChecked(True)
             #Send brake states to Train Model and display popup to user indicating fault
             s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-            s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
             self.faultDialog.show()
 
         else: #No Faults Found
@@ -198,11 +202,15 @@ class TrainController(QMainWindow):
                 error_k = self.driverCmd - self.curSpd
             else: #Commanded speed from CTC if automatic mode
                 if self.cmdSpd > self.speedLim:
-                    error_k = self.speedLim - self.curSpd
+                    error_k = self.speedLim/2.23694 - self.curSpd
                 else:
-                    error_k = self.cmdSpd - self.curSpd
+                    error_k = self.cmdSpd/2.23694 - self.curSpd
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
+            print(self.cmdSpd, self.speedLim)
+            print("power", pow)
+            print("error", error_k)
+            print("speed", self.curSpd)
 
             #Check to make sure max power is not exceeded
             if pow > self.maxPow:
@@ -218,13 +226,13 @@ class TrainController(QMainWindow):
                     self.ui.sBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 elif self.ui.sBrakeBtn.isChecked():
                     brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel.sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 else:
                     print('No Brakes Enabled, calculating power...')
                 brakeDialog.exec()
@@ -237,10 +245,22 @@ class TrainController(QMainWindow):
             s.send_TrainModel_powerOutput.emit(self.powOutput)
             
     
-    #Function used to interface with other modules/DB to get track signal
-    def getCur(self, cur):
-            self.curSpd = cur
-            self.curSpdAdjust()
+    #TODO:
+
+        #Get current speed, update power***
+    
+        #Get block authority, update power***
+
+        #Get commanded speed 
+    
+        #Get beacon data, open proper doors and activate intercom (show dialog too)
+
+        #Get passenger Ebrake activation, update power
+
+        #Get info when underground, turn on ext lights
+        
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

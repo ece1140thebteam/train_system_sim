@@ -86,6 +86,13 @@ class signals(QObject):
   send_TrackModel_block_info = pyqtSignal(int, dict) #trainID, block info
 
   #######################################################
+  # Train Model to Train Controller
+  # Block info
+  send_TrainCtrl_ebrake = pyqtSignal(bool)
+  send_TrainCtrl_failure = pyqtSignal(bool, str)
+  send_TrainCtrl_speed = pyqtSignal(float)
+
+  #######################################################
   # Train Controller to Train Model
   # Send power calculation from Train Controller to Train Model
   send_TrainModel_powerOutput = pyqtSignal(float) #power value
