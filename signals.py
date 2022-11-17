@@ -48,7 +48,7 @@ class signals(QObject):
   send_TrackController_crossing = pyqtSignal(list) # Line, status (0=deactivated, 1=activated)
 
   # Send track failure from Track Controller to CTC
-  send_TrackController_failure = pyqtSignal(list) # Line, failure type
+  send_TrackController_failure = pyqtSignal(str, int, int) # Line, failure type
 
   #######################################################
   # Wayside to track controller
@@ -66,6 +66,8 @@ class signals(QObject):
   send_TrackModel_map_info          = pyqtSignal(dict) 
   get_TrackModel_map_info           = pyqtSignal()
 
+  # track model to track controller
+  send_TrackModel_tc_track_failure = pyqtSignal(str, int, str)  #line, block, failure str
   #######################################################
   # Track Model test
   # Send throughput from Track Model test to Track Model
