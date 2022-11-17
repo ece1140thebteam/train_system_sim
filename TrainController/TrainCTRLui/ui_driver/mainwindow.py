@@ -30,6 +30,7 @@ class TrainController(QMainWindow):
         self.curSpd = 0
         self.speedLim = 43
         self.driverCmd = 0
+        self.dispatch = False
         
         self.engineFault = False
         self.trackSigFault = False
@@ -98,7 +99,7 @@ class TrainController(QMainWindow):
         #Signals
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
-        s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
+        s.send_TrackModel_block_info.connect(self.isDispatched)
 
     
     #Manual Mode toggling function
@@ -117,6 +118,19 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
+
+    #Function to check if train is dispatched, and if not feed starting values
+    def isDispatched(self, id, info):
+        if not self.dispatch:
+            self.cmdSpd = int(info['commanded_speed']*0.621371)
+            self.auth = info['authority']
+            cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
+            self.ui.cmdSpd.setText(cmdStr)
+            self.ui.speedSlider.setMaximum(self.cmdSpd)
+            self.dispatch = True
+            self.powerCalc()
+        else:
+            print('Already Dispatched')
 
     #Functions to send door signals
     def rDoors(self):
