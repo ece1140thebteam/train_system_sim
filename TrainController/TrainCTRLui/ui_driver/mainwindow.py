@@ -207,7 +207,7 @@ class TrainController(QMainWindow):
                 if self.cmdSpd > self.speedLim:
                     error_k = self.speedLim/2.23694 - self.curSpd
                 else:
-                    error_k = self.cmdSpd/2.23694 - self.curSpd
+                    error_k = self.cmdSpd*0.277778 - self.curSpd
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
             print(self.cmdSpd, self.speedLim)
