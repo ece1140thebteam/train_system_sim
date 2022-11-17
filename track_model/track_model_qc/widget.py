@@ -68,6 +68,7 @@ class TrackModel(QWidget):
         s.send_TrackModel_switch_position.connect(self.update_switch_position)
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
+        s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
         # self.print_track_info_dict()
 
     def print_track_info_dict(self):
@@ -126,6 +127,17 @@ class TrackModel(QWidget):
         s.send_TrackModel_throughput_signal.emit(line, int(tp))
         self.update_station_tree(line, block)
 
+    def tc_set_switch_pos(self, line, block, pos):
+        sw = -1
+        if pos == 0:
+            sw = self.track.track_lines[line].blocks[block].switch.pos1
+        elif pos == 1:
+            sw = self.track.track_lines[line].blocks[block].switch.pos2
+
+        else:
+            print('ERROR')
+        self.update_switch_position(line, block, sw)
+    
     def handle_time_increment(self):
         # timer called every 100ms
         self.time_elapsed_s += .1
@@ -316,8 +328,8 @@ class TrackModel(QWidget):
                                 line=line,
                                 section=block[1],
                                 block=blocknum,
-                                pos1=positions[0],
-                                pos2=positions[1],
+                                pos1=min(positions[0], positions[1]),
+                                pos2=max(positions[1], positions[0]),
                             )
 
                     elif not i.strip().isspace() and len(i.strip())>0:
