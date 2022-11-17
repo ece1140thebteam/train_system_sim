@@ -19,8 +19,8 @@ class TrainController(QMainWindow):
 
 
         #Initialization of internal variables
-        self.Kp = 1
-        self.Ki = 0.5
+        self.Kp = 35
+        self.Ki = 1
 
         self.maxPow = 120000 #120kW, per the Datasheet
         self.powOutput = 0
@@ -150,7 +150,6 @@ class TrainController(QMainWindow):
         self.curSpd = spd
         curStr = 'Current Speed: ' + str(self.curSpd) + ' MPH'
         self.ui.curSpd.setText(curStr)
-        print("speed adjust")
         self.powerCalc()
 
     #Function to adjust speed limit, is called externally
@@ -182,7 +181,7 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        print("power")
+        print("powerCalc")
         if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
@@ -203,11 +202,15 @@ class TrainController(QMainWindow):
                 error_k = self.driverCmd - self.curSpd
             else: #Commanded speed from CTC if automatic mode
                 if self.cmdSpd > self.speedLim:
-                    error_k = self.speedLim - self.curSpd
+                    error_k = self.speedLim/2.23694 - self.curSpd
                 else:
-                    error_k = self.cmdSpd - self.curSpd
+                    error_k = self.cmdSpd/2.23694 - self.curSpd
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
+            print(self.cmdSpd, self.speedLim)
+            print("power", pow)
+            print("error", error_k)
+            print("speed", self.curSpd)
 
             #Check to make sure max power is not exceeded
             if pow > self.maxPow:
