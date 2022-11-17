@@ -138,7 +138,7 @@ class TrainController(QMainWindow):
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, id, info):
-        self.cmdSpd = info['commanded_speed']
+        self.cmdSpd = int(info['commanded_speed']*0.621371)
         self.auth = info['authority']
         cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
