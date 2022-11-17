@@ -33,7 +33,7 @@ green_route = [0, # J
 57, 0]
 
 class Train():
-  def __init__(self, line: str, destinations: list, train_id: int):
+  def __init__(self, line: str, destinations: list, train_id: int, time_to_dispatch: int):
     self.id = train_id
     self.line = line
     self.current_block = 63
@@ -41,6 +41,8 @@ class Train():
     self.destinations = destinations
     self.is_dwelling = 0
     self.dwelling_t = 0
+    self.at_yard = 1
+    self.time_to_dispatch = time_to_dispatch
   
 class Train_Sim():
   def __init__(self):
@@ -50,19 +52,30 @@ class Train_Sim():
     self.green_speeds = [0] * 151
     self.station_trains = {}
 
-    self.second_count = 0
+    self.second_count = 50400+3300
 
     s.send_TrackController_track_occupancy.connect(self.occupancy_update)
     s.send_CTC_test_track_occupancy.connect(self.occupancy_update)
     s.send_TrackModel_track_occupancy.connect(self.single_occupancy_update)
 
     s.timer_tick.connect(self.train_at_station)
+    s.timer_tick.connect(self.increment_timer)
+  
+  def increment_timer(self, mult):
+    self.second_count += (0.1 * mult)
+    for train in self.trains.values():
+      if train.at_yard == 1:
+        train.time_to_dispatch -= (0.1 * mult)
+        if train.time_to_dispatch < 0:
+          train.at_yard = 0
+          self.update_authority(train.id)
 
-  def create_train(self, line, destinations):
-    train = Train(line, destinations, self.next_train_id)
+  def create_train(self, line, destinations, dest_time):
+    time_to_dispatch = dest_time - self.second_count
+    train = Train(line, destinations, self.next_train_id, time_to_dispatch)
     self.trains.update({self.next_train_id: train})
     self.next_train_id += 1
-    self.update_authority(train.id)
+    # self.update_authority(train.id)
     s.send_CTC_create_train.emit(line)
 
   def single_occupancy_update(self, line, block, occupancy):
@@ -103,7 +116,7 @@ class Train_Sim():
       if train.is_dwelling == 1:
         train.dwelling_t += (0.1 * mult)
         if train.dwelling_t > 30:
-          train.is_dwelling == 0
+          train.is_dwelling = 0
           train.dwelling_t = 0
           self.update_authority(train.id)
 
