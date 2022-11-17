@@ -268,6 +268,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['authority'] = authority
+         s.send_TrackModel_block_authority.emit(line, block, authority)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -287,6 +288,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
+         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -321,13 +323,14 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          line = update['line']
          block = update['block']
          sw = update['switch']
-         track_info[line][block]['switch'] = sw
+         track_info[line][block]['switch_pos'] = sw
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         s.send_TrackController_switch_pos.emit(line, block, sw)
+         if sw != '-':
+            s.send_TrackController_switch_pos.emit(line, block, sw)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -335,11 +338,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
    def run_controllerx(self, controller_num):
-      print(self.controllers)
-      print(controller_num)
+      # print(self.controllers)
+      # print(controller_num)
       if controller_num in self.controllers:
-         print(self.controllers[controller_num])
-         print(f'running wayside controller {controller_num}')
+         # print(self.controllers[controller_num])
+         # print(f'running wayside controller {controller_num}')
 
          for statement in self.controllers[controller_num]:
             exec(statement)
@@ -347,15 +350,16 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             if line =='Green':
                for block in track_info[line]:
                   if track_info[line][block]['controller'] == controller_num:
-                     print('updating')
-                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch'])
+                     # print('updating')
+                     if track_info[line][block]['switch_pos']!='-':
+                        s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
       else:
          print('no plc uploaded for that controllers')
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
 
       if controller_num == 1:
          if track_info['Green'][0]['occupancy'] == 1:
-            track_info['Green'][63]['switch'] == 1
+            track_info['Green'][63]['switch_pos'] == 1
 
    
 

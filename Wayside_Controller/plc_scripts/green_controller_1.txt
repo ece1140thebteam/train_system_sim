@@ -7,5 +7,5 @@
 
 # track_info['Green'][78]['authority']  track_info['Green'][2]['authority']
 
-track_info['Green'][77]['sw_pos'] = not (track_info['Green'][76]['occupancy'])
-track_info['Green'][85]['sw_pos'] = not (track_info['Green'][86]['authority'])
+track_info['Green'][77]['switch_pos'] = not (track_info['Green'][76]['authority'])
+track_info['Green'][85]['switch_pos'] = track_info['Green'][100]['occupancy'] or track_info['Green'][99]['occupancy'] or track_info['Green'][98]['occupancy'] 

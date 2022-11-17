@@ -26,7 +26,7 @@ class TrainController(QMainWindow):
         self.powOutput = 0
         self.temp = 70
         self.auth = True
-        self.cmdSpd = 0
+        self.cmdSpd = 1
         self.curSpd = 0
         self.speedLim = 43
         self.driverCmd = 0
@@ -83,7 +83,7 @@ class TrainController(QMainWindow):
         #Button Connections
         self.ui.manModeBtn.clicked.connect(self.setManMode)
         self.ui.tempDial.sliderReleased.connect(self.tempAdjust)
-        self.ui.speedSlider.valueChanged.connect(self.setSpdSlider)
+        self.ui.speedSlider.sliderReleased.connect(self.setSpdSlider)
         self.ui.eBrakeBtn.clicked.connect(self.powerCalc)
         self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
         
@@ -98,6 +98,7 @@ class TrainController(QMainWindow):
         #Signals
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
+        s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
 
     
     #Manual Mode toggling function
@@ -162,7 +163,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.cmdSpd)
         else:
             self.ui.speedSlider.setMaximum(self.speedLim)
-        self.powerCalc()
+        # self.powerCalc()
 
     #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
@@ -180,11 +181,11 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setMaximum(self.speedLim)    
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            self.powerCalc()
+            # self.powerCalc()
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        print("powerCalc")
+        # print("powerCalc")
         if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
@@ -202,7 +203,7 @@ class TrainController(QMainWindow):
 
         else: #No Faults Found
             if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
-                error_k = self.driverCmd - self.curSpd
+                error_k = self.driverCmd/2.23694 - self.curSpd
             else: #Commanded speed from CTC if automatic mode
                 if self.cmdSpd > self.speedLim:
                     error_k = self.speedLim/2.23694 - self.curSpd
@@ -210,10 +211,10 @@ class TrainController(QMainWindow):
                     error_k = self.cmdSpd*0.277778 - self.curSpd
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
-            print(self.cmdSpd, self.speedLim)
-            print("power", pow)
-            print("error", error_k)
-            print("speed", self.curSpd)
+            # print(self.cmdSpd, self.speedLim)
+            # print("power", pow)
+            # print("error", error_k)
+            # print("speed", self.curSpd)
 
             #Check to make sure max power is not exceeded
             if pow > self.maxPow:
@@ -225,20 +226,20 @@ class TrainController(QMainWindow):
             if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
                 pow = 0
                 if self.ui.eBrakeBtn.isChecked():
-                    brakeDialog = trainDialog('EBrake Engaged, power output set to 0')
+                    #brakeDialog = trainDialog('EBrake Engaged, power output set to 0')
                     self.ui.sBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
                     s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 elif self.ui.sBrakeBtn.isChecked():
-                    brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
+                    #brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
                     self.ui.eBrakeBtn.setChecked(False)
                     #Send Brake State signals to train model
                     s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
                     s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
                 else:
                     print('No Brakes Enabled, calculating power...')
-                brakeDialog.exec()
+                #brakeDialog.exec()
             #If power becomes negative, set to 0 and engage SBrake
             if pow < 0:
                 pow = 0

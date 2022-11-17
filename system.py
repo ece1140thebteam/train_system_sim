@@ -24,7 +24,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       super(SystemWindow, self).__init__(parent)
       self.setupUi(self)
 
-      self.second = 0
+      self.second = 50400+3300
       self.label_time.setText(str(round(self.second, 1)))
 
       #Create list of trains for indexing
@@ -55,7 +55,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
 
       # Train Controller Variables
-      self.Trains.append(TrainController())
+      # self.Trains.append(TrainController())
       self.pushButton_traincontrol.clicked.connect(self.open_traincontrol)
       self.pushButton_traincontrol_test.clicked.connect(self.open_traincontrol_test)
       
