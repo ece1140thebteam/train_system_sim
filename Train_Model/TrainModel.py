@@ -223,6 +223,7 @@ class TrainModel(QMainWindow):
         s.send_TrainModel_eBrake.connect(self.e_brake)
         s.send_TrainModel_temp.connect(self.temp_set)
         s.send_TrackModel_block_info.connect(self.update_blocks)
+        s.send_TrainModel_sBrake.connect(self.s_brake)
         s.timer_tick.connect(self.timer)
         self.next_track()
 
@@ -265,10 +266,10 @@ class TrainModel(QMainWindow):
         self.speedcmd = self.block['commanded_speed']
         self.auth = self.block['authority']
         if (self.auth == 0):
-            self.sbrakecmd = True
+            sbrakecmd = True
         else:
-            self.sbrakecmd = False
-        self.s_brake()
+            sbrakecmd = False
+        self.s_brake(sbrakecmd)
         self.beacon = self.block['beacon']
         self.beacon_set()
         if (self.block['underground']):
@@ -469,9 +470,10 @@ class TrainModel(QMainWindow):
             self.ui.ilight.setText("Interior Lights: Off")
             self.ui.ilightcmd.setText("I-Light Command: Off")
 
-    def s_brake(self):
+    def s_brake(self, cmd):
         if not(self.brakefail):
             if not(self.ebrakecmd):
+                self.sbrakecmd = cmd
                 if self.sbrakecmd: 
                     self.ui.sbrakecmd.setText("S Brake Command: On")
                 else:
