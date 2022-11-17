@@ -83,7 +83,7 @@ class TrainController(QMainWindow):
         #Button Connections
         self.ui.manModeBtn.clicked.connect(self.setManMode)
         self.ui.tempDial.sliderReleased.connect(self.tempAdjust)
-        self.ui.speedSlider.valueChanged.connect(self.setSpdSlider)
+        self.ui.speedSlider.sliderReleased.connect(self.setSpdSlider)
         self.ui.eBrakeBtn.clicked.connect(self.powerCalc)
         self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
         
@@ -146,7 +146,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.cmdSpd)
         else:
             self.ui.speedSlider.setMaximum(self.speedLim)
-        self.powerCalc()
+        # self.powerCalc()
     
     #Function to adjust current speed, is called externally
     def curSpdAdjust(self, spd):
@@ -162,7 +162,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.cmdSpd)
         else:
             self.ui.speedSlider.setMaximum(self.speedLim)
-        self.powerCalc()
+        # self.powerCalc()
 
     #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
@@ -180,7 +180,7 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setMaximum(self.speedLim)    
             self.driverCmd = self.ui.speedSlider.value()
             self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            self.powerCalc()
+            # self.powerCalc()
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
