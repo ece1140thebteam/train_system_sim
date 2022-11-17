@@ -56,9 +56,9 @@ class TrackBlock():
         self.failure_mode   = 'No Failures'
         self.beacon1        = None
         self.beacon2        = None
-        self.authority      = 1 # TODO REMOVE
+        self.authority      = 0 #1 # TODO REMOVE
         self.maintenance_mode = False
-        self.commanded_speed = self.speed_limit #TODO REMOVE
+        self.commanded_speed = 0 #self.speed_limit #TODO REMOVE
 
         self.passengers_waiting = random.randint(6, 16)
         self.passengers_deboarded = 0

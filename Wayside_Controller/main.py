@@ -288,13 +288,14 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       for update in updates_list:
          line = update['line']
          block = update['block']
-         s = update['speed']
+         speed = update['speed']
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         track_info[line][block]['suggested_speed'] = s
+         track_info[line][block]['suggested_speed'] = speed
+         s.send_TrackModel_commanded_speed.emit(line, block, speed)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -313,6 +314,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          track_info[line][block]['authority'] = auth
 
+         # REMOVE LATER
+         s.send_TrackModel_block_authority.emit(line, block, auth)
       for controller in controllers_to_update:
          self.run_controllerx(controller)
 
