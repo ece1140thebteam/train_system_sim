@@ -15,7 +15,7 @@ class TrackModelTestUI(QWidget):
         self.load_ui()
         s.send_TrackModel_map_info.connect(self.update_track_info)
         s.get_TrackModel_map_info.emit()
-        s.send_TrackModel_updated.connect(self.update_track_info)
+        s.send_TrackModel_updated.connect(s.get_TrackModel_map_info.emit)
         self.lineDropDown.currentTextChanged.connect(self.populate_block_dropdown)
         self.blockDropDown.currentTextChanged.connect(self.block_num_changed)
 
@@ -74,9 +74,6 @@ class TrackModelTestUI(QWidget):
             self.traveled_in_block = 0
             self.previous_block = self.current_block
             self.current_block = self.current_block_info['block_num']
-            
-
-
 
         self.current_block_info = block_info
         self.stopped_at_station = False
@@ -114,8 +111,6 @@ class TrackModelTestUI(QWidget):
                     s.send_TrackModel_track_occupancy.emit(line, self.previous_block, False) 
             
             if self.current_block_info['commanded_speed'] == 0 or self.current_block_info['authority']==0:
-                #wait until block speed and authority are > 0
-                # print('waiting for authority or speed')
                 s.send_TrackModel_get_block_info.emit(line, self.current_block, 0) 
 
             distance = self.current_block_info['commanded_speed']*dt*self.current_block_info['authority']
@@ -312,7 +307,9 @@ class TrackModelTestUI(QWidget):
         uic.loadUi(path, self)
 
     def update_track_info(self, track):
+        print('updating list')
         self.track = track
+        self.populate_line_dropdown()
 #        print(track)
 #        for line in track:
 #            self.track[line] = dict()
