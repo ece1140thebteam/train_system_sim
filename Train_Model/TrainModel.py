@@ -224,7 +224,7 @@ class TrainModel(QMainWindow):
     def update_blocks(self, train, block):
         self.prev_block = self.block
         self.block = block
-        s.send_TrackModel_track_occupancy("Green", self.block['block_num'], True)
+        s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
         self.speedcmd = self.block['commanded_speed']
         self.auth = self.block['authority']
@@ -333,6 +333,7 @@ class TrainModel(QMainWindow):
         #show speed
         s.send_TrainCtrl_speed.emit(self.speed)
         self.ui.speed.setText("Speed: " + str(int(self.speed*2.23694)) + " mph")
+        self.calculate_distance
 
     def calculate_distance(self):
         sample_time = self.tickrate
