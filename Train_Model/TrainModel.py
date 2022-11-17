@@ -256,9 +256,9 @@ class TrainModel(QMainWindow):
             s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
 
     def update_blocks(self, train, block):
-        if self.block != block:
+        if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
-            self.block = block
+        self.block = block
         s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
         self.grade_set()

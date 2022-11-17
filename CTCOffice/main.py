@@ -225,7 +225,21 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         print(str(stations))
 
-        Train.trains.create_train('Green', stationBlocks)
+        time = stations[0][1]
+
+        minutes = int(time) % 100
+        hour = time[0:2]
+        hour = int(hour)
+
+        hour_sec = 60*60*hour
+        min_sec = 60*minutes
+        time_to_dispatch = hour_sec + min_sec - 90
+        print(time_to_dispatch)
+
+
+        Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+
+       
         
 
 
