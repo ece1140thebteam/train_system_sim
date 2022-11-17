@@ -118,7 +118,7 @@ class Train_Sim():
         # Remove station from list
         train.destinations.pop(0)
         # Set train dwelling to 1
-        # train.is_dwelling = 1
+        train.is_dwelling = 1
 
         prevBlock = green_route[train.route_block-1]
         authority = {'line': 'Green', 'block': prevBlock, 'authority': 0}
@@ -126,7 +126,7 @@ class Train_Sim():
 
         s.send_CTC_authority.emit([authority])
         s.send_CTC_suggested_speed.emit([speed])
-        # return
+        return
 
     if(len(train.destinations) == 0):
       # Set authority from current block to yard to 1

@@ -184,7 +184,7 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        print("powerCalc")
+        # print("powerCalc")
         if self.faultMode: #First checking for faults
             if self.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
@@ -210,10 +210,10 @@ class TrainController(QMainWindow):
                     error_k = self.cmdSpd*0.277778 - self.curSpd
 
             pow = self.Kp * error_k + self.Ki * self.curSpd
-            print(self.cmdSpd, self.speedLim)
-            print("power", pow)
-            print("error", error_k)
-            print("speed", self.curSpd)
+            # print(self.cmdSpd, self.speedLim)
+            # print("power", pow)
+            # print("error", error_k)
+            # print("speed", self.curSpd)
 
             #Check to make sure max power is not exceeded
             if pow > self.maxPow:
