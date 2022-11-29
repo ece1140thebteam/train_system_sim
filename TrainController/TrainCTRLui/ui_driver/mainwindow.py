@@ -100,8 +100,21 @@ class TrainController(QMainWindow):
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
         s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
+        s.send_TrainCtrl_failure.connect(self.failHandle)
 
     
+    def failHandle(self, failActive, failType): 
+        self.failMode = failActive
+        if failType == 'Engine':
+            self.engineFault = True
+        elif failType == 'Brake':
+            self.brakeFault = True
+        elif failType == 'Signal':
+            self.trackSigFault = True
+        else:
+            self.engineFault = False
+            self.brakeFault = False
+            self.trackSigFault = False
     #Manual Mode toggling function
     def setManMode(self):
         if not self.ui.manModeBtn.isChecked(): #Case for True
