@@ -17,26 +17,25 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
       super(MainWindow, self).__init__(parent)
       self.setupUi(self)
-
+      self.controllers = dict()
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
+      self.uploadPLC2.clicked.connect(self.getFile2)
+      self.uploadPLC3.clicked.connect(self.getFile3)
       self.blockSelect1.currentTextChanged.connect(self.displayController1Block)
       self.blockSelect2.currentTextChanged.connect(self.displayController2Block)
       self.blockSelect3.currentTextChanged.connect(self.displayController3Block)
-      s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
+      
+      # signals from Track Model
+      s.send_TrackModel_track_occupancy.connect(self.update_occupancy)
+      s.send_TrackModel_tc_track_failure.connect(self.update_status)
 
-      s.send_CTC_switch_position_signal.connect(self.ctc_set_switch_position) # [{'line':line, 'block':block, 'switch':0}]
-
-      # Send maintenance mode from CTC to Track Controller
-      s.send_CTC_maintenance_mode_signal.connect(self.ctc_set_maintenance_mode) # [{'line':line, 'block':block, 'mode':0}]
-
-      # Send suggested speed from CTC to Track Controller
-      s.send_CTC_suggested_speed.connect(self.ctc_set_suggested_speed) # [{'line':line, 'block':block, 'speed':0}]
-
-      # Send block authority from CTC to Track Controller
-      s.send_CTC_authority.connect(self.ctc_set_authority) # [{'line':line, 'block':block, 'authority':0}]
-
-      s.send_TrackModel_tc_track_failure.connect(self.tm_set_block_failure)
+      # signals from CTC
+      s.send_CTC_authority.connect(self.update_authority) # [{'line':line, 'block':block, 'authority':0}]
+      s.send_CTC_suggested_speed.connect(self.update_suggested_speed) # [{'line':line, 'block':block, 'speed':0}]
+      s.send_CTC_maintenance_mode_signal.connect(self.update_maintenance_mode) # [{'line':line, 'block':block, 'mode':0}]
+      s.send_CTC_switch_position_signal.connect(self.update_switch_position) # [{'line':line, 'block':block, 'switch':0}]
+      #s.timer_tick.connect(self.handle_time_increment)
 
       # Allocate blocks with corresponding controller
       for line in track_info:
@@ -54,9 +53,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                   track_info['Green'][block]['controller'] = 3
                   self.blockSelect3.addItem(str(block))
 
-            
-      #s.timer_tick.connect(self.handle_time_increment)
-      #s.send_CTC_switch_position_signal.connect(self.update_switch_position)
 
    # controller 1 GUI
    def displayController1Block(self, blockText):
@@ -241,49 +237,46 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.commandedSpeedValue3.setText(str(track_info['Green'][block]['commanded_speed']))
 
 
-   def tm_set_block_failure(self, line, block, failure):
-      # i
-      track_info[line][block]['failure'] = int(failure != 'None')
-      if failure == 'None': failure = ''
-      s.send_CTC_test_failure.emit(line, block, failure)
+
+   # update block occupancy coming from track model
+   def update_occupancy(self, line, block, occupancy):
+      track_info[line][block]['occupancy'] = occupancy
+      #s.send_TrackController_track_occupancy.emit({'line':line, 'block':block, 'occupancy':occupancy}) # ?????????????????????????????????
+      self.run_controllerx(track_info[line][block]['controller'])
    
-   def ctc_set_switch_position(self, updates_list):
+
+
+   # update block status (failures) coming from track model
+   def update_status(self, line, block, failure):
+      track_info[line][block]['failure'] = int(failure != 'None')
+      if failure == 'None': failure = '' # ???????????????????????????????????????????????????????
+      s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
+      self.run_controllerx(track_info[line][block]['controller'])
+
+
+
+   # update block authority coming from ctc
+   def update_authority(self, updates_list):
       controllers_to_update = []
       for update in updates_list:
          line = update['line']
          block = update['block']
-         sw = update['switch']
-         track_info[line][block]['switch'] = sw
+         authority = update['authority']
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         s.send_TrackController_switch_pos.emit(line, block, sw)
+         track_info[line][block]['authority'] = authority
+         s.send_TrackModel_block_authority.emit(line, block, authority)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
 
 
-   def ctc_set_maintenance_mode(self, updates_list):
-      controllers_to_update = []
-      for update in updates_list:
-         line = update['line']
-         block = update['block']
-         m = update['mode']
 
-         track_info[line][block]['maintenance'] = m
-         
-         controller = track_info[line][block]['controller']
-         if controller not in controllers_to_update: 
-            controllers_to_update.append(controller)
-         print(m)
-         s.send_TrackModel_maintenance_status.emit(line, block, m==1)
-         
-      for controller in controllers_to_update:
-         self.run_controllerx(controller)
-
-   def ctc_set_suggested_speed(self, updates_list):
+   # update block suggested speed coming from ctc
+   def update_suggested_speed(self, updates_list):
       controllers_to_update = []
       for update in updates_list:
          line = update['line']
@@ -295,74 +288,124 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
-         s.send_TrackModel_commanded_speed.emit(line, block, speed)
+         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
 
-   def ctc_set_authority(self, updates_list):
+
+
+   # update block maintenance coming from ctc
+   def update_maintenance_mode(self, updates_list):
       controllers_to_update = []
-      print(updates_list)
       for update in updates_list:
          line = update['line']
          block = update['block']
-         auth = update['authority']
+         maintenance = update['mode']
+
+         track_info[line][block]['maintenance'] = maintenance
+         
+         controller = track_info[line][block]['controller']
+         if controller not in controllers_to_update: 
+            controllers_to_update.append(controller)
+
+         #s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
+         
+      for controller in controllers_to_update:
+         self.run_controllerx(controller)
+
+
+
+   # update manual switch positions coming from ctc
+   def update_switch_position(self, updates_list):
+      controllers_to_update = []
+      for update in updates_list:
+         line = update['line']
+         block = update['block']
+         sw = update['switch']
+         track_info[line][block]['switch_pos'] = sw
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         track_info[line][block]['authority'] = auth
+         if sw != '-':
+            s.send_TrackController_switch_pos.emit(line, block, sw)
 
-         # REMOVE LATER
-         s.send_TrackModel_block_authority.emit(line, block, auth)
       for controller in controllers_to_update:
          self.run_controllerx(controller)
 
+
+
    def run_controllerx(self, controller_num):
-      print(f'running wayside controller {controller_num}')
+      # print(self.controllers)
+      # print(controller_num)
+      if controller_num in self.controllers:
+         # print(self.controllers[controller_num])
+         # print(f'running wayside controller {controller_num}')
+
+         for statement in self.controllers[controller_num]:
+            exec(statement)
+         for line in track_info:
+            if line =='Green':
+               for block in track_info[line]:
+                  if track_info[line][block]['controller'] == controller_num:
+                     # print('updating')
+                     if track_info[line][block]['switch_pos']!='-':
+                        s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+      else:
+         # print('no plc uploaded for that controllers')
+         pass
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
 
-   def update_block_occupancy(self, line, block, occupancy):
-      track_info[line][block]['occupancy'] = occupancy
+      if controller_num == 1:
+         if track_info['Green'][0]['occupancy'] == 1:
+            track_info['Green'][63]['switch_pos'] == 1
 
-      self.run_controllerx(track_info[line][block]['controller'])
-      print('track controller occupancy updated')
    
-   def update_authority(self, line, block, authority):
-      track_info[line][block]['authority'] = authority
 
-      self.run_controllerx(track_info[line][block]['controller'])
-      print('track controller authority updated')
 
-   def update_switch_position(self, list):
-      pass
-
-   def handle_time_increment(self):
-      # print('hi')
-      pass
 
    def getFile1(self):
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[1] = []
+      if filename[0] != '':
+         with open(filename[0], 'r') as file:
+            self.controllers[1] = file.readlines()
+            plc = ''
+            for line in self.controllers[1]: plc+=line
+            self.displayPLC1.setText(plc)
+      print(self.controllers[1])
+
+
+   def getFile2(self):
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[2] = []
+      if filename[0] != '':
+         with open(filename[0], 'r') as file:
+            self.controllers[2] = file.readlines()
+            plc = ''
+            for line in self.controllers[2]: plc+=line
+            self.displayPLC2.setText(plc)
+      print(self.controllers[2])
+
+
+   def getFile3(self):
 
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
+      self.controllers[3] = []
       if filename[0] != '':
          with open(filename[0], 'r') as file:
-            self.displayPLC1.setText(file.read())
+            self.controllers[3] = file.readlines()
+            plc = ''
+            for line in self.controllers[3]: plc+=line
+            self.displayPLC3.setText(plc)
+      print(self.controllers[3])
 
 
-def run_plc1():
-   pass
-    #switch_pos = track["Red"][0]['authority'] && track["Red"][0]['authority'] && 
-
-def run_controller_x(controller_num):
-    if controller_num == 1:
-        run_plc1()
-
-def update_occupancy(line, block, occ):
-    track_info[line][block]['occupancy'] = occ
-
-    run_controller_x(track_info[line][block]['controller'])
 
 
 
