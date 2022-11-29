@@ -28,8 +28,9 @@ class TrainController(QMainWindow):
         self.auth = True
         self.cmdSpd = 1
         self.curSpd = 0
-        self.speedLim = 43
+        self.speedLim = 70
         self.driverCmd = 0
+        self.dispatch = False
         
         self.engineFault = False
         self.trackSigFault = False
@@ -99,8 +100,21 @@ class TrainController(QMainWindow):
         s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
         s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
+        s.send_TrainCtrl_failure.connect(self.failHandle)
 
     
+    def failHandle(self, failActive, failType): 
+        self.failMode = failActive
+        if failType == 'Engine':
+            self.engineFault = True
+        elif failType == 'Brake':
+            self.brakeFault = True
+        elif failType == 'Signal':
+            self.trackSigFault = True
+        else:
+            self.engineFault = False
+            self.brakeFault = False
+            self.trackSigFault = False
     #Manual Mode toggling function
     def setManMode(self):
         if not self.ui.manModeBtn.isChecked(): #Case for True
@@ -117,6 +131,19 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
+
+    #Function to check if train is dispatched, and if not feed starting values
+    # def isDispatched(self, id, info):
+    #     if not self.dispatch:
+    #         self.cmdSpd = int(info['commanded_speed']*0.621371)
+    #         self.auth = info['authority']
+    #         cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
+    #         self.ui.cmdSpd.setText(cmdStr)
+    #         self.ui.speedSlider.setMaximum(self.cmdSpd)
+    #         self.dispatch = True
+    #         self.powerCalc()
+    #     else:
+    #         print('Already Dispatched')
 
     #Functions to send door signals
     def rDoors(self):
@@ -139,9 +166,10 @@ class TrainController(QMainWindow):
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, id, info):
-        self.cmdSpd = int(info['commanded_speed']*0.621371)
+        self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
-        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
+        self.dispatch = True
+        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd*0.621371) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
         if self.speedLim > self.cmdSpd:
             self.ui.speedSlider.setMaximum(self.cmdSpd)
@@ -186,78 +214,84 @@ class TrainController(QMainWindow):
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
         # print("powerCalc")
-        if self.faultMode: #First checking for faults
-            if self.trackSigFault:
-                self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
-            if self.engineFault:
-                self.ui.engFailStatus.setText('Engine Status: FAILING')
-            if self.brakeFault:
-                self.ui.brakeFailStatus.setText('Brake Status: FAILING')
-            self.faultDialog = trainDialog('Failure detected, setting power to 0 and engaging ebrake')
-            self.powOutput = 0
-            self.ui.eBrakeBtn.setChecked(True)
-            #Send brake states to Train Model and display popup to user indicating fault
-            s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-            self.faultDialog.show()
+        if self.auth:
+            if self.faultMode: #First checking for faults
+                if self.trackSigFault:
+                    self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
+                if self.engineFault:
+                    self.ui.engFailStatus.setText('Engine Status: FAILING')
+                if self.brakeFault:
+                    self.ui.brakeFailStatus.setText('Brake Status: FAILING')
+                self.faultDialog = trainDialog('Failure detected, setting power to 0 and engaging ebrake')
+                self.powOutput = 0
+                self.ui.eBrakeBtn.setChecked(True)
+                #Send brake states to Train Model and display popup to user indicating fault
+                s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                self.faultDialog.show()
 
-        else: #No Faults Found
-            if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
-                error_k = self.driverCmd/2.23694 - self.curSpd
-            else: #Commanded speed from CTC if automatic mode
-                if self.cmdSpd > self.speedLim:
-                    error_k = self.speedLim/2.23694 - self.curSpd
-                else:
+            else: #No Faults Found
+                if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
+                    error_k = self.driverCmd/2.23694 - self.curSpd
+                else: #Automatic mode case
                     error_k = self.cmdSpd*0.277778 - self.curSpd
 
-            pow = self.Kp * error_k + self.Ki * self.curSpd
-            # print(self.cmdSpd, self.speedLim)
-            # print("power", pow)
-            # print("error", error_k)
-            # print("speed", self.curSpd)
 
-            #Check to make sure max power is not exceeded
-            if pow > self.maxPow:
-                pow = self.maxPow
-                self.maxPowError = trainDialog('Max power exceeded, capping power output')
-                self.maxPowError.show()
+                pow = self.Kp * error_k + self.Ki * self.curSpd
 
-            #Set power to 0 if brakes active
-            if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
-                pow = 0
-                if self.ui.eBrakeBtn.isChecked():
-                    #brakeDialog = trainDialog('EBrake Engaged, power output set to 0')
-                    self.ui.sBrakeBtn.setChecked(False)
-                    #Send Brake State signals to train model
-                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-                elif self.ui.sBrakeBtn.isChecked():
-                    #brakeDialog = trainDialog('SBrake Engaged, power output set to 0')
-                    self.ui.eBrakeBtn.setChecked(False)
-                    #Send Brake State signals to train model
-                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                #Automatic mode handling
+                if not self.ui.manModeBtn.isChecked():
+                    #If power becomes negative, set to 0 and engage SBrake
+                    if pow < 0:
+                        pow = 0
+                        if self.dispatch == True:
+                            self.ui.sBrakeBtn.setChecked(True)
+                            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    else:
+                        if self.ui.sBrakeBtn.isChecked():
+                            self.ui.sBrakeBtn.setChecked(False)
+                    
+                # print(self.cmdSpd, self.speedLim)
+                # print("power", pow)
+                # print("error", error_k)
+                # print("speed", self.curSpd)
+
+                #Check to make sure max power is not exceeded
+                if pow > self.maxPow:
+                    pow = self.maxPow
+                    self.maxPowError = trainDialog('Max power exceeded, capping power output')
+                    self.maxPowError.show()
+
+                #Set power to 0 if brakes active
+                if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
+                    pow = 0
+                    if self.ui.eBrakeBtn.isChecked():
+                        self.ui.sBrakeBtn.setChecked(False)
+                        #Send Brake State signals to train model
+                        s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                        s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    elif self.ui.sBrakeBtn.isChecked():
+                        self.ui.eBrakeBtn.setChecked(False)
+                        #Send Brake State signals to train model
+                        s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                        s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
+                    else:
+                        print('No Brakes Enabled, calculating power...')
                 else:
-                    print('No Brakes Enabled, calculating power...')
-                #brakeDialog.exec()
-            #If power becomes negative, set to 0 and engage SBrake
-            if pow < 0:
-                pow = 0
-                # self.ui.sBrakeBtn.setChecked(True)
-            
-            self.powOutput = pow
-            s.send_TrainModel_powerOutput.emit(self.powOutput)
-            
+                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
+                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())      
+                
+                self.powOutput = pow
+                s.send_TrainModel_powerOutput.emit(self.powOutput)
+        else:
+            self.ui.sBrakeBtn.setChecked(True)
+            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())        
     
     #TODO:
 
-        #Get current speed, update power***
+        #Handle Service Brake operation in automatic mode: Make sure it gets disabled when power goes positive
     
-        #Get block authority, update power***
-
-        #Get commanded speed 
-    
-        #Get beacon data, open proper doors and activate intercom (show dialog too)
+        #Get beacon data, open proper doors and activate intercom when at station (show dialog too)
 
         #Get passenger Ebrake activation, update power
 
