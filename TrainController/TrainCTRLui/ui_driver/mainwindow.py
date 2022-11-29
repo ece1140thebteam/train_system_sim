@@ -285,7 +285,9 @@ class TrainController(QMainWindow):
                 s.send_TrainModel_powerOutput.emit(self.powOutput)
         else:
             self.ui.sBrakeBtn.setChecked(True)
-            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())        
+            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked()) 
+            self.powOutput = 0
+            s.send_TrainModel_powerOutput.emit(self.powOutput)       
     
     #TODO:
 
