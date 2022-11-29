@@ -250,7 +250,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def update_status(self, line, block, failure):
       track_info[line][block]['failure'] = int(failure != 'None')
       if failure == 'None': failure = '' # ???????????????????????????????????????????????????????
-      #s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
+      s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
       self.run_controllerx(track_info[line][block]['controller'])
 
 
@@ -354,7 +354,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                      if track_info[line][block]['switch_pos']!='-':
                         s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
       else:
-         print('no plc uploaded for that controllers')
+         # print('no plc uploaded for that controllers')
+         pass
       #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
 
       if controller_num == 1:
