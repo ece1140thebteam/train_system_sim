@@ -5,17 +5,12 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
-# import sqlite3
-# import time
 from signals import s
 import CTCOffice.Train as Train
 
 from CTCOffice.testUiMain import MainTestWindow
 
 import CTCOffice.InitData as InitData
-
-# mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
-# cursor = mydb.cursor()
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -236,8 +231,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         time_to_dispatch = hour_sec + min_sec - 90
         print(time_to_dispatch)
 
-
-        Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+        if(line == 'Green'):
+            Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+        else:
+            Train.trains.create_train('Red', stationBlocks, time_to_dispatch)
 
        
         
@@ -400,8 +397,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # Get all data for a line and update table
     # Table is colored depending on value returned
     def get_line_data(self):
-        self.tableWidget_2.setRowCount(70)
-        for row in range(0, 70):
+        self.tableWidget_2.setRowCount(76)
+        for row in range(0, 76):
             block = self.lines[0].get(row+1)
             self.tableWidget_2.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
             self.tableWidget_2.setItem(row, 1, QTableWidgetItem(str(block.line)))
