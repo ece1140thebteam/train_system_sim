@@ -157,6 +157,7 @@ class TrainModel(QMainWindow):
         self.auth = 1
         self.beacon = None
         self.atStation = False
+        self.stationStop = False
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -280,16 +281,19 @@ class TrainModel(QMainWindow):
             self.ilightcmd = False
         self.elight_set(self.elightcmd)
         self.ilight_set(self.ilightcmd)
-        self.speedlmt = self.block['speed_limit']
+        self.speedlmt = self.block['speed_limit']/3.6
         self.speed_lmt_set()
 
     def station(self):
-        if not(self.atStation) and self.beacon['station_name'] != None:
+        if self.beacon['station_name'] != None and not(self.atStation):
             self.atStation = True
+        if self.speed == 0 and self.atStation and not(self.stationStop):
             self.passenger += self.prev_block['passengers_waiting']
             deboarding = random.randint(int(self.passenger/10), int(self.passenger/5))
             self.passenger -= deboarding
+            self.ui.passenger.setText("Passengers: " + str(self.passenger))
             s.send_TrackModel_passengers_onboarded.emit("Green", self.block['block_num'], deboarding)
+            self.stationStop = True
             if self.beacon['station_side'] is 'right':
                 self.rdoorcmd = True
                 self.right_door(self.rdoorcmd)
@@ -431,7 +435,7 @@ class TrainModel(QMainWindow):
     #test ui updates:
 
     def right_door(self, open):
-        if (open):
+        if (open and self.speed == 0):
             self.rdoor = True
             self.ui.rdoors.setText("Right Doors: Open")
             self.ui.rdoorcmd.setText("Right Door Cmd: On")
@@ -441,7 +445,7 @@ class TrainModel(QMainWindow):
             self.ui.rdoorcmd.setText("Right Door Cmd: Off")
 
     def left_door(self, open):
-        if (open):
+        if (open and self.speed == 0):
             self.ldoor = True
             self.ui.ldoors.setText("Left Doors: Open")
             self.ui.ldoorcmd.setText("Left Door Cmd: On")
