@@ -37,6 +37,9 @@ class TrainController(QMainWindow):
         self.brakeFault = False
         self.faultMode = False
 
+        self.station = 'none'
+
+
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
         self.ui.manModeBtn.toggle()
@@ -164,6 +167,15 @@ class TrainController(QMainWindow):
         self.ui.curTempLabel.setText(tempStr)
         s.send_TrainModel_temp.emit(self.temp)
 
+    def beaconHandler(self, id, info):
+        if info['beacon'] is not None:
+            self.beacon = info['beacon']
+            self.side = self.beacon['station_side']
+            self.station = self.beacon['station_name']
+
+            if self.auth == 0:
+                self.stationDialog = trainDialog('Arrived at '+ self.station + ' Station, doors opening on ' + self.side + ' side')
+    
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, id, info):
         self.cmdSpd = info['commanded_speed']
@@ -175,6 +187,7 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.cmdSpd)
         else:
             self.ui.speedSlider.setMaximum(self.speedLim)
+        self.beaconHandler(self,id,info)
         self.powerCalc()
     
     #Function to adjust current speed, is called externally
@@ -213,7 +226,6 @@ class TrainController(QMainWindow):
 
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
-        # print("powerCalc")
         if self.auth:
             if self.faultMode: #First checking for faults
                 if self.trackSigFault:
