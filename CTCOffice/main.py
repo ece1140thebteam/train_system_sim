@@ -135,6 +135,18 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         switch = self.comboBox_controlSwitch_switch.currentText()
         position = self.comboBox_controlSwitch_switchPosition.currentText()
 
+        # Check to see if block is in maintenance mode before setting speed
+        if line == 'Red':
+            if self.lines[0].get(int(switch)).maintenance_mode == 0:
+                print("Cannot set switch: block must be in maintenance mode")
+                self.outputLabel.setText("Cannot set switch: block must be in maintenance mode")
+                return
+        else:
+            if self.lines[1].get(int(switch)).maintenance_mode == 0:
+                print("Cannot set switch: block must be in maintenance mode")
+                self.outputLabel.setText("Cannot set switch: block must be in maintenance mode")
+                return
+
         print("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         self.outputLabel.setText("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         if position == "Normal":
