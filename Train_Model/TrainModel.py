@@ -113,7 +113,7 @@ class TestTrainModel(QMainWindow):
         self.train.speed_lmt_set()
 
 class TrainModel(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, id, parent=None):
         super().__init__(parent)
         self.ui = Ui_TrainModel()
         self.ui.setupUi(self)
@@ -158,6 +158,7 @@ class TrainModel(QMainWindow):
         self.beacon = None
         self.atStation = False
         self.stationStop = False
+        self.id = id
 
         #text
         self.ui.length.setText("Length: " + str(self.length))
@@ -220,10 +221,8 @@ class TrainModel(QMainWindow):
         s.send_TrainModel_powerOutput.connect(self.power_set)
         s.send_TrainModel_lDoor.connect(self.left_door)
         s.send_TrainModel_rDoor.connect(self.right_door)
-        s.send_TrackModel_next_block_info.connect(self.update_blocks)
         s.send_TrainModel_eBrake.connect(self.e_brake)
         s.send_TrainModel_temp.connect(self.temp_set)
-        s.send_TrackModel_block_info.connect(self.update_blocks)
         s.send_TrainModel_sBrake.connect(self.s_brake)
         s.timer_tick.connect(self.timer)
         self.next_track()
@@ -257,7 +256,7 @@ class TrainModel(QMainWindow):
         else:
             s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
 
-    def update_blocks(self, train, block):
+    def update_blocks(self, block):
         if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
         self.block = block
