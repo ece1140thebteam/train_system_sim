@@ -18,6 +18,7 @@ class InitData():
     def get_blocks(self):
         lines = []
         blocks = {}
+        print("Adding Red Line")
         redline = pd.read_excel(file_name, sheet_name=2, usecols=['Line', 'Section', 'Block Number', 'Infrastructure'])
         for r in range(0, 76):
             line = str(redline.iloc[r]['Line'])

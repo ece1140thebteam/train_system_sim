@@ -21,11 +21,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.throughputs = init_data.get_throughput()
         self.lines = init_data.get_blocks()
 
-        self.startTime = 0
-        self.elapsedTime = 0
-        self.simRunning = 0
-        self.simReset = 1
-
         # Initialize Static Data
         self.redBlocks = []
         self.greenBlocks = []
@@ -102,6 +97,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_CTC_authority.connect(self.set_authorities)
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
         # TODO: Send switch positions from track controller and connect to self.set_switches
+        s.send_TrackController_switch_pos.connect(self.set_switches)
         # TODO: Send signal states from track controller and connect to self.set_signals
         
         # TODO: Check dict key for crossing
@@ -606,15 +602,12 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         self.get_line_data()
 
-    def set_switches(self, switches):
-        for switch in switches:
-            if switch['line'] == 'Red':
-                if switch['block'] != 0:
-                    self.lines[0].get(switch['block']).switch_position = switch['switch']
-            if switch['line'] == 'Green':
-                if switch['block'] != 0:
-                    self.lines[1].get(switch['block']).switch_position = switch['switch']
-    
+    def set_switches(self, line, block, switch_pos):
+        if line == 'Red':
+            self.lines[0].get(block).switch_position = switch_pos
+        if line == 'Green':
+            self.lines[1].get(block).switch_position = switch_pos
+
     def set_signals(self, signals):
         for signal in signals:
             if signal['line'] == 'Red':

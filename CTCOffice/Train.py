@@ -100,19 +100,31 @@ class Train_Sim():
   
   def increment_timer(self, mult):
     self.second_count += (0.1 * mult)
+    # For each train in list
     for train in self.trains.values():
+      # If the train is at a yard
       if train.at_yard == 1:
+        # Decrease the remaining time to dispatch
         train.time_to_dispatch -= (0.1 * mult)
+        # If remaining time to dispatch is 0
+        #   Set at_yard to 0 and set current block to first block
+        #   Call update authority to set authority correctly
         if train.time_to_dispatch < 0:
+          s.send_CTC_create_train.emit(train.line)
           train.at_yard = 0
+          train.current_block = 63
           self.update_authority(train.id)
 
   def create_train(self, line, destinations, dest_time):
+    # Calculate remaining time to dispatch (time at dest - current time)
     time_to_dispatch = dest_time - self.second_count
+
+    # Create a train with passed in parameters
     train = Train(line, destinations, self.next_train_id, time_to_dispatch)
+    # Add train to train list
     self.trains.update({self.next_train_id: train})
+    # Increment traid id
     self.next_train_id += 1
-    s.send_CTC_create_train.emit(line)
 
   def single_occupancy_update(self, line, block, occupancy):
     if line == 'Green':
