@@ -17,6 +17,8 @@ from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
 from track_model.TrackModelTestUI.trackmodeltestui import TrackModelTestUI as TrackModelTestUI
 from Wayside_Controller.main import MainWindow as TrackControllerWindow
 from Train_Model.TrainModel import TrainModel, TestTrainModel
+from Train_Model.train import Train
+from Train_Model.trainDirectory import trainDirectory
 
 
 class SystemWindow(QMainWindow, system.Ui_MainWindow):
@@ -49,7 +51,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModelTestUI)
 
       # Train Model Variables
-      self.trainmodel = TrainModel()
+      self.trainDirectory = trainDirectory()
+      self.trainmodel = TrainModel(self.trainDirectory.trains[0], self.trainDirectory)
       self.trainmodel_test = TestTrainModel(self.trainmodel)
       self.pushButton_trainmodel.clicked.connect(self.open_trainmodel)
       self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
