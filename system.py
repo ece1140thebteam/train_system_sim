@@ -29,10 +29,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.second = 50400+3300
       self.label_time.setText(str(round(self.second, 1)))
 
-      #Create list of trains for indexing
-      self.Trains = []
-      self.Trains.append(TrainController())
-
       # CTC variables
       self.main_windowCTC = MainWindowCTC()
       self.test_windowCTC = MainTestWindowCTC()
@@ -52,16 +48,16 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
       # Train Model Variables
       self.trainDirectory = trainDirectory()
-      self.trainmodel = TrainModel(self.trainDirectory.trains[0], self.trainDirectory)
+      self.trainmodel = TrainModel(self.trainDirectory)
       self.trainmodel_test = TestTrainModel(self.trainmodel)
       self.pushButton_trainmodel.clicked.connect(self.open_trainmodel)
       self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
 
       # Train Controller Variables
       # self.Trains.append(TrainController())
+      self.trainController = TrainController(self.trainDirectory)
       self.pushButton_traincontrol.clicked.connect(self.open_traincontrol)
       self.pushButton_traincontrol_test.clicked.connect(self.open_traincontrol_test)
-      
 
       self.pushButton_start.clicked.connect(self.pause_timer)
 
@@ -103,9 +99,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
-      self.Train = self.Trains[0]
-      self.engWindow = engineerUI(self.Train)
-      self.Train.show()
+      self.engWindow = engineerUI(self.trainDirectory.trainctrl[0])
+      self.trainController.show()
       self.engWindow.show()
 
     def open_traincontrol_test(self):

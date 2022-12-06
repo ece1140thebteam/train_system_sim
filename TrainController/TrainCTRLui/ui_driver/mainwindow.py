@@ -10,16 +10,17 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from TrainController.TrainCTRLui.ui_driver.ui_form import Ui_TrainController
 from TrainController.TrainCTRLui.ui_driver.tctrl_dialog import trainDialog
 from signals import s
-from trainbackend import Train_CTRL_BE
+from TrainController.TrainCTRLui.ui_driver.trainbackend import Train_CTRL_BE
 
 class TrainController(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, directory, parent=None):
         super().__init__(parent)
         self.ui = Ui_TrainController()
         self.ui.setupUi(self)
 
         #INITIALIZE CURRENT TRAIN FOR DEVELOPMENT PURPOSES ONLY
-        self.curTrain = Train_CTRL_BE()
+        self.curTrain = directory.trainctrl[0]
+        self.directory = directory
 
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
@@ -63,7 +64,7 @@ class TrainController(QMainWindow):
         self.ui.brakeFailStatus.setText('Brake Status: Working')
         self.ui.engFailStatus.setText('Engine Status: Working')
         self.ui.trackSigStatus.setText('Track Signal Status: Detected')
-        self.ui.speedSlider.setMaximum(self.speedLim)
+        self.ui.speedSlider.setMaximum(70)
 
         #Button Connections
         self.ui.manModeBtn.clicked.connect(self.setManMode)
@@ -79,6 +80,12 @@ class TrainController(QMainWindow):
         #Door toggles
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
+
+        s.timer_tick.connect(self.timer)
+
+    def timer(self, mul):
+        tickrate = mul*0.1
+        self.UpdateUI()
 
  
 
@@ -147,7 +154,7 @@ class TrainController(QMainWindow):
     def UpdateUI(self):
         
         #update current speed
-        curStr = 'Current Speed: ' + str((self.curTrain.curSpd)*2.23694) + ' MPH'
+        curStr = 'Current Speed: ' + str((self.curTrain.curSpd*2.236935599991052)) + ' MPH'
         self.ui.curSpd.setText(curStr)
 
         #update commanded speed
@@ -172,8 +179,8 @@ class TrainController(QMainWindow):
         #if no authority but stopped at a station: give beacon message
         if not self.curTrain.auth:
             if self.curTrain.beacon is not None:
-                self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
-            
+                #self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
+                print("foo")
             #otherwise, train is moving when it shouldn't be, give auth error message
             else:
                 dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
@@ -184,7 +191,7 @@ class TrainController(QMainWindow):
 
         #If authority is good and no faults, continue with update
         else:
-            if self.ui.speedSlider.isDisabled():
+            if not(self.ui.speedSlider.isEnabled()):
                 self.ui.speedSlider.setDisabled(False)
             self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 

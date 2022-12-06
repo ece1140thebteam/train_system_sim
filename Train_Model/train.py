@@ -6,6 +6,7 @@ from PyQt6.QtCore import *
 class Train():
     
     def __init__(self, id, signals):
+        
         self.friction = 0.01
         self.length = 32.2 #m
         self.height = 3.42 #m
@@ -49,7 +50,7 @@ class Train():
         self.sig = signals
 
         s.timer_tick.connect(self.timer)
-        self.next_track()
+        #self.next_track()
 
         self.sig.send_TrainModel_eLight.connect(self.elight_set)
         self.sig.send_TrainModel_iLight.connect(self.ilight_set)
@@ -64,6 +65,19 @@ class Train():
         #create signals between train model and controller
         #create train controller and pass signals
         #add train controller to directory
+
+    def timer(self, mul):
+        self.tickrate = 0.1*mul
+        self.calc_speed()
+        if self.auth == 0:
+            self.current_track()
+            self.station()
+        if self.auth == 1 and self.atStation:
+            self.atStation = False
+            if self.beacon['station_side'] == 'right':
+                self.rdoorcmd = False
+            else:
+                self.ldoorcmd = False
 
     def e_brake(self, cmd):
         self.ebrakecmd = cmd
@@ -91,19 +105,6 @@ class Train():
             if not(self.ebrakecmd):
                 self.sbrakecmd = cmd
 
-    def timer(self, mul):
-        self.tickrate = 0.1*mul
-        self.calc_speed()
-        if self.auth == 0:
-            self.current_track()
-            self.station()
-        if self.auth == 1 and self.atStation:
-            self.atStation = False
-            if self.beacon['station_side'] is 'right':
-                self.rdoorcmd = False
-            else:
-                self.ldoorcmd = False
-
     def current_track(self):
         if self.block is None:
             s.send_TrackModel_get_block_info.emit("Green", 0, 0)
@@ -124,7 +125,7 @@ class Train():
         self.block = block
         s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
         self.grade = self.block['grade']
-        self.speedcmd = self.block['commanded_speed']
+        self.speedcmd = self.block['commanded_speed']*0.277777
         self.auth = self.block['authority']
         if (self.auth == 0):
             sbrakecmd = True
@@ -149,7 +150,7 @@ class Train():
             self.passenger -= deboarding
             s.send_TrackModel_passengers_onboarded.emit("Green", self.block['block_num'], deboarding)
             self.stationStop = True
-            if self.beacon['station_side'] is 'right':
+            if self.beacon['station_side'] == 'right':
                 self.rdoorcmd = True
                 self.right_door(self.rdoorcmd)
             else:

@@ -1,12 +1,12 @@
-from signals import s
-from Train_Model.TrainModel import TrainModel
 from Train_Model.train import Train
+from TrainController.TrainCTRLui.ui_driver.trainbackend import Train_CTRL_BE
 from PyQt6.QtCore import *
+from signals import s
 
 class trainSignals(QObject):
     #######################################################
     # Train Model to Train Controller
-    send_TrainCtrl_ebrake = pyqtSignal(bool) #ebrake
+    #send_TrainCtrl_ebrake = pyqtSignal(bool) #ebrake # BIG WEDNESDAY ISSUE (small)
     send_TrainCtrl_failure = pyqtSignal(bool, str) #failure on/off then failure type
     send_TrainCtrl_speed = pyqtSignal(float) #train currrent speed
 
@@ -34,19 +34,19 @@ class trainDirectory():
     def __init__(self):
         self.idCounter = 0
         self.trains = []
-        #self.trainctrl = []
-        self.add_train()
+        self.trainctrl = []
         s.send_TrackModel_block_info.connect(self.update_block)
         s.send_TrackModel_next_block_info.connect(self.update_block)
+        self.add_train()
 
     def update_block(self, id, block):
         self.trains[id].update_blocks(block)
+        self.trainctrl[id].cmdSpdAdjust(block)
 
     def add_train(self):
         #create the signals for between model and controller then pass through each constructor
         signals = trainSignals()
-        train = Train(self.idCounter, signals)
-        #trainctrl = Train_CTRL_BE(self.idCounter, signals)
-        self.trains.append(train)
-        #self.trainctrl.append(trainctrl)
+        self.trainctrl.append(Train_CTRL_BE(signals))
+        self.trains.append(Train(self.idCounter, signals))
+        self.trains[self.idCounter].next_track()
         self.idCounter += 1

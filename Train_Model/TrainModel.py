@@ -113,13 +113,13 @@ class TestTrainModel(QMainWindow):
         self.train.speed_lmt_set()
 
 class TrainModel(QMainWindow):
-    def __init__(self, train, trainD, parent=None):
+    def __init__(self, trainD, parent=None):
         super().__init__(parent)
         self.ui = Ui_TrainModel()
         self.ui.setupUi(self)
         
         #data
-        self.train = train
+        self.train = trainD.trains[0]
         self.directory = trainD
 
         #text
@@ -207,13 +207,15 @@ class TrainModel(QMainWindow):
         self.s_brake()
 
     def beacon_set(self):
-        station = self.train.beacon['station_name']
-        if (station is None):
-            self.ui.beacon.setText("Beacon: None")
-            self.ui.station.setText("Station: None")
-        else:
-            self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
-            self.ui.station.setText("Station: " + station)
+        try:
+            if (self.train.beacon['station_name'] is None):
+                self.ui.beacon.setText("Beacon: None")
+                self.ui.station.setText("Station: None")
+            else:
+                self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
+                self.ui.station.setText("Station: " + self.train.beacon['station_name'])
+        except:
+            pass
         self.ui.auth.setText("Authority: " + str(self.train.auth))
 
     def e_brake(self):

@@ -2,7 +2,7 @@
 
 class Train_CTRL_BE():
 
-    def __init__(self, id, signals):
+    def __init__(self, signals):
 #Initialization of internal variables
         self.sigs = signals
         
@@ -13,7 +13,7 @@ class Train_CTRL_BE():
         self.powOutput = 0
         self.temp = 70
         self.auth = True
-        self.cmdSpd = 1
+        self.cmdSpd = 0
         self.curSpd = 0
         self.speedLim = 70
         self.driverCmd = 0
@@ -39,15 +39,12 @@ class Train_CTRL_BE():
         self.sBrake = False
         self.eBrake = False
 
-
     #Signals
         self.sigs.send_TrainCtrl_speed.connect(self.curSpdAdjust)
-        self.sigs.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
-        self.sigs.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
         self.sigs.send_TrainCtrl_failure.connect(self.failHandle)
 
 #Functions copied from UI class
-    def beaconHandler(self, id, info):
+    def beaconHandler(self, info):
         if info['beacon'] is not None:
             self.beacon = info['beacon']
             self.side = self.beacon['station_side']
@@ -68,11 +65,14 @@ class Train_CTRL_BE():
 
 
     #Function to adjust commanded speed, is called externally
-    def cmdSpdAdjust(self, id, info):
+    def cmdSpdAdjust(self, info):
         self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
+        print("yes")
+        if self.auth == 1:
+            print("holy shit")
         self.dispatch = True
-        self.beaconHandler(self,id,info)
+        self.beaconHandler(info)
         self.powerCalc()
     
     #Function to adjust current speed, is called externally
