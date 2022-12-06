@@ -10,6 +10,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from TrainController.TrainCTRLui.ui_driver.ui_form import Ui_TrainController
 from TrainController.TrainCTRLui.ui_driver.tctrl_dialog import trainDialog
 from signals import s
+from trainbackend import Train_CTRL_BE
 
 class TrainController(QMainWindow):
     def __init__(self, parent=None):
@@ -17,28 +18,8 @@ class TrainController(QMainWindow):
         self.ui = Ui_TrainController()
         self.ui.setupUi(self)
 
-
-        #Initialization of internal variables
-        self.Kp = 35
-        self.Ki = 1
-
-        self.maxPow = 120000 #120kW, per the Datasheet
-        self.powOutput = 0
-        self.temp = 70
-        self.auth = True
-        self.cmdSpd = 1
-        self.curSpd = 0
-        self.speedLim = 70
-        self.driverCmd = 0
-        self.dispatch = False
-        
-        self.engineFault = False
-        self.trackSigFault = False
-        self.brakeFault = False
-        self.faultMode = False
-
-        self.station = 'none'
-
+        #INITIALIZE CURRENT TRAIN FOR DEVELOPMENT PURPOSES ONLY
+        self.curTrain = Train_CTRL_BE()
 
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
@@ -88,8 +69,8 @@ class TrainController(QMainWindow):
         self.ui.manModeBtn.clicked.connect(self.setManMode)
         self.ui.tempDial.sliderReleased.connect(self.tempAdjust)
         self.ui.speedSlider.sliderReleased.connect(self.setSpdSlider)
-        self.ui.eBrakeBtn.clicked.connect(self.powerCalc)
-        self.ui.sBrakeBtn.clicked.connect(self.powerCalc)
+        self.ui.eBrakeBtn.clicked.connect(self.eBrakeToggle)
+        self.ui.sBrakeBtn.clicked.connect(self.sBrakeToggle)
         
         #Light toggles
         self.ui.elightBtn.clicked.connect(self.eLights)
@@ -99,25 +80,18 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
-        #Signals
-        s.send_TrainCtrl_speed.connect(self.curSpdAdjust)
-        s.send_TrackModel_next_block_info.connect(self.cmdSpdAdjust)
-        s.send_TrackModel_block_info.connect(self.cmdSpdAdjust)
-        s.send_TrainCtrl_failure.connect(self.failHandle)
+ 
 
+    #Sbrake activation function
+    def sBrakeToggle(self):
+        self.curTrain.sBrake = self.ui.sBrakeBtn.isChecked()
+        self.curTrain.powerCalc()
+
+    #Ebrake activation function
+    def eBrakeToggle(self):
+        self.curTrain.eBrake = self.ui.eBrakeBtn.isChecked()
+        self.curTrain.powerCalc()
     
-    def failHandle(self, failActive, failType): 
-        self.failMode = failActive
-        if failType == 'Engine':
-            self.engineFault = True
-        elif failType == 'Brake':
-            self.brakeFault = True
-        elif failType == 'Signal':
-            self.trackSigFault = True
-        else:
-            self.engineFault = False
-            self.brakeFault = False
-            self.trackSigFault = False
     #Manual Mode toggling function
     def setManMode(self):
         if not self.ui.manModeBtn.isChecked(): #Case for True
@@ -127,6 +101,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(True)
             self.ui.sBrakeBtn.setDisabled(True)
             self.ui.speedSlider.setDisabled(True)
+            self.curTrain.manMode = False
         else: #Case for False
             self.ui.elightBtn.setDisabled(False)
             self.ui.ilightBtn.setDisabled(False)
@@ -134,184 +109,96 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
+            self.curTrain.manMode = True
 
-    #Function to check if train is dispatched, and if not feed starting values
-    # def isDispatched(self, id, info):
-    #     if not self.dispatch:
-    #         self.cmdSpd = int(info['commanded_speed']*0.621371)
-    #         self.auth = info['authority']
-    #         cmdStr = 'Commanded Speed: ' + str(self.cmdSpd) + ' MPH'
-    #         self.ui.cmdSpd.setText(cmdStr)
-    #         self.ui.speedSlider.setMaximum(self.cmdSpd)
-    #         self.dispatch = True
-    #         self.powerCalc()
-    #     else:
-    #         print('Already Dispatched')
 
     #Functions to send door signals
     def rDoors(self):
-        s.send_TrainModel_rDoor.emit(self.ui.rdoorBtn.isChecked())
+        self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
+        self.curTrain.rDoors()
     def lDoors(self):
-        s.send_TrainModel_lDoor.emit(self.ui.ldoorBtn.isChecked())
+        self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
+        self.curTrain.lDoors()
 
     #Functions to send light signals
     def eLights(self):
-        s.send_TrainModel_eLight.emit(self.ui.elightBtn.isChecked())
+        self.curTrain.elights = self.ui.elightBtn.isChecked()
+        self.curTrain.eLights()
     def iLights(self):
-        s.send_TrainModel_iLight.emit(self.ui.ilightBtn.isChecked())
+        self.curTrain.ilights = self.ui.ilightBtn.isChecked()
+        self.curTrain.iLights()
 
     #Function to adjust temp
     def tempAdjust(self):
-        self.temp = self.ui.tempDial.value()
-        tempStr = 'Current Temp: ' + str(self.temp) + 'F'
+        self.curTrain.temp = self.ui.tempDial.value()
+        tempStr = 'Current Temp: ' + str(self.curTrain.temp) + 'F'
         self.ui.curTempLabel.setText(tempStr)
-        s.send_TrainModel_temp.emit(self.temp)
-
-    def beaconHandler(self, id, info):
-        if info['beacon'] is not None:
-            self.beacon = info['beacon']
-            self.side = self.beacon['station_side']
-            self.station = self.beacon['station_name']
-
-            if self.auth == 0:
-                self.stationDialog = trainDialog('Arrived at '+ self.station + ' Station, doors opening on ' + self.side + ' side')
-    
-    #Function to adjust commanded speed, is called externally
-    def cmdSpdAdjust(self, id, info):
-        self.cmdSpd = info['commanded_speed']
-        self.auth = info['authority']
-        self.dispatch = True
-        cmdStr = 'Commanded Speed: ' + str(self.cmdSpd*0.621371) + ' MPH'
-        self.ui.cmdSpd.setText(cmdStr)
-        if self.speedLim > self.cmdSpd:
-            self.ui.speedSlider.setMaximum(self.cmdSpd)
-        else:
-            self.ui.speedSlider.setMaximum(self.speedLim)
-        self.beaconHandler(self,id,info)
-        self.powerCalc()
-    
-    #Function to adjust current speed, is called externally
-    def curSpdAdjust(self, spd):
-        self.curSpd = spd
-        curStr = 'Current Speed: ' + str((self.curSpd)*2.23694) + ' MPH'
-        self.ui.curSpd.setText(curStr)
-        self.powerCalc()
-
-    #Function to adjust speed limit, is called externally
-    def speedLimUpdate(self, lim):
-        self.speedLim = lim
-        if self.speedLim > self.cmdSpd:
-            self.ui.speedSlider.setMaximum(self.cmdSpd)
-        else:
-            self.ui.speedSlider.setMaximum(self.speedLim)
-        # self.powerCalc()
+        self.curTrain.tempAdjust()
+        
 
     #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
-        if not self.auth:
-            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
-            self.powOutput = 0
-            self.ui.speedSlider.setDisabled(True)
-            self.ui.speedSlider.setValue(0)
-            self.ui.driverSpd.setText('0MPH')
-            dialog.exec()
-        else:
-            if self.speedLim > self.cmdSpd:
-                self.ui.speedSlider.setMaximum(self.cmdSpd)
-            else:
-                self.ui.speedSlider.setMaximum(self.speedLim)    
-            self.driverCmd = self.ui.speedSlider.value()
-            self.ui.driverSpd.setText(str(self.driverCmd)+'MPH')
-            # self.powerCalc()
-
-    #Major Power calculation and Velocity adjustment method
-    def powerCalc(self):
-        if self.auth:
-            if self.faultMode: #First checking for faults
-                if self.trackSigFault:
-                    self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
-                if self.engineFault:
-                    self.ui.engFailStatus.setText('Engine Status: FAILING')
-                if self.brakeFault:
-                    self.ui.brakeFailStatus.setText('Brake Status: FAILING')
-                self.faultDialog = trainDialog('Failure detected, setting power to 0 and engaging ebrake')
-                self.powOutput = 0
-                self.ui.eBrakeBtn.setChecked(True)
-                #Send brake states to Train Model and display popup to user indicating fault
-                s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-                self.faultDialog.show()
-
-            else: #No Faults Found
-                if self.ui.manModeBtn.isChecked(): #Base calculation on driver set speed if in manual mode
-                    error_k = self.driverCmd/2.23694 - self.curSpd
-                else: #Automatic mode case
-                    error_k = self.cmdSpd*0.277778 - self.curSpd
+        self.curTrain.driverCmd = self.ui.speedSlider.value()
+        self.ui.driverSpd.setText(str(self.curTrain.driverCmd)+'MPH')
 
 
-                pow = self.Kp * error_k + self.Ki * self.curSpd
 
-                #Automatic mode handling
-                if not self.ui.manModeBtn.isChecked():
-                    #If power becomes negative, set to 0 and engage SBrake
-                    if pow < 0:
-                        pow = 0
-                        if self.dispatch == True:
-                            self.ui.sBrakeBtn.setChecked(True)
-                            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-                    else:
-                        if self.ui.sBrakeBtn.isChecked():
-                            self.ui.sBrakeBtn.setChecked(False)
-                    
-                # print(self.cmdSpd, self.speedLim)
-                # print("power", pow)
-                # print("error", error_k)
-                # print("speed", self.curSpd)
-
-                #Check to make sure max power is not exceeded
-                if pow > self.maxPow:
-                    pow = self.maxPow
-                    self.maxPowError = trainDialog('Max power exceeded, capping power output')
-                    self.maxPowError.show()
-
-                #Set power to 0 if brakes active
-                if self.ui.eBrakeBtn.isChecked() or self.ui.sBrakeBtn.isChecked():
-                    pow = 0
-                    if self.ui.eBrakeBtn.isChecked():
-                        self.ui.sBrakeBtn.setChecked(False)
-                        #Send Brake State signals to train model
-                        s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                        s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-                    elif self.ui.sBrakeBtn.isChecked():
-                        self.ui.eBrakeBtn.setChecked(False)
-                        #Send Brake State signals to train model
-                        s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                        s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())
-                    else:
-                        print('No Brakes Enabled, calculating power...')
-                else:
-                    s.send_TrainModel_eBrake.emit(self.ui.eBrakeBtn.isChecked())
-                    s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked())      
-                
-                self.powOutput = pow
-                s.send_TrainModel_powerOutput.emit(self.powOutput)
-        else:
-            self.ui.sBrakeBtn.setChecked(True)
-            s.send_TrainModel_sBrake.emit(self.ui.sBrakeBtn.isChecked()) 
-            self.powOutput = 0
-            s.send_TrainModel_powerOutput.emit(self.powOutput)       
-    
-    #TODO:
-
-        #Handle Service Brake operation in automatic mode: Make sure it gets disabled when power goes positive
-    
-        #Get beacon data, open proper doors and activate intercom when at station (show dialog too)
-
-        #Get passenger Ebrake activation, update power
-
-        #Get info when underground, turn on ext lights
+    #Function to periodically update ui based on backend train data
+    def UpdateUI(self):
         
+        #update current speed
+        curStr = 'Current Speed: ' + str((self.curTrain.curSpd)*2.23694) + ' MPH'
+        self.ui.curSpd.setText(curStr)
 
+        #update commanded speed
+        cmdStr = 'Commanded Speed: ' + str(self.curTrain.cmdSpd*0.621371) + ' MPH'
+        self.ui.cmdSpd.setText(cmdStr)
+
+        #check for faults, give appropriate messages
+        if self.curTrain.faultMode:
+            if self.curTrain.trackSigFault:
+                self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
+            if self.curTrain.engineFault:
+                self.ui.engFailStatus.setText('Engine Status: FAILING')
+            if self.curTrain.brakeFault:
+                self.ui.brakeFailStatus.setText('Brake Status: FAILING')
+            self.faultDialog = trainDialog('Failure detected, setting power to 0 and engaging ebrake')
+        else:
+            self.ui.brakeFailStatus.setText('Brake Status: Working')
+            self.ui.engFailStatus.setText('Engine Status: Working')
+            self.ui.trackSigStatus.setText('Track Signal Status: Detected')
+
+        #check authority of current working train
+        #if no authority but stopped at a station: give beacon message
+        if not self.curTrain.auth:
+            if self.curTrain.beacon is not None:
+                self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
+            
+            #otherwise, train is moving when it shouldn't be, give auth error message
+            else:
+                dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                self.ui.speedSlider.setDisabled(True)
+                self.ui.speedSlider.setValue(0)
+                self.ui.driverSpd.setText('0MPH')
+                dialog.exec()
+
+        #If authority is good and no faults, continue with update
+        else:
+            if self.ui.speedSlider.isDisabled():
+                self.ui.speedSlider.setDisabled(False)
+            self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
+
+
+
+    #TODO: Wednesday problems
+    
+    def setcurTrain(self, id):
+        print('foo')
+
+    #New working branch
+
+    def getTrains(self):
+        print('bar')
 
 
 if __name__ == "__main__":
