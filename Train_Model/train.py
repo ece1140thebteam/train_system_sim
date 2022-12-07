@@ -50,7 +50,6 @@ class Train():
         self.sig = signals
 
         s.timer_tick.connect(self.timer)
-        #self.next_track()
 
         self.sig.send_TrainModel_eLight.connect(self.elight_set)
         self.sig.send_TrainModel_iLight.connect(self.ilight_set)
@@ -60,11 +59,6 @@ class Train():
         self.sig.send_TrainModel_eBrake.connect(self.e_brake)
         self.sig.send_TrainModel_temp.connect(self.temp_set)
         self.sig.send_TrainModel_sBrake.connect(self.s_brake)
-
-        #TODO:
-        #create signals between train model and controller
-        #create train controller and pass signals
-        #add train controller to directory
 
     def timer(self, mul):
         self.tickrate = 0.1*mul
