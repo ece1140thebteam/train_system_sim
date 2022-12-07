@@ -19,7 +19,7 @@ class TrainController(QMainWindow):
         self.ui.setupUi(self)
 
         #INITIALIZE CURRENT TRAIN FOR DEVELOPMENT PURPOSES ONLY
-        self.curTrain = directory.trainctrl[0]
+        self.curTrain = None
         self.directory = directory
 
         #initialize various button states and make them toggleable
@@ -85,9 +85,16 @@ class TrainController(QMainWindow):
 
     def timer(self, mul):
         tickrate = mul*0.1
-        self.UpdateUI()
+        if (self.curTrain != None):
+            self.UpdateUI()
+        else:
+            self.first()
 
- 
+    def first(self):
+        try:
+            self.curTrain = directory.trainctrl[0]
+        except:
+            return
 
     #Sbrake activation function
     def sBrakeToggle(self):

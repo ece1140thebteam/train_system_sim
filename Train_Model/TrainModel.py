@@ -181,33 +181,34 @@ class TrainModel(QMainWindow):
 
     def timer(self, mul):
         tickrate = mul*0.1
-        self.update_UI()
-
-    def update_UI(self):
         if (self.train != None):
-            self.ui.length.setText("Length: " + str(self.train.length))
-            self.ui.height.setText("Height: " + str(self.train.height))
-            self.ui.width.setText("Width: " + str(self.train.width))
-            self.ui.crew.setText("Crew Count: " + str(self.train.crew))
-            self.ui.passenger.setText("Passengers: " + str(self.train.passenger))
-            self.ui.speed.setText("Speed: " + str(int(self.train.speed*2.23694)) + " mph")
-            self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.train.accel*3.2808399)) + " ft/s^2")
-            self.ui.temp.setText("Temperature: " + str(self.train.temp))
-            self.ui.mass.setText("Mass: " + ("%.2f" % (self.train.mass*1.10231)) + " tons")
-            self.ui.powercmd.setText("Power Command: " + ("%.2f" % (self.train.powercmd)) + " W")
-            self.ui.tempcmd.setText("Temperature Cmd: " + str(self.train.tempcmd) + " F")
-            self.ui.speedcmd.setText("Speed Command: " + str(int(self.train.speedcmd*2.23694)) + " mph")
-            self.ui.speedlmt.setText("Speed Limit: " + str(int(self.train.speedlmt*2.23694)) + " mph")
-            self.ui.grade.setText("Grade: " + str(self.train.grade) + " deg")
-            self.beacon_set()
-            self.e_brake_update()
-            self.right_door()
-            self.left_door()
-            self.elight_set()
-            self.ilight_set()
-            self.s_brake()
+            self.update_UI()
         else:
             self.first_train()
+
+    def update_UI(self):
+        self.ui.length.setText("Length: " + str(self.train.length))
+        self.ui.height.setText("Height: " + str(self.train.height))
+        self.ui.width.setText("Width: " + str(self.train.width))
+        self.ui.crew.setText("Crew Count: " + str(self.train.crew))
+        self.ui.passenger.setText("Passengers: " + str(self.train.passenger))
+        self.ui.speed.setText("Speed: " + str(int(self.train.speed*2.23694)) + " mph")
+        self.ui.accel.setText("Acceleration: " + ("%.2f" % (self.train.accel*3.2808399)) + " ft/s^2")
+        self.ui.temp.setText("Temperature: " + str(self.train.temp))
+        self.ui.mass.setText("Mass: " + ("%.2f" % (self.train.mass*1.10231)) + " tons")
+        self.ui.powercmd.setText("Power Command: " + ("%.2f" % (self.train.powercmd)) + " W")
+        self.ui.tempcmd.setText("Temperature Cmd: " + str(self.train.tempcmd) + " F")
+        self.ui.speedcmd.setText("Speed Command: " + str(int(self.train.speedcmd*2.23694)) + " mph")
+        self.ui.speedlmt.setText("Speed Limit: " + str(int(self.train.speedlmt*2.23694)) + " mph")
+        self.ui.grade.setText("Grade: " + str(self.train.grade) + " deg")
+        self.beacon_set()
+        self.e_brake_update()
+        self.right_door()
+        self.left_door()
+        self.elight_set()
+        self.ilight_set()
+        self.s_brake()
+            
 
     def first_train(self):
         try:
