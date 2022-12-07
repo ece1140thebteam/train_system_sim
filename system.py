@@ -68,8 +68,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.update_speed()
       self.horizontalSlider.valueChanged.connect(self.update_speed)
 
-      s.send_CTC_create_train.connect(self.open_traincontrol)
-
     def open_CTC(self):
       
       self.main_windowCTC.show()

@@ -37,7 +37,7 @@ class trainDirectory():
         self.trainctrl = []
         s.send_TrackModel_block_info.connect(self.update_block)
         s.send_TrackModel_next_block_info.connect(self.update_block)
-        self.add_train()
+        s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
         self.trains[id].update_blocks(block)
