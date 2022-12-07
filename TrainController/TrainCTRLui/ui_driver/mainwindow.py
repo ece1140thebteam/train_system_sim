@@ -25,7 +25,7 @@ class TrainController(QMainWindow):
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
         self.ui.manModeBtn.toggle()
-        self.ui.manModeBtn.setChecked(True)
+        self.ui.manModeBtn.setChecked(False)
 
         self.ui.elightBtn.setCheckable(True)
         self.ui.elightBtn.toggle()
@@ -92,7 +92,7 @@ class TrainController(QMainWindow):
 
     def first(self):
         try:
-            self.curTrain = directory.trainctrl[0]
+            self.curTrain = self.directory.trainctrl[0]
         except:
             return
 
@@ -187,7 +187,7 @@ class TrainController(QMainWindow):
         if not self.curTrain.auth:
             if self.curTrain.beacon is not None:
                 #self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
-                print("foo")
+                pass
             #otherwise, train is moving when it shouldn't be, give auth error message
             else:
                 dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')

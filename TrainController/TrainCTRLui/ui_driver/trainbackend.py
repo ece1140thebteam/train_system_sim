@@ -18,7 +18,7 @@ class Train_CTRL_BE():
         self.speedLim = 70
         self.driverCmd = 0
         self.dispatch = False
-        self.manMode = True
+        self.manMode = False
             
         self.engineFault = False
         self.trackSigFault = False
@@ -68,9 +68,6 @@ class Train_CTRL_BE():
     def cmdSpdAdjust(self, info):
         self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
-        print("yes")
-        if self.auth == 1:
-            print("holy shit")
         self.dispatch = True
         self.beaconHandler(info)
         self.powerCalc()

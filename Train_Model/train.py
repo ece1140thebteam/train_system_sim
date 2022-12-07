@@ -101,17 +101,17 @@ class Train():
 
     def current_track(self):
         if self.block is None:
-            s.send_TrackModel_get_block_info.emit("Green", 0, 0)
+            s.send_TrackModel_get_block_info.emit("Green", 0, self.id)
         else:
-            s.send_TrackModel_get_block_info.emit("Green", self.block['block_num'], 0)
+            s.send_TrackModel_get_block_info.emit("Green", self.block['block_num'], self.id)
 
     def next_track(self):
         if self.block is None:
-            s.send_TrackModel_get_next_block_info.emit("Green", 0, -1, 0)
+            s.send_TrackModel_get_next_block_info.emit("Green", 0, -1, self.id)
         elif self.prev_block is None:
-            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], 0, 0)
+            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], 0, self.id)
         else:
-            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], 0)
+            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], self.id)
 
     def update_blocks(self, block):
         if (self.block != None) and (self.block['block_num'] != block['block_num']):

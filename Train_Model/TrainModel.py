@@ -212,7 +212,7 @@ class TrainModel(QMainWindow):
 
     def first_train(self):
         try:
-            self.train = self.trainD[0]
+            self.train = self.directory.trains[0]
         except:
             return
 
