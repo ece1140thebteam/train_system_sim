@@ -1,4 +1,5 @@
 from signals import s
+import CTCOffice.InitData as InitData
 
 green_route = [0, # J
 63, 64, 65, 66, 67, 68, # K
@@ -79,6 +80,12 @@ class Train():
   
 class Train_Sim():
   def __init__(self):
+    init_data = InitData.InitData()
+    self.green_lengths = init_data.get_lengths('Green')
+    self.red_lengths = init_data.get_lengths('Red')
+    self.green_speeds = init_data.get_speeds('Green')
+    self.red_speeds = init_data.get_speeds('Red')
+
     self.next_train_id = 1
     self.trains = {}
     self.green_authority = [0] * 151
@@ -98,6 +105,7 @@ class Train_Sim():
     s.timer_tick.connect(self.train_at_station)
     s.timer_tick.connect(self.increment_timer)
   
+  # Called once every time_tick
   def increment_timer(self, mult):
     self.second_count += (0.1 * mult)
     # For each train in list
@@ -115,6 +123,7 @@ class Train_Sim():
           train.current_block = 63
           self.update_authority(train.id)
 
+  # Called when train is dispatched or scheduled
   def create_train(self, line, destinations, dest_time):
     # Calculate remaining time to dispatch (time at dest - current time)
     time_to_dispatch = dest_time - self.second_count
@@ -179,10 +188,18 @@ class Train_Sim():
               train.route_block += 1
               self.update_authority(train.id)
   
+  # Called once every time tick
   def train_at_station(self, mult):
+    # For each train
     for train in self.trains.values():
+      # If train is at a station
       if train.is_dwelling == 1:
+        # Increase total time train has been at station
         train.dwelling_t += (0.1 * mult)
+        # If total time at station > 30 seconds
+        #   Set train dwelling to 0
+        #   Reset total train dwelling time
+        #   Call update_authority
         if train.dwelling_t > 30:
           train.is_dwelling = 0
           train.dwelling_t = 0
@@ -223,24 +240,24 @@ class Train_Sim():
       # Set authority from current block to next station to 1
       origin_block = train.current_block
       dest_block = train.destinations[0]
+      self.calculate_time_to_next(train.line, train.route_block, dest_block)
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block)
 
   def calculate_time_to_next(self, line, route_block, destination):
+    distance = 0
     if(line == 'Green'):
-      blocks_to_travel = []
       cur_block = green_route[route_block]
       cur_route_index = route_block
       while cur_block != destination:
-        blocks_to_travel.append(cur_block)
+        distance += self.green_lengths[cur_block]
         cur_route_index += 1
         cur_block = green_route[cur_route_index]
     
     if(line == 'Red'):
-      blocks_to_travel = []
       cur_block = red_route[route_block]
       cur_route_index = route_block
       while cur_block != destination:
-        blocks_to_travel.append(cur_block)
+        distance += self.red_lengths[cur_block]
         cur_route_index += 1
         cur_block = red_route[cur_route_index]
 

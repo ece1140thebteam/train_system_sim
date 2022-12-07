@@ -1,4 +1,5 @@
 from PyQt6 import QtGui
+import csv
 
 import CTCOffice.ui.ctcOfficeLayout as ctcOfficeLayout
 from PyQt6.QtCore import * 
@@ -96,7 +97,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
-        # TODO: Send switch positions from track controller and connect to self.set_switches
         s.send_TrackController_switch_pos.connect(self.set_switches)
         # TODO: Send signal states from track controller and connect to self.set_signals
         
@@ -121,9 +121,17 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_dispatchTrains.setDisabled(True)
 
     def schedule_trains(self):
+        stations = {}
         fileName = self.label.text()
         self.outputLabel.setText("Scheduling Trains from file: " + fileName)
-
+        with open(fileName, 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader, None)
+            for row in reader:
+                print(row)
+                print(row[1])
+                stations[row[1]] = row[2]
+            csv_file.close()
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked
     def set_switch(self):

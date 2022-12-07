@@ -57,4 +57,32 @@ class InitData():
 
         return lines
 
-        
+    def get_lengths(self, line):
+        blocks = {}
+        if line == 'Green':
+            green_line = pd.read_excel(file_name, sheet_name=3, usecols=['Block Length (m)'])
+            for r in range(0, 150):
+                length = (green_line.iloc[r]['Block Length (m)'])
+                blocks[r+1] = length
+
+        if line == 'Red':
+            red_line = pd.read_excel(file_name, sheet_name=2, usecols=['Block Length (m)'])
+            for r in range(0, 76):
+                length = (red_line.iloc[r]['Block Length (m)'])
+                blocks[r+1] = length
+        return blocks
+
+    def get_speeds(self, line):
+        blocks = {}
+        if line == 'Green':
+            green_line = pd.read_excel(file_name, sheet_name=3, usecols=['Speed Limit (Km/Hr)'])
+            for r in range(0, 150):
+                length = (green_line.iloc[r]['Speed Limit (Km/Hr)'])
+                blocks[r+1] = length
+
+        if line == 'Red':
+            red_line = pd.read_excel(file_name, sheet_name=2, usecols=['Speed Limit (Km/Hr)'])
+            for r in range(0, 76):
+                length = (red_line.iloc[r]['Speed Limit (Km/Hr)'])
+                blocks[r+1] = length
+        return blocks
