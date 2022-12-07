@@ -1,4 +1,5 @@
 from PyQt6 import QtGui
+import csv
 
 import CTCOffice.ui.ctcOfficeLayout as ctcOfficeLayout
 from PyQt6.QtCore import * 
@@ -20,11 +21,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         init_data = InitData.InitData()
         self.throughputs = init_data.get_throughput()
         self.lines = init_data.get_blocks()
-
-        self.startTime = 0
-        self.elapsedTime = 0
-        self.simRunning = 0
-        self.simReset = 1
 
         # Initialize Static Data
         self.redBlocks = []
@@ -68,6 +64,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.update_dispatch_stations_combobox()
         self.update_stations_trains_combobox()
         self.update_speed_trains_combobox()
+        self.update_dispatch_block_combobox()
 
         self.get_line_data()
 
@@ -80,6 +77,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.open_file)
         self.pushButton_dispatchTrains.clicked.connect(self.dispatch_train)
         self.pushButton_scheduleTrains.clicked.connect(self.schedule_trains)
+        self.pushButton_dispatch_block.clicked.connect(self.dispatch_block)
 
         # ComboBox Connections
         self.comboBox_trackMaintenance_line.currentTextChanged.connect(self.update_maintenance_combobox)
@@ -88,7 +86,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_dispatchTrain_line.currentTextChanged.connect(self.update_dispatch_stations_combobox)
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains_combobox)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains_combobox)
-
+        self.comboBox_dispatch_line.currentTextChanged.connect(self.update_dispatch_block_combobox)
         # Signal Connections
         # Test Signals
         s.send_CTC_test_throughput_signal.connect(self.update_throughput)
@@ -101,7 +99,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
-        # TODO: Send switch positions from track controller and connect to self.set_switches
+        s.send_TrackController_switch_pos.connect(self.set_switches)
         # TODO: Send signal states from track controller and connect to self.set_signals
         
         # TODO: Check dict key for crossing
@@ -119,15 +117,28 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_controlSwitch.setDisabled(False)
             self.pushButton_trackMaintenance.setDisabled(False)
             self.pushButton_dispatchTrains.setDisabled(False)
+            self.pushButton_dispatch_block.setDisabled(False)
         else:
             self.pushButton_controlSwitch.setDisabled(True)
             self.pushButton_trackMaintenance.setDisabled(True)
             self.pushButton_dispatchTrains.setDisabled(True)
+            self.pushButton_dispatch_block.setDisabled(True)
 
     def schedule_trains(self):
+        stations = {}
         fileName = self.label.text()
         self.outputLabel.setText("Scheduling Trains from file: " + fileName)
-
+        with open(fileName, 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader, None)
+            for row in reader:
+                print(row)
+                print(row[1])
+                stations[row[1]] = row[2]
+            csv_file.close()
+        
+        for i in range(0, len(stations)):
+            print(stations[i])
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked
     def set_switch(self):
@@ -214,6 +225,12 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to " + action + " at station " + station + " at: " + str(
             hour) + ":" + str(minute))
 
+    def dispatch_block(self):
+        line = self.comboBox_dispatch_line.currentText()
+        block = int(self.comboBox_dispatch_block.currentText())
+
+        Train.trains.create_train(line, [block], 0)
+
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
         stations = []
@@ -287,6 +304,16 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             station_box.addItems(self.greenStations)
         elif self.comboBox_editStations_line.currentText() == "Blue":
             station_box.addItems(self.blueStations)
+
+        # Update the comboBox of stations
+    # Called when the line is changed for edit stations
+    def update_dispatch_block_combobox(self):
+        blocks = self.comboBox_dispatch_block
+        blocks.clear()
+        if self.comboBox_dispatch_line.currentText() == "Red":
+            blocks.addItems(self.redBlocks)
+        elif self.comboBox_dispatch_line.currentText() == "Green":
+            blocks.addItems(self.greenBlocks)
 
     # Update the comboBox of trains
     # Called when the line is changed for edit stations
@@ -606,15 +633,12 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
 
         self.get_line_data()
 
-    def set_switches(self, switches):
-        for switch in switches:
-            if switch['line'] == 'Red':
-                if switch['block'] != 0:
-                    self.lines[0].get(switch['block']).switch_position = switch['switch']
-            if switch['line'] == 'Green':
-                if switch['block'] != 0:
-                    self.lines[1].get(switch['block']).switch_position = switch['switch']
-    
+    def set_switches(self, line, block, switch_pos):
+        if line == 'Red':
+            self.lines[0].get(block).switch_position = switch_pos
+        if line == 'Green':
+            self.lines[1].get(block).switch_position = switch_pos
+
     def set_signals(self, signals):
         for signal in signals:
             if signal['line'] == 'Red':
