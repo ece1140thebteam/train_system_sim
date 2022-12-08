@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="eBrake">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>380</y>
+      <x>40</x>
+      <y>370</y>
       <width>201</width>
       <height>111</height>
      </rect>
@@ -322,8 +322,8 @@
    <widget class="QPushButton" name="enginefail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>290</y>
+      <x>300</x>
+      <y>340</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -338,8 +338,8 @@
    <widget class="QPushButton" name="brakefail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>360</y>
+      <x>300</x>
+      <y>400</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -354,8 +354,8 @@
    <widget class="QPushButton" name="signalfail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>430</y>
+      <x>300</x>
+      <y>460</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -469,6 +469,19 @@
     </property>
     <property name="text">
      <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="trainSelect">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>30</y>
+      <width>141</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

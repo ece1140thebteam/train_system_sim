@@ -50,3 +50,4 @@ class trainDirectory():
         self.trains.append(Train(self.idCounter, signals))
         self.trains[self.idCounter].next_track()
         self.idCounter += 1
+        s.send_Update_Combo.emit(self.idCounter)
