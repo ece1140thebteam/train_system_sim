@@ -1881,7 +1881,7 @@
      <string>Brake Status: </string>
     </property>
    </widget>
-   <widget class="QLabel" name="cmdSpd_2">
+   <widget class="QLabel" name="powOut">
     <property name="geometry">
      <rect>
       <x>610</x>
