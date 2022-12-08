@@ -168,6 +168,10 @@ class TrainController(QMainWindow):
         cmdStr = 'Commanded Speed: ' + str(self.curTrain.cmdSpd*0.621371) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
 
+        #update power output
+        powStr = 'Power Output: ' + str(self.curTrain.powOutput) + ' kW'
+        self.ui.
+
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
             if self.curTrain.trackSigFault:
