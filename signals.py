@@ -86,6 +86,9 @@ class signals(QObject):
   # Train send to track model when passengers board train
   send_TrackModel_passengers_onboarded    = pyqtSignal(str, int, int) #line, block, passengers deboarded
 
+  # Update combo boxes for train UIs
+  send_Update_Combo = pyqtSignal(int) #train id
+
   #######################################################
   # Track Model to Train Model
   # Send throughput from Track Model test to Track Model
