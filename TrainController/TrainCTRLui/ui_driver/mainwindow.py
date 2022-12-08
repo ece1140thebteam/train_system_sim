@@ -81,15 +81,17 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
+        #Timer signal to govern UI Updates
         s.timer_tick.connect(self.timer)
 
+    #function for timer tick handling
     def timer(self, mul):
-        tickrate = mul*0.1
         if (self.curTrain != None):
             self.UpdateUI()
         else:
             self.first()
 
+    #Function to instantiate first train into list
     def first(self):
         try:
             self.curTrain = self.directory.trainctrl[0]
@@ -170,7 +172,7 @@ class TrainController(QMainWindow):
 
         #update power output
         powStr = 'Power Output: ' + str(self.curTrain.powOutput) + ' kW'
-        self.ui.
+        self.ui.powOut.setText(powStr)
 
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
@@ -212,11 +214,12 @@ class TrainController(QMainWindow):
     
     def setcurTrain(self, id):
         print('foo')
+        #
 
     #New working branch
 
-    def getTrains(self):
-        print('bar')
+    def getTrains(self, count):
+        print('foo')
 
 
 if __name__ == "__main__":
