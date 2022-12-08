@@ -215,13 +215,38 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def edit_stations(self):
         line = self.comboBox_editStations_line.currentText()
         train = self.comboBox_editStations_train.currentText()
-        station = self.comboBox_editStations_station.currentText()
+        station = self.comboBox_editStations_station.currentIndex()
         action = self.comboBox_editStations_action.currentText()
         hour = self.spinBox_editStations_hour.value()
         minute = self.spinBox_editStations_minute.value()
-        print("Setting Line " + line + " train #: " + train + " to " + action + " at station " + station + " at: " + str(
+
+        station = self.greenStationBlocks[station]
+
+        if action == 'Skip':
+            # For each destination in destinations of train
+            for dest in Train.trains.trains[int(train)].destinations:
+                # If destination is selected station
+                if dest[0] == station:
+                    # Remove destination from list
+                    Train.trains.trains[int(train)].destinations.remove(dest)
+        else:
+            # Set station found false
+            station_in_list = False
+
+            # For each destination in destinations of train
+            for dest in Train.trains.trains[int(train)].destinations:
+                # If destination is selected station
+                if dest[0] == station:
+                    # Set station found true
+                    station_in_list = True
+
+            # If station is not already in destinations
+            if station_in_list is False:
+                # Add station to destinations
+                Train.trains.trains[int(train)].destinations.append((station, 0))
+        print("Setting Line " + line + " train #: " + train + " to " + action + " at station " + str(station) + " at: " + str(
             hour) + ":" + str(minute))
-        self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to " + action + " at station " + station + " at: " + str(
+        self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to " + action + " at station " + str(station) + " at: " + str(
             hour) + ":" + str(minute))
 
     def dispatch_block(self):
@@ -316,11 +341,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         train_box = self.comboBox_editStations_train
         train_box.clear()
         if self.comboBox_editStations_line.currentText() == "Red":
-            train_box.addItems(self.redTrains)
+            for train in Train.trains.trains.values():
+                if train.line == 'Red':
+                    train_box.addItem(str(train.id))
         elif self.comboBox_editStations_line.currentText() == "Green":
-            train_box.addItems(self.greenTrains)
-        elif self.comboBox_editStations_line.currentText() == "Blue":
-            train_box.addItems(self.blueTrains)
+            for train in Train.trains.trains.values():
+                if train.line == 'Green':
+                    train_box.addItem(str(train.id))
 
     # Update the comboBox of trains
     # Called when the line is changed for change speed
