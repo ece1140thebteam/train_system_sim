@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QDial, QLabel, QMainWindow,
-    QPushButton, QSizePolicy, QSlider, QStatusBar,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QDial, QLabel,
+    QMainWindow, QPushButton, QSizePolicy, QSlider,
+    QStatusBar, QWidget)
 
 class Ui_TrainController(object):
     def setupUi(self, TrainController):
@@ -91,7 +91,7 @@ class Ui_TrainController(object):
         self.curTempLabel.setFont(font1)
         self.cmdSpd = QLabel(self.centralwidget)
         self.cmdSpd.setObjectName(u"cmdSpd")
-        self.cmdSpd.setGeometry(QRect(550, 60, 331, 51))
+        self.cmdSpd.setGeometry(QRect(550, 80, 331, 51))
         palette2 = QPalette()
         palette2.setBrush(QPalette.Active, QPalette.Button, brush2)
         palette2.setBrush(QPalette.Active, QPalette.Midlight, brush2)
@@ -251,7 +251,7 @@ class Ui_TrainController(object):
         self.elightBtn.setFont(font)
         self.curSpd = QLabel(self.centralwidget)
         self.curSpd.setObjectName(u"curSpd")
-        self.curSpd.setGeometry(QRect(610, 20, 261, 51))
+        self.curSpd.setGeometry(QRect(610, 40, 261, 51))
         palette9 = QPalette()
         palette9.setBrush(QPalette.Active, QPalette.Button, brush2)
         palette9.setBrush(QPalette.Active, QPalette.Midlight, brush2)
@@ -329,6 +329,38 @@ class Ui_TrainController(object):
         self.brakeFailStatus = QLabel(self.centralwidget)
         self.brakeFailStatus.setObjectName(u"brakeFailStatus")
         self.brakeFailStatus.setGeometry(QRect(340, 260, 241, 41))
+        self.cmdSpd_2 = QLabel(self.centralwidget)
+        self.cmdSpd_2.setObjectName(u"cmdSpd_2")
+        self.cmdSpd_2.setGeometry(QRect(610, 0, 331, 51))
+        palette11 = QPalette()
+        palette11.setBrush(QPalette.Active, QPalette.Button, brush2)
+        palette11.setBrush(QPalette.Active, QPalette.Midlight, brush2)
+        palette11.setBrush(QPalette.Active, QPalette.Dark, brush3)
+        palette11.setBrush(QPalette.Active, QPalette.Mid, brush4)
+        palette11.setBrush(QPalette.Active, QPalette.Window, brush2)
+        palette11.setBrush(QPalette.Active, QPalette.Shadow, brush5)
+        palette11.setBrush(QPalette.Active, QPalette.AlternateBase, brush2)
+        palette11.setBrush(QPalette.Inactive, QPalette.Button, brush1)
+        palette11.setBrush(QPalette.Inactive, QPalette.Midlight, brush6)
+        palette11.setBrush(QPalette.Inactive, QPalette.Dark, brush7)
+        palette11.setBrush(QPalette.Inactive, QPalette.Mid, brush7)
+        palette11.setBrush(QPalette.Inactive, QPalette.Window, brush1)
+        palette11.setBrush(QPalette.Inactive, QPalette.Shadow, brush8)
+        palette11.setBrush(QPalette.Inactive, QPalette.AlternateBase, brush9)
+        palette11.setBrush(QPalette.Disabled, QPalette.Button, brush2)
+        palette11.setBrush(QPalette.Disabled, QPalette.Midlight, brush2)
+        palette11.setBrush(QPalette.Disabled, QPalette.Dark, brush3)
+        palette11.setBrush(QPalette.Disabled, QPalette.Mid, brush4)
+        palette11.setBrush(QPalette.Disabled, QPalette.Window, brush2)
+        palette11.setBrush(QPalette.Disabled, QPalette.Shadow, brush5)
+        palette11.setBrush(QPalette.Disabled, QPalette.AlternateBase, brush9)
+        self.cmdSpd_2.setPalette(palette11)
+        self.cmdSpd_2.setFont(font2)
+        self.trainSelect = QComboBox(self.centralwidget)
+        self.trainSelect.addItem("")
+        self.trainSelect.setObjectName(u"trainSelect")
+        self.trainSelect.setGeometry(QRect(30, 10, 91, 21))
+        self.trainSelect.setEditable(False)
         TrainController.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(TrainController)
         self.statusbar.setObjectName(u"statusbar")
@@ -359,5 +391,9 @@ class Ui_TrainController(object):
         self.engFailStatus.setText(QCoreApplication.translate("TrainController", u"Engine Status:", None))
         self.trackSigStatus.setText(QCoreApplication.translate("TrainController", u"Track Signal Status: ", None))
         self.brakeFailStatus.setText(QCoreApplication.translate("TrainController", u"Brake Status: ", None))
+        self.cmdSpd_2.setText(QCoreApplication.translate("TrainController", u"Power Output:", None))
+        self.trainSelect.setItemText(0, QCoreApplication.translate("TrainController", u"Train1", None))
+
+        self.trainSelect.setCurrentText(QCoreApplication.translate("TrainController", u"Train1", None))
     # retranslateUi
 
