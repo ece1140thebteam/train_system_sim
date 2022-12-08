@@ -42,6 +42,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.redStationBlocks = [7, 16, 21, 25, 35, 45, 48, 60]
         self.greenStations = []
         self.greenStationBlocks = [2, 9, 16, 22, 31, 39, 48, 57, 65, 73, 77, 88, 96, 105, 114, 123, 132, 141]
+        self.greenScheduleStations = [65, 73, 77, 88, 96, 105, 114, 123, 132, 141, 22, 16, 9, 2, 31, 39, 48, 57]
         self.blueStations = []
 
         self.redTrains = []
@@ -49,7 +50,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.blueTrains = []
 
         self.init_get_blocks()
-        # self.init_get_switches()
         self.init_get_crossings()
         self.init_get_stations()
 
@@ -87,6 +87,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_changeSpeed_line.currentTextChanged.connect(self.update_speed_trains_combobox)
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains_combobox)
         self.comboBox_dispatch_line.currentTextChanged.connect(self.update_dispatch_block_combobox)
+       
         # Signal Connections
         # Test Signals
         s.send_CTC_test_throughput_signal.connect(self.update_throughput)
@@ -102,7 +103,6 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_TrackController_switch_pos.connect(self.set_switches)
         # TODO: Send signal states from track controller and connect to self.set_signals
         
-        # TODO: Check dict key for crossing
         s.send_TrackController_crossing.connect(self.set_crossings)
 
         # Track Signals
@@ -125,20 +125,19 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             self.pushButton_dispatch_block.setDisabled(True)
 
     def schedule_trains(self):
-        stations = {}
+        stations = []
         fileName = self.label.text()
         self.outputLabel.setText("Scheduling Trains from file: " + fileName)
         with open(fileName, 'r') as csv_file:
             reader = csv.reader(csv_file)
             next(reader, None)
+            i = 0
             for row in reader:
-                print(row)
-                print(row[1])
-                stations[row[1]] = row[2]
+                stations.append((self.greenScheduleStations[i], float(row[2])*60))
+                i+=1
             csv_file.close()
-        
-        for i in range(0, len(stations)):
-            print(stations[i])
+        if self.comboBox.currentText() == 'Green Line':
+            Train.trains.create_train('Green', stations, 0)
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked
     def set_switch(self):
@@ -229,7 +228,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         line = self.comboBox_dispatch_line.currentText()
         block = int(self.comboBox_dispatch_block.currentText())
 
-        Train.trains.create_train(line, [block], 0)
+        Train.trains.create_train(line, [(block, 0)], 0)
 
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
@@ -261,13 +260,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         print(time_to_dispatch)
 
         if(line == 'Green'):
-            Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+            Train.trains.create_train('Green', stations, time_to_dispatch)
         else:
             Train.trains.create_train('Red', stationBlocks, time_to_dispatch)
-
-       
-        
-
 
     # Update the comboBox of track_blocks
     # Called when the line is changed for maintenance
