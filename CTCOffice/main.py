@@ -18,14 +18,15 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
+        # TODO: When dispatched to a block it should stay at block until dispatched to another location
         init_data = InitData.InitData()
         self.throughputs = init_data.get_throughput()
         self.lines = init_data.get_blocks()
 
         # Initialize Static Data
-        self.redBlocks = []
-        self.greenBlocks = []
-        self.blueBlocks = []
+        self.red_blocks = []
+        self.green_blocks = []
+        self.blue_blocks = []
 
         self.red_authority = [0]
         self.green_authority = [0]
@@ -295,11 +296,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         block_box = self.comboBox_trackMaintenance_blockNumber
         block_box.clear()
         if self.comboBox_trackMaintenance_line.currentText() == "Red":
-            block_box.addItems(self.redBlocks)
+            block_box.addItems(self.red_blocks)
         elif self.comboBox_trackMaintenance_line.currentText() == "Green":
-            block_box.addItems(self.greenBlocks)
+            block_box.addItems(self.green_blocks)
         elif self.comboBox_trackMaintenance_line.currentText() == "Blue":
-            block_box.addItems(self.blueBlocks)
+            block_box.addItems(self.blue_blocks)
 
     # Update the comboBox of switches
     # Called when the line is changed for switch control
@@ -331,9 +332,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         blocks = self.comboBox_dispatch_block
         blocks.clear()
         if self.comboBox_dispatch_line.currentText() == "Red":
-            blocks.addItems(self.redBlocks)
+            blocks.addItems(self.red_blocks)
         elif self.comboBox_dispatch_line.currentText() == "Green":
-            blocks.addItems(self.greenBlocks)
+            blocks.addItems(self.green_blocks)
 
     # Update the comboBox of trains
     # Called when the line is changed for edit stations
@@ -355,11 +356,11 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         train_box = self.comboBox_changeSpeed_train
         train_box.clear()
         if self.comboBox_changeSpeed_line.currentText() == "Red":
-            train_box.addItems(self.redBlocks)
+            train_box.addItems(self.red_blocks)
         elif self.comboBox_changeSpeed_line.currentText() == "Green":
-            train_box.addItems(self.greenBlocks)
+            train_box.addItems(self.green_blocks)
         elif self.comboBox_changeSpeed_line.currentText() == "Blue":
-            train_box.addItems(self.blueBlocks)
+            train_box.addItems(self.blue_blocks)
 
     # Update the comboBox of stations for dispatch
     # Called when the line is changed for edit stations
@@ -384,13 +385,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         for line in self.lines:
             for block in line:
                 if line.get(block).line == 'Red':
-                    self.redBlocks.append(str(block))
+                    self.red_blocks.append(str(block))
                     self.red_authority.append(0)
                 if line.get(block).line == 'Green':
-                    self.greenBlocks.append(str(block))
+                    self.green_blocks.append(str(block))
                     self.green_authority.append(0)
                 if line.get(block).line == 'Blue':
-                    self.blueBlocks.append(str(block))
+                    self.blue_blocks.append(str(block))
 
     # Get all switches for a line by filtering on Infrastructure substring
     # Called once on init of window
