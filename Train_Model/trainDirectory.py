@@ -2,6 +2,7 @@ from Train_Model.train import Train
 from TrainController.TrainCTRLui.ui_driver.trainbackend import Train_CTRL_BE
 from PyQt6.QtCore import *
 from signals import s
+from TrainController.TrainCTRLui.ui_driver.engineerui import engineerUI
 
 class trainSignals(QObject):
     #######################################################
@@ -51,3 +52,7 @@ class trainDirectory():
         self.trains[self.idCounter].next_track()
         self.idCounter += 1
         s.send_Update_Combo.emit(self.idCounter)
+
+        #create engineer Kp/Ki window at the time of train controller's instantiation
+        self.engWindow = engineerUI(self.trainDirectory.trainctrl[self.idCounter])
+        self.engWindow.show()

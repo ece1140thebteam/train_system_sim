@@ -81,8 +81,12 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
+        #Train Select operation
+        self.ui.trainSelect.currentTextChanged.connect(self.update_train)
+
         #Timer signal to govern UI Updates
         s.timer_tick.connect(self.timer)
+        s.send_Update_Combo.connect(self.update_combo)
 
     #function for timer tick handling
     def timer(self, mul):
@@ -117,6 +121,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(True)
             self.ui.sBrakeBtn.setDisabled(True)
             self.ui.speedSlider.setDisabled(True)
+            self.ui.trainSelect.setDisabled(True)
             self.curTrain.manMode = False
         else: #Case for False
             self.ui.elightBtn.setDisabled(False)
@@ -125,6 +130,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
+            self.ui.trainSelect.setDisabled(False)
             self.curTrain.manMode = True
 
 
@@ -209,17 +215,9 @@ class TrainController(QMainWindow):
             self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
 
-
-    #TODO: Wednesday problems
-    
-    def setcurTrain(self, id):
-        print('foo')
-        #
-
-    #New working branch
-
-    def getTrains(self, count):
-        print('foo')
+    def update_combo(self, id):
+        self.ui.trainSelect.addItem("Train " + str(id))
+        self.UpdateUI()
 
 
 if __name__ == "__main__":
