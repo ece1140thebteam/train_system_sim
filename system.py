@@ -97,9 +97,8 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
-      self.engWindow = engineerUI(self.trainDirectory.trainctrl[0])
       self.trainController.show()
-      self.engWindow.show()
+
 
     def open_traincontrol_test(self):
       self.test_window = TrainCTRLTestUI(self.Trains[0])
