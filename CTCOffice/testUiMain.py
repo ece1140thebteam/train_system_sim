@@ -2,14 +2,9 @@ import CTCOffice.ui.ctcOfficeTestLayout as ctcOfficeTestLayout
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 import sys
-import sqlite3
 
 from signals import s
 
-
-mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
-
-cursor = mydb.cursor()
 
 
 class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
@@ -25,8 +20,8 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         self.greenCrossings = []
         self.blueBlocks = []
         self.blueCrossings = []
-        self.get_blocks()
-        self.get_crossings()
+        # self.get_blocks()
+        # self.get_crossings()
 
         # Initialize Components
         self.update_crossing()
@@ -44,22 +39,21 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         self.pushButton_trackOccupancy.clicked.connect(self.set_occupancy)
         self.pushButton_crossing.clicked.connect(self.set_crossings)
 
-    def get_blocks(self):
-        my_cursor = mydb.cursor()
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Red'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.redBlocks.append(str(block[0]))
+    # def get_blocks(self):
+    #     my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Red'")
+    #     blocks = my_cursor.fetchall()
+    #     for block in blocks:
+    #         self.redBlocks.append(str(block[0]))
 
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Green'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.greenBlocks.append(str(block[0]))
+    #     my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Green'")
+    #     blocks = my_cursor.fetchall()
+    #     for block in blocks:
+    #         self.greenBlocks.append(str(block[0]))
 
-        my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Blue'")
-        blocks = my_cursor.fetchall()
-        for block in blocks:
-            self.blueBlocks.append(str(block[0]))
+    #     my_cursor.execute("SELECT Block_Number FROM track_blocks WHERE line = 'Blue'")
+    #     blocks = my_cursor.fetchall()
+    #     for block in blocks:
+    #         self.blueBlocks.append(str(block[0]))
 
     def update_occupancy(self):
         block_box = self.comboBox_occupancy_blockNumber
@@ -126,24 +120,24 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         # s.send_CTC_test_track_occupancy.emit(line, int(blockNumber), status)
         s.send_CTC_test_track_occupancy.emit([{'line':line, 'block':int(blockNumber), 'occupancy':status}])
 
-    def get_crossings(self):
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.redCrossings.append(str(block[0]))
+    # def get_crossings(self):
+    #     cursor.execute(
+    #         "SELECT Block_Number FROM track_blocks WHERE line = 'Red' AND Infrastructure = 'RAILWAY CROSSING'")
+    #     blocks = cursor.fetchall()
+    #     for block in blocks:
+    #         self.redCrossings.append(str(block[0]))
 
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.greenCrossings.append(str(block[0]))
+    #     cursor.execute(
+    #         "SELECT Block_Number FROM track_blocks WHERE line = 'Green' AND Infrastructure = 'RAILWAY CROSSING'")
+    #     blocks = cursor.fetchall()
+    #     for block in blocks:
+    #         self.greenCrossings.append(str(block[0]))
 
-        cursor.execute(
-            "SELECT Block_Number FROM track_blocks WHERE line = 'Blue' AND Infrastructure = 'RAILWAY CROSSING'")
-        blocks = cursor.fetchall()
-        for block in blocks:
-            self.blueCrossings.append(str(block[0]))
+    #     cursor.execute(
+    #         "SELECT Block_Number FROM track_blocks WHERE line = 'Blue' AND Infrastructure = 'RAILWAY CROSSING'")
+    #     blocks = cursor.fetchall()
+    #     for block in blocks:
+    #         self.blueCrossings.append(str(block[0]))
 
     def set_crossings(self):
         line = self.comboBox_crossing_line.currentText()
