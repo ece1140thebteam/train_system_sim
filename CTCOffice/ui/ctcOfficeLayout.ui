@@ -855,6 +855,37 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>Dispatch to Block</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_dispatch_line">
+          <item>
+           <property name="text">
+            <string>Red</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Green</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_dispatch_block"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_dispatch_block">
+          <property name="text">
+           <string>Dispatch</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -886,7 +917,7 @@
      <x>0</x>
      <y>0</y>
      <width>1187</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMain">
