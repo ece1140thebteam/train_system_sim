@@ -2111,13 +2111,8 @@
      <bool>false</bool>
     </property>
     <property name="currentText">
-     <string>Train1</string>
+     <string/>
     </property>
-    <item>
-     <property name="text">
-      <string>Train1</string>
-     </property>
-    </item>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
