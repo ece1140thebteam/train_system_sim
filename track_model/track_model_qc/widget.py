@@ -652,7 +652,7 @@ class TrackModel(QWidget):
         # the block the train will enter
         block_info['block_num']          = block.block_number
         block_info['grade']              = block.block_grade
-        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'}
+        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'} if block.station is not None else None
         block_info['length']             = block.block_len
         block_info['commanded_speed']    = block.commanded_speed
         block_info['authority']          = block.authority
