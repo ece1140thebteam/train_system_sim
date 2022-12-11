@@ -121,7 +121,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(True)
             self.ui.sBrakeBtn.setDisabled(True)
             self.ui.speedSlider.setDisabled(True)
-            self.ui.trainSelect.setDisabled(True)
+            self.ui.trainSelect.setDisabled(False)
             self.curTrain.manMode = False
         else: #Case for False
             self.ui.elightBtn.setDisabled(False)
@@ -130,17 +130,17 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
-            self.ui.trainSelect.setDisabled(False)
+            self.ui.trainSelect.setDisabled(True)
             self.curTrain.manMode = True
 
 
     #Functions to send door signals
     def rDoors(self):
-        if self.curTrain.curSpeed == 0:
+        if self.curTrain.curSpd == 0:
             self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
             self.curTrain.rDoors()
     def lDoors(self):
-        if self.curTrain.curSpeed == 0:
+        if self.curTrain.curSpd == 0:
             self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
             self.curTrain.lDoors()
 

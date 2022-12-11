@@ -97,6 +97,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
+      self.trainController.setManMode()
       self.trainController.show()
 
 
