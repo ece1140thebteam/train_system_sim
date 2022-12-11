@@ -225,6 +225,12 @@ class TrainController(QMainWindow):
         self.UpdateUI()
 
 
+#TODO:
+#Round values displayed in UI to be more readable
+#Popup when at station displaying door side and station name via beacon data
+#Automatic light functionality
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = TrainController()
