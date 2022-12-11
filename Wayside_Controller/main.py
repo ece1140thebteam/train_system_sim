@@ -18,13 +18,21 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       super(MainWindow, self).__init__(parent)
       self.setupUi(self)
       self.controllers = dict()
+
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
       self.uploadPLC3.clicked.connect(self.getFile3)
-      self.blockSelect1.currentTextChanged.connect(self.displayController1Block)
-      self.blockSelect2.currentTextChanged.connect(self.displayController2Block)
-      self.blockSelect3.currentTextChanged.connect(self.displayController3Block)
+      #self.uploadPLC4.clicked.connect(self.getFile4)
+      #self.uploadPLC5.clicked.connect(self.getFile5)
+      #self.uploadPLC6.clicked.connect(self.getFile6)
+
+      self.blockSelect1.currentTextChanged.connect(self.displayController1Blocks)
+      self.blockSelect2.currentTextChanged.connect(self.displayController2Blocks)
+      self.blockSelect3.currentTextChanged.connect(self.displayController3Blocks)
+      #self.blockSelect4.currentTextChanged.connect(self.displayController4Blocks)
+      #self.blockSelect5.currentTextChanged.connect(self.displayController5Blocks)
+      #self.blockSelect6.currentTextChanged.connect(self.displayController6Blocks)
       
       # signals from Track Model
       s.send_TrackModel_track_occupancy.connect(self.update_occupancy)
@@ -39,23 +47,32 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       # Allocate blocks with corresponding controller
       for line in track_info:
-         if line == 'Red':
-            pass
-         elif line == 'Green':
+         if line == 'Green':
             for block in track_info[line]:
                if block == 0 or (block >= 36 and block <= 73):
-                     track_info['Green'][block]['controller'] = 1
+                     track_info[line][block]['controller'] = 1
                      self.blockSelect1.addItem(str(block))
                elif block >= 74 and block <= 143:
-                  track_info['Green'][block]['controller'] = 2
+                  track_info[line][block]['controller'] = 2
                   self.blockSelect2.addItem(str(block))
                elif (block >= 1 and block <= 35) or (block >= 144 and block <= 150):
-                  track_info['Green'][block]['controller'] = 3
+                  track_info[line][block]['controller'] = 3
                   self.blockSelect3.addItem(str(block))
+         elif line == 'Red':
+            for block in track_info[line]:
+               if (block >= 0 and block <= 30) or block == 76:
+                     track_info[line][block]['controller'] = 4
+                     self.blockSelect4.addItem(str(block))
+               elif (block >= 31 and block <= 40) or (block >= 71 and block <= 75):
+                  track_info[line][block]['controller'] = 5
+                  self.blockSelect5.addItem(str(block))
+               elif (block >= 41 and block <= 70):
+                  track_info[line][block]['controller'] = 6
+                  self.blockSelect6.addItem(str(block))
 
 
    # controller 1 GUI
-   def displayController1Block(self, blockText):
+   def displayController1Blocks(self, blockText):
       
       block = int(blockText)
       
@@ -113,7 +130,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
    # controller 2 GUI
-   def displayController2Block(self, blockText):
+   def displayController2Blocks(self, blockText):
       
       block = int(blockText)
       
@@ -171,7 +188,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
    # controller 3 GUI
-   def displayController3Block(self, blockText):
+   def displayController3Blocks(self, blockText):
      
       block = int(blockText)
 
