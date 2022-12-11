@@ -54,5 +54,5 @@ class trainDirectory():
         s.send_Update_Combo.emit(self.idCounter)
 
         #create engineer Kp/Ki window at the time of train controller's instantiation
-        self.engWindow = engineerUI(self.trainDirectory.trainctrl[self.idCounter])
+        self.engWindow = engineerUI(self.trainctrl[self.idCounter-1])
         self.engWindow.show()
