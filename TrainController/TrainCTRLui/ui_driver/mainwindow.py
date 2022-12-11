@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -81,15 +81,21 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.clicked.connect(self.rDoors)
         self.ui.ldoorBtn.clicked.connect(self.lDoors)
 
-        s.timer_tick.connect(self.timer)
+        #Train Select operation
+        self.ui.trainSelect.currentTextChanged.connect(self.update_train)
 
+        #Timer signal to govern UI Updates
+        s.timer_tick.connect(self.timer)
+        s.send_Update_Combo.connect(self.update_combo)
+
+    #function for timer tick handling
     def timer(self, mul):
-        tickrate = mul*0.1
         if (self.curTrain != None):
             self.UpdateUI()
         else:
             self.first()
 
+    #Function to instantiate first train into list
     def first(self):
         try:
             self.curTrain = self.directory.trainctrl[0]
@@ -115,6 +121,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(True)
             self.ui.sBrakeBtn.setDisabled(True)
             self.ui.speedSlider.setDisabled(True)
+            self.ui.trainSelect.setDisabled(False)
             self.curTrain.manMode = False
         else: #Case for False
             self.ui.elightBtn.setDisabled(False)
@@ -123,16 +130,19 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn.setDisabled(False)
             self.ui.sBrakeBtn.setDisabled(False)
             self.ui.speedSlider.setDisabled(False)
+            self.ui.trainSelect.setDisabled(True)
             self.curTrain.manMode = True
 
 
     #Functions to send door signals
     def rDoors(self):
-        self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
-        self.curTrain.rDoors()
+        if self.curTrain.curSpd == 0:
+            self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
+            self.curTrain.rDoors()
     def lDoors(self):
-        self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
-        self.curTrain.lDoors()
+        if self.curTrain.curSpd == 0:
+            self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
+            self.curTrain.lDoors()
 
     #Functions to send light signals
     def eLights(self):
@@ -168,6 +178,10 @@ class TrainController(QMainWindow):
         cmdStr = 'Commanded Speed: ' + str(self.curTrain.cmdSpd*0.621371) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
 
+        #update power output
+        powStr = 'Power Output: ' + str(self.curTrain.powOutput) + ' kW'
+        self.ui.powOut.setText(powStr)
+
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
             if self.curTrain.trackSigFault:
@@ -202,17 +216,19 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setDisabled(False)
             self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
+    def update_train(self):
+        id = int(self.ui.trainSelect.currentText()[6:]) - 1
+        self.curTrain = self.directory.trainctrl[id]
+
+    def update_combo(self, id):
+        self.ui.trainSelect.addItem("Train " + str(id))
+        self.UpdateUI()
 
 
-    #TODO: Wednesday problems
-    
-    def setcurTrain(self, id):
-        print('foo')
-
-    #New working branch
-
-    def getTrains(self):
-        print('bar')
+#TODO:
+#Round values displayed in UI to be more readable
+#Popup when at station displaying door side and station name via beacon data
+#Automatic light functionality
 
 
 if __name__ == "__main__":
