@@ -216,6 +216,9 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setDisabled(False)
             self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
+    def update_train(self):
+        id = int(self.ui.trainSelect.currentText()[6:]) - 1
+        self.curTrain = self.directory.trainctrl[id]
 
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
