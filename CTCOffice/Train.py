@@ -144,7 +144,13 @@ class Train_Sim():
           # If train was 1 behind new occupancy or was in yard
           # Set train block to current block
           # Call update authority
-          if (block == green_route[train.route_block + 1]) or (train.current_block == 0):
+
+          if(train.route_block + 1 >= len(green_route)):
+            next_route_block = 1
+          else:
+            next_route_block = train.route_block + 1
+
+          if (block == green_route[next_route_block]) or (train.current_block == 0):
             train.current_block = block
             train.route_block += 1
             self.update_authority(train.id)
@@ -156,7 +162,12 @@ class Train_Sim():
           # If train was 1 behind new occupancy or was in yard
           # Set train block to current block
           # Call update authority
-          if (block == red_route[train.route_block + 1]) or (train.current_block == 0):
+          
+          if(train.route_block + 1 >= len(red_route)):
+            next_route_block = 1
+          else:
+            next_route_block = train.route_block + 1
+          if (block == red_route[next_route_block]) or (train.current_block == 0):
             train.current_block = block
             train.route_block += 1
             self.update_authority(train.id)
@@ -292,13 +303,16 @@ class Train_Sim():
       authorities.append({'line': 'Green', 'block': prevBlock, 'authority': 0})
       speeds.append({'line': 'Green', 'block': prevBlock, 'speed': 0})
       
+      block_idx = location
+
       for i in range(location, location + 3):
+        
         # If at end of route break out of loop (avoid bounds error)
-        if i >= len(green_route):
-          break
+        if block_idx >= len(green_route):
+          block_idx = 1
         
         # Get block of route
-        block = green_route[i]
+        block = green_route[block_idx]
 
         # If on block 57 and destination is the yard set authorities and break loop
         if block == 57 and destination ==0:
@@ -331,6 +345,8 @@ class Train_Sim():
 
           authorities.append({'line': 'Green', 'block': block, 'authority': 1})
           speeds.append({'line': 'Green', 'block': block, 'speed': block_speed})
+
+          block_idx += 1
 
       # Emit authority and speed signals
       s.send_CTC_authority.emit(authorities)
