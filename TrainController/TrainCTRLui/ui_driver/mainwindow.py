@@ -136,11 +136,13 @@ class TrainController(QMainWindow):
 
     #Functions to send door signals
     def rDoors(self):
-        self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
-        self.curTrain.rDoors()
+        if self.curTrain.curSpeed == 0:
+            self.curTrain.rdoors = self.ui.rdoorBtn.isChecked()
+            self.curTrain.rDoors()
     def lDoors(self):
-        self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
-        self.curTrain.lDoors()
+        if self.curTrain.curSpeed == 0:
+            self.curTrain.ldoors = self.ui.ldoorBtn.isChecked()
+            self.curTrain.lDoors()
 
     #Functions to send light signals
     def eLights(self):
