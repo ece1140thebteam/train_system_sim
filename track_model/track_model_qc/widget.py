@@ -147,9 +147,9 @@ class TrackModel(QWidget):
         self.update_switch_position(line, block, sw)
     
     def update_crossing_position(self, line, block, pos):
-        print(f'{line} {block} {pos}')
         # if pos is true, crossing is open
         self.track.track_lines[line].blocks[block].crossing_open = pos
+        if self.displayed_block is None: return
         if block == self.displayed_block.block_number: self.display_block_info()
 
     def handle_time_increment(self):
@@ -184,7 +184,6 @@ class TrackModel(QWidget):
         crossing_info = 'None'
 
         if block.has_rail_crossing:
-            print(block.block_number)
             if block.crossing_open:
                 crossing_info = 'Open'
             else: crossing_info = 'Closed'
