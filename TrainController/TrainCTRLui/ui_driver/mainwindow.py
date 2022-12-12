@@ -171,15 +171,15 @@ class TrainController(QMainWindow):
     def UpdateUI(self):
         
         #update current speed
-        curStr = 'Current Speed: ' + str((self.curTrain.curSpd*2.236935599991052)) + ' MPH'
+        curStr = 'Current Speed: ' + str(int((self.curTrain.curSpd*2.236935599991052))) + ' MPH'
         self.ui.curSpd.setText(curStr)
 
         #update commanded speed
-        cmdStr = 'Commanded Speed: ' + str(self.curTrain.cmdSpd*0.621371) + ' MPH'
+        cmdStr = 'Commanded Speed: ' + str(int(self.curTrain.cmdSpd*0.621371)) + ' MPH'
         self.ui.cmdSpd.setText(cmdStr)
 
         #update power output
-        powStr = 'Power Output: ' + str(self.curTrain.powOutput) + ' kW'
+        powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
         self.ui.powOut.setText(powStr)
 
         #check for faults, give appropriate messages
@@ -226,7 +226,6 @@ class TrainController(QMainWindow):
 
 
 #TODO:
-#Round values displayed in UI to be more readable
 #Popup when at station displaying door side and station name via beacon data
 #Automatic light functionality
 
