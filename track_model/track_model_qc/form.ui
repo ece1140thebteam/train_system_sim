@@ -850,7 +850,7 @@
     <rect>
      <x>620</x>
      <y>0</y>
-     <width>160</width>
+     <width>161</width>
      <height>501</height>
     </rect>
    </property>
@@ -1201,6 +1201,30 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item>
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>No Failure</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Power Failure</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Track Circuit Failure</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Broken Rail</string>
+       </property>
+      </item>
+     </widget>
     </item>
    </layout>
   </widget>
