@@ -40,7 +40,8 @@ occupancy_column    = 2
 numbers_re = re.compile(r'[0-9]+')
 class TrackModel(QWidget):
     default_track_file = 'default_track.csv'
-
+    default_track_file = str(Path(__file__).resolve().parent / default_track_file)
+    
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
         self.displayed_block = None
