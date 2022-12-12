@@ -45,6 +45,11 @@
       </item>
       <item>
        <property name="text">
+        <string>Rail Crossing</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>Switch Position</string>
        </property>
       </item>

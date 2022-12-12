@@ -169,6 +169,16 @@ class TrackModelTestUI(QWidget):
             self.set_update_value_signal_colors()
         elif update_type == "Switch Position":
             self.updateValueLabel.setText("Position")
+        elif update_type == "Rail Crossing":
+            self.updateValueLabel.setText("Position")
+            self.set_update_value_rail_crossing()
+    
+    def set_update_value_rail_crossing(self):
+        self.enable_input_value_dropdown()
+        self.inputValueDropdown.clear()
+        self.updateValueSpinboxLabel.setText("")
+        self.inputValueDropdown.addItem('Open')
+        self.inputValueDropdown.addItem('Closed')
 
     def set_update_value_switch_pos(self, text):
         if text == '': return
@@ -235,6 +245,16 @@ class TrackModelTestUI(QWidget):
             self.send_signal_update()
         elif self.updateTypeDropdown.currentText()  == "Switch Position":
             self.send_switch_position_update()
+        elif self.updateTypeDropdown.currentText()  == "Rail Crossing":
+            self.send_rail_crossing_position_update()
+
+    def send_rail_crossing_position_update(self):
+        line = self.lineDropDown.currentText()
+        block = int(self.blockDropDown.currentText())
+        print(block)
+        position = self.inputValueDropdown.currentText() == 'Open'
+
+        s.send_TrackModel_railway_crossing_status.emit(line, block, position)
 
     def send_switch_position_update(self):
         line = self.lineDropDown.currentText()
@@ -294,6 +314,10 @@ class TrackModelTestUI(QWidget):
         self.blockDropDown.clear()
         if self.updateTypeDropdown.currentText() == "Switch Position":
             for b in self.track[text]['switches']:
+                self.blockDropDown.addItem(str(b))
+
+        if self.updateTypeDropdown.currentText() == "Rail Crossing":
+            for b in self.track[text]['crossings']:
                 self.blockDropDown.addItem(str(b))
 
         else:
