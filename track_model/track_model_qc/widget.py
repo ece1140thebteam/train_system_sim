@@ -43,19 +43,19 @@ class TrackModel(QWidget):
 
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
+        self.displayed_block = None
         self.time_elapsed_s = 0
         self.load_ui()
         self.track = Track.Track()
         self.load_track(TrackModel.default_track_file)
-        self.config_temp()
         self.blockTree = self.blockListTreeWidget
         self.uploadTrackButton.clicked.connect(self.open_new_file)
         self.time_elapsed = 0
         self.r = 0
         self.g = 0
         self.b = 0
+        self.config_temp()
 
-        self.displayed_block = None
         s.timer_tick.connect(self.handle_time_increment)
         s.send_TrackModel_failure_status.connect(self.update_failures)
         s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
@@ -152,7 +152,7 @@ class TrackModel(QWidget):
     def display_block_info(self, block=None):
         if block is not None:
             self.displayed_block = block
-
+        
         block = self.displayed_block
 
         if block is None: return
@@ -497,6 +497,7 @@ class TrackModel(QWidget):
 
         self.temperatureSpinBox.setValue(temp_f)
         self.temperatureSpinBox.valueChanged.connect(self.update_temp_spin_box)
+        self.update_temp_spin_box()
 
     def update_temp_spin_box(self):
         if self.track.heater_on:
@@ -645,14 +646,30 @@ class TrackModel(QWidget):
             block_info['yard'] = True
             return
 
-
         block = self.track.track_lines[line].blocks[next_block_num]
         block_info = dict()
+        block_info['beacon'] = None
+
+        # if the train is leaving a block w a station
+        #TODO UPDATE
+        if current_block_num > 0:
+            curr_block = self.track.track_lines[line].blocks[current_block_num]
+            if curr_block.station is not None:
+                block_info['beacon'] = {
+                    'station_name' : block.station, 
+                    'station_side' : 'right',
+                    'next_station' : None   
+                }
+        # if the train is entering a block w a station
+        # elif block.station is not None:
+        block_info['beacon'] = {
+            'station_name' : block.station, 
+            'station_side' : 'right'   
+        }
 
         # the block the train will enter
         block_info['block_num']          = block.block_number
         block_info['grade']              = block.block_grade
-        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'} if block.station is not None else None
         block_info['length']             = block.block_len
         block_info['commanded_speed']    = block.commanded_speed
         block_info['authority']          = block.authority
