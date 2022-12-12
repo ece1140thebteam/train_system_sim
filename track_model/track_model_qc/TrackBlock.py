@@ -29,7 +29,7 @@ class TrackBlock():
             station:            str,
             switch:             str,
             elevation:          str,
-            has_rail_crossing:  str,
+            has_rail_crossing:  bool,
             cum_elevation:      str,
             can_travel_to:      str,
         ):
@@ -47,7 +47,7 @@ class TrackBlock():
         self.cum_elevation  = float(cum_elevation)
         self.has_rail_crossing = has_rail_crossing
         self.can_travel_to  = can_travel_to
-        self.crossing_open  = None if not has_rail_crossing else False
+        self.crossing_open  = True if has_rail_crossing else None
         self.circuit_open   = True
         self.signal         = "Red"
         self.light          = "Off"

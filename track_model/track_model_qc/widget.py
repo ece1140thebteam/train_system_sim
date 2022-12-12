@@ -61,7 +61,7 @@ class TrackModel(QWidget):
         self.failureDropDown.currentTextChanged.connect(self.handle_failure_dropdown)
 
         # connect communication signals
-        s.timer_tick.connect(self.handle_time_increment)
+        # s.timer_tick.connect(self.handle_time_increment)
         s.send_TrackModel_failure_status.connect(self.update_failures)
         s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
         s.get_TrackModel_map_info.connect(self.get_track_info)
@@ -74,6 +74,7 @@ class TrackModel(QWidget):
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
         s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
+        s.send_TrackModel_railway_crossing_status.connect(self.update_crossing_position)
         # self.print_track_info_dict()
 
     def print_track_info_dict(self):
@@ -115,6 +116,8 @@ class TrackModel(QWidget):
                     b = self.track.track_lines[line].blocks[block]
                     if b.switch is not None:
                         track_dict[line]['switches'][b.block_number] = [b.switch.pos1, b.switch.pos2]
+                    if b.has_rail_crossing:
+                        track_dict[line]['crossings'][b.block_number] = True
         
         s.send_TrackModel_map_info.emit(track_dict)
 
@@ -143,6 +146,12 @@ class TrackModel(QWidget):
             print('ERROR')
         self.update_switch_position(line, block, sw)
     
+    def update_crossing_position(self, line, block, pos):
+        print(f'{line} {block} {pos}')
+        # if pos is true, crossing is open
+        self.track.track_lines[line].blocks[block].crossing_open = pos
+        if block == self.displayed_block.block_number: self.display_block_info()
+
     def handle_time_increment(self):
         # timer called every 100ms
         self.time_elapsed_s += .1
@@ -172,6 +181,14 @@ class TrackModel(QWidget):
             sw = f'{block.switch.block_num}->{block.switch.curr_pos} ({block.switch.pos1 if block.switch.curr_pos != block.switch.pos1 else block.switch.pos2})'
         else: sw = 'No switch'
 
+        crossing_info = 'None'
+
+        if block.has_rail_crossing:
+            print(block.block_number)
+            if block.crossing_open:
+                crossing_info = 'Open'
+            else: crossing_info = 'Closed'
+
         self.failureDropDown.setEnabled(True)
         self.failureDropDown.setCurrentText(block.failure_mode)
         self.blockLineInfo.setText(block.line)
@@ -184,7 +201,7 @@ class TrackModel(QWidget):
         self.blockTrackHeaterInfo.setText(block.track_heater)
         self.blockElevationInfo.setText(str(block.elevation))
         self.blockCumulativeElevationInfo.setText(str(block.cum_elevation))
-        self.blockRailCrossingInfo.setText(str(block.crossing_open))
+        self.blockRailCrossingInfo.setText(crossing_info)
         self.blockUndergroundInfo.setText(str(block.underground))
         self.blockAuthorityInfo.setText(str(block.authority))
         self.blockMaintenanceModeInfo.setText(str(block.maintenance_mode))
@@ -532,31 +549,6 @@ class TrackModel(QWidget):
         # ui_file.open(QFile.ReadOnly)
         uic.loadUi(path, self)
         # ui_file.close()
-
-    # def update_list_color(self, column):
-    #     num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
-    #     # if self.i is None: self.i = 0
-    #     self.b += 10
-    #     if self.b > 255:
-    #         self.g += 10
-    #         self.b = 0
-    #     if self.g > 255:
-    #         self.g = 0
-    #         self.r += 10
-    #         self.r = self.r % 255
-
-    #     for line_num in range(0, num_lines):
-    #         line = self.blockListTreeWidget.invisibleRootItem().child(line_num)
-    #         num_sections = line.childCount()
-
-    #         for section_num in range(0, num_sections):
-    #             section = line.child(section_num)
-    #             num_blocks = section.childCount()
-
-    #             for block_num in range(0, num_blocks):
-    #                 block = section.child(block_num)
-
-    #                 block.setBackground(column, QtGui.QColor(self.r, self.g, self.b, 255))
 
     def update_commanded_speed(self, line, block, speed):
         if block in self.track.track_lines[line].blocks:

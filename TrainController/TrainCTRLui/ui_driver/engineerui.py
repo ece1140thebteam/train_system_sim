@@ -9,14 +9,14 @@ from PyQt6.QtWidgets import QApplication, QWidget
 #     pyside2-uic form.ui -o ui_form.py
 from TrainController.TrainCTRLui.ui_driver.eng_form import Ui_engineerUI
 from TrainController.TrainCTRLui.ui_driver.tctrl_dialog import trainDialog
-from TrainController.TrainCTRLui.ui_driver.mainwindow import TrainController
+from TrainController.TrainCTRLui.ui_driver.trainbackend import Train_CTRL_BE
 
 class engineerUI(QWidget):
-    def __init__(self, TrainController, parent=None):
+    def __init__(self, Train_CTRL_BE, parent=None):
         super().__init__(parent)
         self.ui = Ui_engineerUI()
         self.ui.setupUi(self)
-        self.Train = TrainController
+        self.Train = Train_CTRL_BE
 
         self.kval = False
         self.username = 'Engineer1'
