@@ -53,7 +53,7 @@ class TrackBlock():
         self.light          = "Off"
         self.switch_pos     = switch if switch is None else switch.curr_pos
         self.track_heater   = 'Off'
-        self.failure_mode   = 'No Failures'
+        self.failure_mode   = 'None'
         self.beacon1        = None
         self.beacon2        = None
         self.authority      = 0 #1 # TODO REMOVE

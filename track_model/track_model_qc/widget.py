@@ -57,6 +57,10 @@ class TrackModel(QWidget):
         self.b = 0
         self.config_temp()
 
+        # connect UI
+        self.failureDropDown.currentTextChanged.connect(self.handle_failure_dropdown)
+
+        # connect communication signals
         s.timer_tick.connect(self.handle_time_increment)
         s.send_TrackModel_failure_status.connect(self.update_failures)
         s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
@@ -143,6 +147,13 @@ class TrackModel(QWidget):
         # timer called every 100ms
         self.time_elapsed_s += .1
 
+    def handle_failure_dropdown(self):
+        failure_type = self.failureDropDown.currentText()
+        block = self.displayed_block
+        
+        self.update_failures(block.line, block.block_number, failure_type)
+        
+
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
         section = section.split(' ')[1]
@@ -160,6 +171,9 @@ class TrackModel(QWidget):
         if block.switch is not None:
             sw = f'{block.switch.block_num}->{block.switch.curr_pos} ({block.switch.pos1 if block.switch.curr_pos != block.switch.pos1 else block.switch.pos2})'
         else: sw = 'No switch'
+
+        self.failureDropDown.setEnabled(True)
+        self.failureDropDown.setCurrentText(block.failure_mode)
         self.blockLineInfo.setText(block.line)
         self.blockNumberInfo.setText(str(block.block_number))
         self.blockSectionInfo.setText(block.section)
@@ -175,7 +189,6 @@ class TrackModel(QWidget):
         self.blockAuthorityInfo.setText(str(block.authority))
         self.blockMaintenanceModeInfo.setText(str(block.maintenance_mode))
         self.blockBeaconInfo.setText(str(block.beacon1))
-        self.blockFailureModeInfo.setText(str(block.failure_mode))
         self.blockSwitchPositionInfo.setText(str(block.switch_pos))
         self.blockSwitchInfo.setText(sw)
         self.blockSignalInfo.setText(str(block.signal))
