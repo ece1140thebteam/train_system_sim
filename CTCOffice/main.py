@@ -134,11 +134,16 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             next(reader, None)
             i = 0
             for row in reader:
-                stations.append((self.greenScheduleStations[i], float(row[2])*60))
+                if self.comboBox.currentText() == 'Green Line':
+                    stations.append((self.greenScheduleStations[i], float(row[2])*60))
+                elif self.comboBox.currentText() == 'Red Line':
+                    stations.append((self.redStationBlocks[i], float(row[2])*60))
                 i+=1
             csv_file.close()
         if self.comboBox.currentText() == 'Green Line':
             Train.trains.create_train('Green', stations, 0)
+        elif self.comboBox.currentText() == 'Red Line':
+            Train.trains.create_train('Red', stations, 0)
     # Set the switch position for given line and block and store in database
     # Called when the set switch button is clicked
     def set_switch(self):
