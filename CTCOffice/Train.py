@@ -59,9 +59,11 @@ red_route = [0,
 27, 26, 25, 24, # H (reverse)
 23, 22, 21, # G (reverse)
 20, 19, 18, 17, 16, # F (reverse)
-15, 14, 13, # E (reverse)
-12, 11, 10, # D (reverse)
-0]
+1, 2, 3, # A
+4, 5, 6, # B
+7, 8, 9, # C
+10, 11, 12, # D
+13, 14, 15] # F
 
 class Train():
   def __init__(self, line: str, destinations: list, train_id: int, time_to_dispatch: int):
@@ -417,7 +419,7 @@ class Train_Sim():
         block = red_route[block_idx]
 
         # If on block 57 and destination is the yard set authorities and break loop
-        if block == 57 and destination ==0:
+        if block == 9 and destination ==0:
 
           if speed == 0:
             block_speed = self.red_speeds[block]
