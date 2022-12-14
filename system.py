@@ -115,6 +115,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.label_speed.setText(str(self.horizontalSlider.value()))
 
 if __name__ == "__main__":
+    sys.argv += ['-platform', 'windows:darkmode=1', '-style', 'windowsvista']
     app = QApplication(sys.argv)
     window = SystemWindow()
     window.show()

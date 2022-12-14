@@ -152,7 +152,10 @@ class Train_Sim():
 
           if (block == green_route[next_route_block]) or (train.current_block == 0):
             train.current_block = block
-            train.route_block += 1
+            if train.route_block != len(green_route)-1:
+              train.route_block += 1
+            else:
+              train.route_block = 1
             self.update_authority(train.id)
     if line == 'Red':
       # If block is occupied
@@ -162,14 +165,18 @@ class Train_Sim():
           # If train was 1 behind new occupancy or was in yard
           # Set train block to current block
           # Call update authority
-          
+
           if(train.route_block + 1 >= len(red_route)):
             next_route_block = 1
           else:
             next_route_block = train.route_block + 1
+
           if (block == red_route[next_route_block]) or (train.current_block == 0):
             train.current_block = block
-            train.route_block += 1
+            if train.route_block != len(red_route)-1:
+              train.route_block += 1
+            else:
+              train.route_block = 1
             self.update_authority(train.id)
   
   def occupancy_update(self, occupancies):
@@ -188,15 +195,26 @@ class Train_Sim():
             # Call update authority
             if (block == green_route[train.route_block + 1]) or (train.current_block == 0):
               train.current_block = block
-              train.route_block += 1
+              if train.route_block != len(green_route)-1:
+                train.route_block += 1
+              else:
+                train.route_block = 1
               self.update_authority(train.id)
 
       if line == 'Red':
+        # If block is occupied
         if occupancy == 1:
+          # For each train that exists
           for train in self.trains.values():
+            # If train was 1 behind new occupancy or was in yard
+            # Set train block to current block
+            # Call update authority
             if (block == red_route[train.route_block + 1]) or (train.current_block == 0):
               train.current_block = block
-              train.route_block += 1
+              if train.route_block != len(red_route)-1:
+                train.route_block += 1
+              else:
+                train.route_block = 1
               self.update_authority(train.id)
   
   # Called once every time tick
@@ -215,10 +233,10 @@ class Train_Sim():
           train.is_dwelling = 0
           train.dwelling_t = 0
           self.update_authority(train.id)
-
   
   def update_authority(self, train_id):
     train = self.trains.get(train_id)
+    authorities = []
     
     # If there are still destinations left
     if len(train.destinations) != 0:
@@ -230,15 +248,22 @@ class Train_Sim():
         train.is_dwelling = 1
 
         if (train.line == 'Green'):
-          prevBlock = green_route[train.route_block-1]
-          authority = {'line': 'Green', 'block': prevBlock, 'authority': 0}
+          if train.route_block == 1:
+            prevBlock = green_route[len(green_route) - 1]
+          else: 
+            prevBlock = green_route[train.route_block-1]
+          authorities.append({'line': 'Green', 'block': prevBlock, 'authority': 0})
           speed = {'line': 'Green', 'block': prevBlock, 'speed': 0}
+
         if (train.line == 'Red'):
-          prevBlock = red_route[train.route_block-1]
-          authority = {'line': 'Red', 'block': prevBlock, 'authority': 0}
+          if train.route_block == 1:
+            prevBlock = red_route[len(red_route) - 1]
+          else: 
+            prevBlock = red_route[train.route_block-1]
+          authorities.append({'line': 'Red', 'block': prevBlock, 'authority': 0})
           speed = {'line': 'Red', 'block': prevBlock, 'speed': 0}
 
-        s.send_CTC_authority.emit([authority])
+        s.send_CTC_authority.emit(authorities)
         s.send_CTC_suggested_speed.emit([speed])
         return
 
@@ -278,10 +303,20 @@ class Train_Sim():
     if(line == 'Red'):
       cur_block = red_route[route_block]
       cur_route_index = route_block
+      if destination == 0:
+        destination = 57
+
       while cur_block != destination:
         distance += self.red_lengths[cur_block]
         cur_route_index += 1
+        if(cur_route_index >= len(red_route)):
+          cur_route_index = 1
         cur_block = red_route[cur_route_index]
+
+      if tts == 0:
+        speed = 0
+      else:
+        speed = (distance/1000)/((tts-30)/3600)
     return speed 
 
   def set_authority_speed(self, line, route_block, origin, destination, speed):
@@ -352,8 +387,8 @@ class Train_Sim():
       s.send_CTC_authority.emit(authorities)
       s.send_CTC_suggested_speed.emit(speeds)
 
+    # Logic For Red Line
     if(line == 'Red'):
-      location = red_route.index(origin)
       location = route_block
 
       # List of dicts indicating authorities
@@ -366,24 +401,38 @@ class Train_Sim():
       #   Set authority of that block to 0 and break
       prevBlock = red_route[location-1]
       self.red_authority[prevBlock] = 0
-      self.red_speeds[prevBlock] = 0
 
       authorities.append({'line': 'Red', 'block': prevBlock, 'authority': 0})
       speeds.append({'line': 'Red', 'block': prevBlock, 'speed': 0})
       
+      block_idx = location
+
       for i in range(location, location + 3):
+        
         # If at end of route break out of loop (avoid bounds error)
-        if i > len(red_route):
-          break
+        if block_idx >= len(red_route):
+          block_idx = 1
         
         # Get block of route
-        block = red_route[i]
+        block = red_route[block_idx]
+
+        # If on block 57 and destination is the yard set authorities and break loop
+        if block == 57 and destination ==0:
+
+          if speed == 0:
+            block_speed = self.red_speeds[block]
+
+          authorities.append({'line': 'Red', 'block': block, 'authority': 1})
+          speeds.append({'line': 'Red', 'block': block, 'speed': block_speed})
+
+          authorities.append({'line': 'Red', 'block': 0, 'authority': 1})
+          speeds.append({'line': 'Red', 'block': 0, 'speed': block_speed})
+          break
 
         # If the block is the current destination
         # Set authority and speed to 0 and break out of loop
         if block == destination:
           self.red_authority[block] = 0
-          self.red_speeds[block] = 0
 
           authorities.append({'line': 'Red', 'block': block, 'authority': 0})
           speeds.append({'line': 'Red', 'block': block, 'speed': 0})
@@ -393,10 +442,13 @@ class Train_Sim():
         # Set authority and speed to 1 and default
         else:
           self.red_authority[block] = 1
-          self.red_speeds[block] = 30
+          if speed == 0:
+            block_speed = self.red_speeds[block]
 
           authorities.append({'line': 'Red', 'block': block, 'authority': 1})
-          speeds.append({'line': 'Red', 'block': block, 'speed': speed})
+          speeds.append({'line': 'Red', 'block': block, 'speed': block_speed})
+
+          block_idx += 1
 
       # Emit authority and speed signals
       s.send_CTC_authority.emit(authorities)
