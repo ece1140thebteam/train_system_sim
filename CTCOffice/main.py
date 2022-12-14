@@ -479,22 +479,22 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             if block.failure != '':
                 self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
             else:
-                self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 5).setBackground(QtGui.QColor(0, 0, 0,0))
 
             if block.authority != 0:
                 self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(189, 252, 194))
             else:
-                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 3).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Maintenance
             if block.maintenance_mode != 0:
                 self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
             else:
-                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 8).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Switch
             if block.switch_position is None:
-                self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(0, 0, 0,0))
             elif block.switch_position == 0:
                 self.tableWidget_2.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
             else:
@@ -504,13 +504,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             if block.occupancy != 0:
                 self.tableWidget_2.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
             else:
-                self.tableWidget_2.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 2).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Crossing
             if block.crossing is None:
-                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             elif block.crossing == 0:
-                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             else:
                 self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
@@ -534,23 +534,23 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             if block.failure != '':
                 self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 0, 0))
             else:
-                self.tableWidget.item(row, 5).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 5).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Maintenance
             if block.maintenance_mode != 0:
                 self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 51))
             else:
-                self.tableWidget.item(row, 8).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 8).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Authority
             if block.authority != 0:
                 self.tableWidget.item(row, 3).setBackground(QtGui.QColor(189, 252, 194))
             else:
-                self.tableWidget.item(row, 3).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 3).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Switch
             if block.switch_position is None:
-                self.tableWidget.item(row, 4).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 4).setBackground(QtGui.QColor(0, 0, 0,0))
             elif block.switch_position == 0:
                 self.tableWidget.item(row, 4).setBackground(QtGui.QColor(102, 255, 255))
             else:
@@ -560,13 +560,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             if block.occupancy != 0:
                 self.tableWidget.item(row, 2).setBackground(QtGui.QColor(51, 255, 51))
             else:
-                self.tableWidget.item(row, 2).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 2).setBackground(QtGui.QColor(0, 0, 0,0))
 
             # Crossing
             if block.crossing is None:
-                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             elif block.crossing == 0:
-                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 255, 255))
+                self.tableWidget.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             else:
                 self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
 
