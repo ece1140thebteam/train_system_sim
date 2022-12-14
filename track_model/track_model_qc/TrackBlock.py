@@ -32,6 +32,7 @@ class TrackBlock():
             has_rail_crossing:  bool,
             cum_elevation:      str,
             can_travel_to:      str,
+            station_side:       str = None
         ):
 
         self.line           = line
@@ -63,15 +64,28 @@ class TrackBlock():
         self.passengers_waiting = random.randint(6, 16)
         self.passengers_deboarded = 0
 
+        if station is not None and station_side is None:
+            print('unassigned side for station')
+
+        self.station_side = None
+        if station_side == 'L': self.station_side = 'left'
+        if station_side == 'R': self.station_side = 'right'
+        if 'B' in station_side: self.station_side = 'both'
+
+        # TODO Update for multidirection blocks
+        self.station_side_1 = self.station_side
+        self.station_side_2 = self.station_side
+
         if self.station:
             # TODO Add side of track
+            # becon 1 is at the lower track 
             self.beacon1 = {
-                'station': self.station
-
+                'station': self.station,
+                'side': self.station_side_1
             }
             self.beacon2 = {
-                'station': self.station
-
+                'station': self.next_station,
+                'side': self.station_side_2
             }
 
     def passengers_onboarded(self, deboarded):

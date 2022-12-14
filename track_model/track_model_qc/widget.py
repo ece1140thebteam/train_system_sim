@@ -204,7 +204,7 @@ class TrackModel(QWidget):
         self.blockUndergroundInfo.setText(str(block.underground))
         self.blockAuthorityInfo.setText(str(block.authority))
         self.blockMaintenanceModeInfo.setText(str(block.maintenance_mode))
-        self.blockBeaconInfo.setText(str(block.beacon1))
+        # self.blockBeaconInfo.setText(str(block.beacon1) + )
         self.blockSwitchPositionInfo.setText(str(block.switch_pos))
         self.blockSwitchInfo.setText(sw)
         self.blockSignalInfo.setText(str(block.signal))
@@ -331,7 +331,8 @@ class TrackModel(QWidget):
                 switch = None
                 railway_crossing = False
                 block_travels_to = []
-                
+                station_side = block[11] if block[11] != '' else None
+
                 for i in inf_arr:
                     i = i.strip()
                     if 'RAILWAY' in i:
@@ -412,7 +413,8 @@ class TrackModel(QWidget):
                     elevation = block[8],
                     cum_elevation = block[9],
                     has_rail_crossing = railway_crossing,
-                    can_travel_to = block_travels_to
+                    can_travel_to = block_travels_to,
+                    station_side = station_side
                 )
 
                 self.track.add_block(b)

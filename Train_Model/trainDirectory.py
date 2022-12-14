@@ -44,11 +44,11 @@ class trainDirectory():
         self.trains[id].update_blocks(block)
         self.trainctrl[id].cmdSpdAdjust(block)
 
-    def add_train(self):
+    def add_train(self, line):
         #create the signals for between model and controller then pass through each constructor
         signals = trainSignals()
         self.trainctrl.append(Train_CTRL_BE(signals))
-        self.trains.append(Train(self.idCounter, signals))
+        self.trains.append(Train(self.idCounter, signals, line))
         self.trains[self.idCounter].next_track()
         self.idCounter += 1
         s.send_Update_Combo.emit(self.idCounter)

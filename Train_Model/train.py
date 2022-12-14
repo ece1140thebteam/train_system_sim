@@ -5,7 +5,7 @@ from PyQt6.QtCore import *
 
 class Train():
     
-    def __init__(self, id, signals):
+    def __init__(self, id, signals, line):
         
         self.friction = 0.01
         self.length = 32.2 #m
@@ -48,6 +48,7 @@ class Train():
         self.stationStop = False
         self.id = id
         self.sig = signals
+        self.line = line
 
         s.timer_tick.connect(self.timer)
 
@@ -101,23 +102,23 @@ class Train():
 
     def current_track(self):
         if self.block is None:
-            s.send_TrackModel_get_block_info.emit("Green", 0, self.id)
+            s.send_TrackModel_get_block_info.emit(self.line, 0, self.id)
         else:
-            s.send_TrackModel_get_block_info.emit("Green", self.block['block_num'], self.id)
+            s.send_TrackModel_get_block_info.emit(self.line, self.block['block_num'], self.id)
 
     def next_track(self):
         if self.block is None:
-            s.send_TrackModel_get_next_block_info.emit("Green", 0, -1, self.id)
+            s.send_TrackModel_get_next_block_info.emit(self.line, 0, -1, self.id)
         elif self.prev_block is None:
-            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], 0, self.id)
+            s.send_TrackModel_get_next_block_info.emit(self.line, self.block['block_num'], 0, self.id)
         else:
-            s.send_TrackModel_get_next_block_info.emit("Green", self.block['block_num'], self.prev_block['block_num'], self.id)
+            s.send_TrackModel_get_next_block_info.emit(self.line, self.block['block_num'], self.prev_block['block_num'], self.id)
 
     def update_blocks(self, block):
         if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
         self.block = block
-        s.send_TrackModel_track_occupancy.emit("Green", self.block['block_num'], True)
+        s.send_TrackModel_track_occupancy.emit(self.line, self.block['block_num'], True)
         self.grade = self.block['grade']
         self.speedcmd = self.block['commanded_speed']*0.277777
         self.auth = self.block['authority']
@@ -142,7 +143,7 @@ class Train():
             self.passenger += self.prev_block['passengers_waiting']
             deboarding = random.randint(int(self.passenger/10), int(self.passenger/5))
             self.passenger -= deboarding
-            s.send_TrackModel_passengers_onboarded.emit("Green", self.block['block_num'], deboarding)
+            s.send_TrackModel_passengers_onboarded.emit(self.line, self.block['block_num'], deboarding)
             self.stationStop = True
             if self.beacon['station_side'] == 'right':
                 self.rdoorcmd = True
@@ -267,4 +268,4 @@ class Train():
             self.distance_traveled -= self.block['length']
             self.next_track()
         if (self.distance_traveled > self.length) and (self.prev_block != None):
-            s.send_TrackModel_track_occupancy.emit("Green", self.prev_block['block_num'], False)
+            s.send_TrackModel_track_occupancy.emit(self.line, self.prev_block['block_num'], False)
