@@ -103,6 +103,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
         s.send_TrackController_switch_pos.connect(self.set_switches)     
         s.send_TrackController_crossing.connect(self.set_crossings)
+        s.send_TrackController_traffic_light.connect(self.set_signals)
 
         # Track Model to CTC
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
@@ -518,6 +519,12 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             else:
                 self.tableWidget_2.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
+            if block.signal_state is None:
+                pass
+            elif block.signal_state == 0:
+                self.tableWidget_2.item(row, 10).setBackground(QtGui.QColor(226, 0, 0))
+            elif block.signal_state == 1:
+                self.tableWidget_2.item(row, 10).setBackground(QtGui.QColor(34, 139, 34))
 
         self.tableWidget.setRowCount(150)
         for row in range(0, 150):
@@ -574,6 +581,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 self.tableWidget.item(row, 6).setBackground(QtGui.QColor(0, 0, 0,0))
             else:
                 self.tableWidget.item(row, 6).setBackground(QtGui.QColor(255, 153, 51))
+
+            if block.signal_state is None:
+                pass
+            elif block.signal_state == 0:
+                self.tableWidget.item(row, 10).setBackground(QtGui.QColor(226, 0, 0))
+            elif block.signal_state == 1:
+                self.tableWidget.item(row, 10).setBackground(QtGui.QColor(34, 139, 34))
 
     def open_file(self):
         filename = QFileDialog.getOpenFileName(self, 'Open File')
@@ -668,14 +682,18 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         if line == 'Green':
             self.lines[1].get(block).switch_position = switch_pos
 
+        self.get_line_data()
+
     def set_signals(self, signals):
         for signal in signals:
             if signal['line'] == 'Red':
                 if signal['block'] != 0:
-                    self.lines[0].get(signal['block']).signal_state = signal['signal']
+                    self.lines[0].get(signal['block']).signal_state = signal['traffic_light']
             if signal['line'] == 'Green':
                 if signal['block'] != 0:
-                    self.lines[1].get(signal['block']).signal_state = signal['signal']
+                    self.lines[1].get(signal['block']).signal_state = signal['traffic_light']
+        
+        # self.get_line_data()
 
     def set_crossings(self, line, block, color):
         if line == 'Red':
