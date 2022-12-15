@@ -12,13 +12,15 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
         super(MainTestWindow, self).__init__(parent)
         self.setupUi(self)
 
-
+        self.redBlocks = []
+        self.greenBlocks = []
         # Initialize Static Data
-        self.redBlocks = list(range(1,76))
-        self.greenBlocks = list(range(1,76))
-        self.redBlocks = (str(block) for block in self.greenBlocks)
-        self.redCrossings = []
-        self.greenCrossings = []
+        for i in range(1,76):
+            self.redBlocks.append(str(i))
+        for i in range(1,151):
+            self.greenBlocks.append(str(i))
+        self.redCrossings = ['47']
+        self.greenCrossings = ['19']
         self.blueBlocks = []
         self.blueCrossings = []
         # self.get_blocks()

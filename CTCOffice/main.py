@@ -223,8 +223,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         action = self.comboBox_editStations_action.currentText()
         hour = self.spinBox_editStations_hour.value()
         minute = self.spinBox_editStations_minute.value()
-
-        station = self.greenStationBlocks[station]
+        if line == 'Green':
+            station = self.greenStationBlocks[station]
+        else:
+            station = self.redStationBlocks[station]
 
         if action == 'Skip':
             # For each destination in destinations of train
@@ -291,7 +293,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         if(line == 'Green'):
             Train.trains.create_train('Green', stations, time_to_dispatch)
         else:
-            Train.trains.create_train('Red', stationBlocks, time_to_dispatch)
+            Train.trains.create_train('Red', stations, time_to_dispatch)
 
     # Update the comboBox of track_blocks
     # Called when the line is changed for maintenance

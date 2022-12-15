@@ -595,6 +595,28 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addWidget(self.pushButton_editStations)
 
+        self.label_24 = QLabel(self.centralwidget)
+        self.label_24.setObjectName(u"label_24")
+
+        self.verticalLayout_5.addWidget(self.label_24)
+
+        self.comboBox_dispatch_line = QComboBox(self.centralwidget)
+        self.comboBox_dispatch_line.addItem("")
+        self.comboBox_dispatch_line.addItem("")
+        self.comboBox_dispatch_line.setObjectName(u"comboBox_dispatch_line")
+
+        self.verticalLayout_5.addWidget(self.comboBox_dispatch_line)
+
+        self.comboBox_dispatch_block = QComboBox(self.centralwidget)
+        self.comboBox_dispatch_block.setObjectName(u"comboBox_dispatch_block")
+
+        self.verticalLayout_5.addWidget(self.comboBox_dispatch_block)
+
+        self.pushButton_dispatch_block = QPushButton(self.centralwidget)
+        self.pushButton_dispatch_block.setObjectName(u"pushButton_dispatch_block")
+
+        self.verticalLayout_5.addWidget(self.pushButton_dispatch_block)
+
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_3)
@@ -616,7 +638,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1187, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1187, 21))
         self.menuMain = QMenu(self.menubar)
         self.menuMain.setObjectName(u"menuMain")
         MainWindow.setMenuBar(self.menubar)
@@ -763,6 +785,11 @@ class Ui_MainWindow(object):
 
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Time", None))
         self.pushButton_editStations.setText(QCoreApplication.translate("MainWindow", u"Update Station", None))
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Dispatch to Block", None))
+        self.comboBox_dispatch_line.setItemText(0, QCoreApplication.translate("MainWindow", u"Red", None))
+        self.comboBox_dispatch_line.setItemText(1, QCoreApplication.translate("MainWindow", u"Green", None))
+
+        self.pushButton_dispatch_block.setText(QCoreApplication.translate("MainWindow", u"Dispatch", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Refresh Data", None))
         self.menuMain.setTitle(QCoreApplication.translate("MainWindow", u"Window", None))
     # retranslateUi

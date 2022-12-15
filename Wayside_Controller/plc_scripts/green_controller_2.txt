@@ -7,7 +7,7 @@
 #----------------------------------------------------------------------
 
 if (track_info['Green'][76]['occupancy'] == 1) and (track_info['Green'][77]['authority'] == 1):
-    if (track_info['Green'][77]['switch_pos'] = 0) and (track_info['Green'][85]['switch_pos'] = 0):
+    if (track_info['Green'][77]['switch_pos'] == 0) and (track_info['Green'][85]['switch_pos'] == 0):
         track_info['Green'][76]['traffic_light'] = 1
         track_info['Green'][76]['authority'] = 1
         track_info['Green'][86]['traffic_light'] = 1

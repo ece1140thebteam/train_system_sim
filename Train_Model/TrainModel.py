@@ -121,6 +121,7 @@ class TrainModel(QMainWindow):
         #data
         self.train = None
         self.directory = trainD
+        self.totalRemoved = 0
 
         #buttons
         self.ui.eBrake.setCheckable(True)
@@ -146,6 +147,7 @@ class TrainModel(QMainWindow):
         self.ui.signalfail.clicked.connect(self.signal_failure)
         self.ui.trainSelect.currentTextChanged.connect(self.update_train)
         s.send_Update_Combo.connect(self.update_combo)
+        s.send_delete_train.connect(self.delete)
 
         s.timer_tick.connect(self.timer)
 
@@ -157,8 +159,15 @@ class TrainModel(QMainWindow):
             self.first_train()
 
     def update_train(self):
-        id = int(self.ui.trainSelect.currentText()[6:]) - 1
-        self.train = self.directory.trains[id]
+        try:
+            id = int(self.ui.trainSelect.currentText()[6:]) - 1
+            self.train = self.directory.trains[id]
+        except:
+            self.train = None
+
+    def delete(self, id):
+        self.ui.trainSelect.removeItem(id-self.totalRemoved)
+        self.totalRemoved += 1
 
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
@@ -185,24 +194,24 @@ class TrainModel(QMainWindow):
         self.elight_set()
         self.ilight_set()
         self.s_brake()
+        self.engine_failure()
+        self.brake_failure()
+        self.signal_failure()
             
 
     def first_train(self):
         try:
-            self.train = self.directory.trains[0]
+            self.train = self.directory.trains[self.totalRemoved]
         except:
             return
 
     def beacon_set(self):
-        try:
-            if (self.train.beacon['station_name'] is None):
-                self.ui.beacon.setText("Beacon: None")
-                self.ui.station.setText("Station: None")
-            else:
-                self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
-                self.ui.station.setText("Station: " + self.train.beacon['station_name'])
-        except:
-            pass
+        if (self.train.beacon is None):
+            self.ui.beacon.setText("Beacon: None")
+            self.ui.station.setText("Station: None")
+        else:
+            self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
+            self.ui.station.setText("Station: " + self.train.beacon['station_name'])
         self.ui.auth.setText("Authority: " + str(self.train.auth))
 
     def e_brake(self):
@@ -210,21 +219,44 @@ class TrainModel(QMainWindow):
 
     def e_brake_update(self):
         if self.train.ebrakecmd: 
+            self.ui.eBrake.setChecked(True)
             self.ui.ebrakecmd.setText("E Brake Command: On")
         else:
+            self.ui.eBrake.setChecked(False)
             self.ui.ebrakecmd.setText("E Brake Command: Off")
 
     def engine_failure(self):
-        self.train.engine_failure(self.ui.enginefail.isChecked())
-        self.ui.enginefailure.setText("Engine Failure: " + str(self.train.enginefail))
+        if not(self.train.fault) or self.train.enginefail:
+            self.train.engine_failure(self.ui.enginefail.isChecked())
+            self.ui.enginefailure.setText("Engine Failure: " + str(self.train.enginefail))
+            if self.train.fault:
+                self.ui.brakefail.setDisabled(True)
+                self.ui.signalfail.setDisabled(True)
+            else:
+                self.ui.brakefail.setDisabled(False)
+                self.ui.signalfail.setDisabled(False)
     
     def brake_failure(self):
-        self.train.brake_failure(self.ui.brakefail.isChecked())
-        self.ui.brakefailure.setText("Brake Failure: " + str(self.train.brakefail))
+        if not(self.train.fault) or self.train.brakefail:
+            self.train.brake_failure(self.ui.brakefail.isChecked())
+            self.ui.brakefailure.setText("Brake Failure: " + str(self.train.brakefail))
+            if self.train.fault:
+                self.ui.enginefail.setDisabled(True)
+                self.ui.signalfail.setDisabled(True)
+            else:
+                self.ui.enginefail.setDisabled(False)
+                self.ui.signalfail.setDisabled(False)
 
     def signal_failure(self):
-        self.train.signal_failure(self.ui.signalfail.isChecked())
-        self.ui.signalfailure.setText("Signal Failure: " + str(self.train.signalfail))
+        if not(self.train.fault) or self.train.signalfail:
+            self.train.signal_failure(self.ui.signalfail.isChecked())
+            self.ui.signalfailure.setText("Signal Failure: " + str(self.train.signalfail))
+            if self.train.fault:
+                self.ui.enginefail.setDisabled(True)
+                self.ui.brakefail.setDisabled(True)
+            else:
+                self.ui.enginefail.setDisabled(False)
+                self.ui.brakefail.setDisabled(False)
 
     def right_door(self):
         if (self.train.rdoor):

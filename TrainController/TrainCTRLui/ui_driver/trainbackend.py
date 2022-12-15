@@ -32,9 +32,11 @@ class Train_CTRL_BE():
         self.elights = False
         self.ilights = False
 
+        self.intercom = False
         self.station = None
         self.side = None
         self.beacon = None
+        self.atStation = False
 
         self.sBrake = False
         self.eBrake = False
@@ -42,22 +44,34 @@ class Train_CTRL_BE():
     #Signals
         self.sigs.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         self.sigs.send_TrainCtrl_failure.connect(self.failHandle)
+        self.sigs.send_TrainCtrl_eBrake.connect(self.passEBrake)
+        self.sigs.send_TrainCtrl_lights.connect(self.autoLights)
 
-#Functions copied from UI class
+    def autoLights(self, lightState):
+        self.eLights = lightState
+        self.iLights = lightState
+
+    def passEBrake(self):
+        self.eBrake = True
+
     def beaconHandler(self, info):
+        self.beacon = info['beacon']
         if info['beacon'] is not None:
-            self.beacon = info['beacon']
+            self.atStation = True
             self.side = self.beacon['station_side']
             self.station = self.beacon['station_name']
+        else:
+            self.atStation = False
 
     def failHandle(self, failActive, failType): 
-            self.failMode = failActive
-            if failType == 'Engine':
-                self.engineFault = True
-            elif failType == 'Brake':
-                self.brakeFault = True
-            elif failType == 'Signal':
-                self.trackSigFault = True
+            self.faultMode = failActive
+            if self.faultMode:
+                if failType == 'Engine':
+                    self.engineFault = True
+                elif failType == 'Brake':
+                    self.brakeFault = True
+                elif failType == 'Signal':
+                    self.trackSigFault = True
             else:
                 self.engineFault = False
                 self.brakeFault = False
@@ -66,6 +80,8 @@ class Train_CTRL_BE():
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, info):
+        if (info['yard']):
+            return
         self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
         self.dispatch = True
@@ -93,6 +109,13 @@ class Train_CTRL_BE():
     def tempAdjust(self):
         self.sigs.send_TrainModel_temp.emit(self.temp)
 
+    #Brake Functions
+    def sBrakeSig(self):
+        self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
+
+    def eBrakeSig(self):
+        self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
+
     #Major Power calculation and Velocity adjustment method
     def powerCalc(self):
         if self.auth:
@@ -102,7 +125,7 @@ class Train_CTRL_BE():
                     self.eBrake = True
                     #Send brake states to Train Model and display popup to user indicating fault
                     self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                    self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
+                    #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
 
             else: #No Faults Found
                 if self.manMode: #Base calculation on driver set speed if in manual mode
@@ -124,6 +147,7 @@ class Train_CTRL_BE():
                     else:
                         if self.sBrake:
                             self.sBrake = False
+                            self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
 
 
                 #Check to make sure max power is not exceeded
@@ -136,22 +160,18 @@ class Train_CTRL_BE():
                     if self.eBrake:
                         self.sBrake = False
                         #Send Brake State signals to train model
-                        self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
+                        #self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
                         self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     elif self.sBrake:
                         self.eBrake = False
                         #Send Brake State signals to train model
                         self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                        self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
+                        #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     else:
-                        print('No Brakes Enabled, calculating power...')
-                else:
-                    self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                    self.sigs.send_TrainModel_sBrake.emit(self.sBrake)      
+                        print('No Brakes Enabled, calculating power...')     
                 
                 self.powOutput = pow
                 self.sigs.send_TrainModel_powerOutput.emit(self.powOutput)
-
         else:
             self.sBrake = True
             self.sigs.send_TrainModel_sBrake.emit(self.sBrake) 

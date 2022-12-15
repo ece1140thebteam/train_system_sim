@@ -48,7 +48,10 @@ class Train():
         self.stationStop = False
         self.id = id
         self.sig = signals
+        self.override_lights = False
         self.line = line
+        self.real = True
+        self.fault = False
 
         s.timer_tick.connect(self.timer)
 
@@ -57,27 +60,32 @@ class Train():
         self.sig.send_TrainModel_powerOutput.connect(self.power_set)
         self.sig.send_TrainModel_lDoor.connect(self.left_door)
         self.sig.send_TrainModel_rDoor.connect(self.right_door)
-        self.sig.send_TrainModel_eBrake.connect(self.e_brake)
+        self.sig.send_TrainModel_eBrake.connect(self.e_brake_set)
         self.sig.send_TrainModel_temp.connect(self.temp_set)
         self.sig.send_TrainModel_sBrake.connect(self.s_brake)
 
     def timer(self, mul):
+        if not(self.real):
+            return
         self.tickrate = 0.1*mul
         self.calc_speed()
-        if self.auth == 0:
+        if self.auth == 0 or self.speed == 0:
             self.current_track()
             self.station()
         if self.auth == 1 and self.atStation:
             self.atStation = False
-            print(self.block)
             if self.beacon is None:
                 return
-            if self.beacon['station_side'] == 'right':
-                self.rdoorcmd = False
-            else:
-                self.ldoorcmd = False
+            self.rdoorcmd = False
+            self.ldoorcmd = False
+            self.right_door(False)
+            self.left_door(False)
 
     def e_brake(self, cmd):
+        self.ebrakecmd = cmd
+        self.sig.send_TrainCtrl_eBrake.emit(self.ebrakecmd)
+
+    def e_brake_set(self, cmd):
         self.ebrakecmd = cmd
 
     def elight_set(self, on):
@@ -108,7 +116,7 @@ class Train():
             s.send_TrackModel_get_block_info.emit(self.line, -1, self.id)
         else:
             s.send_TrackModel_get_block_info.emit(self.line, self.block['block_num'], self.id)
-    
+
     def next_track(self):
         if self.block is None:
             s.send_TrackModel_get_next_block_info.emit(self.line, -1, -1, self.id)
@@ -121,10 +129,10 @@ class Train():
         if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
         self.block = block
-        if 'yard' in self.block:
-            if self.block['yard']:
-                #handle yard
-                pass
+        if self.block['yard']:
+            s.send_TrackModel_track_occupancy.emit(self.line, self.prev_block['block_num'], False)
+            self.real = False
+            return
         s.send_TrackModel_track_occupancy.emit(self.line, self.block['block_num'], True)
         self.grade = self.block['grade']
         self.speedcmd = self.block['commanded_speed']*0.277777
@@ -138,10 +146,17 @@ class Train():
         if (self.block['underground']):
             self.elightcmd = True
             self.ilightcmd = True
+            self.sig.send_TrainCtrl_lights.emit(True)
+            self.override_lights = True
         else:
-            self.elightcmd = False
-            self.ilightcmd = False
+            if (self.override_lights):
+                self.elightcmd = False
+                self.ilightcmd = False
+                self.override_lights = False
+                self.sig.send_TrainCtrl_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
+        self.ilight_set(self.ilightcmd)
+        self.elight_set(self.elightcmd)
 
     def station(self):
         if self.beacon is not None and not(self.atStation):
@@ -172,35 +187,37 @@ class Train():
             self.ldoor = False
 
     def engine_failure(self, check):
-        if check:
+        if check and not(self.fault):
             self.enginefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Engine")
+            self.fault = True
         else:
             self.enginefail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
     
     def brake_failure(self, check):
-        if check:
+        if check and not(self.fault):
             self.brakefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Brake")
+            self.fault = True
         else:
             self.brakefail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
 
     def signal_failure(self, check):
-        if check:
+        if check and not(self.fault):
             self.signalfail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Signal")
+            self.fault = True
         else:
             self.signalfail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
 
     def calc_accel(self):
         power = self.powercmd
-
-        # handling if there is an engine failure caused by Murphy
-        if (self.enginefail):
-            power = 0
 
         # calculating the slope of the current block
         angle = math.radians(self.grade)
@@ -223,11 +240,6 @@ class Train():
             force = 25000
             if (power == 0):
                 force = 0
-
-        # handling if there is a brake failure caused by Murphy
-        if (self.brakefail):
-            self.ebrakecmd = False
-            self.sbrakecmd = False
 
         # calculating the acceleration
         self.prev_accel = self.accel
