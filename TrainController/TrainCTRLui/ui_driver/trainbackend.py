@@ -75,6 +75,8 @@ class Train_CTRL_BE():
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, info):
+        if (info['yard']):
+            return
         self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
         self.dispatch = True
