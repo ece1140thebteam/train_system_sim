@@ -194,6 +194,9 @@ class TrainModel(QMainWindow):
         self.elight_set()
         self.ilight_set()
         self.s_brake()
+        self.engine_failure()
+        self.brake_failure()
+        self.signal_failure()
             
 
     def first_train(self):
@@ -223,16 +226,37 @@ class TrainModel(QMainWindow):
             self.ui.ebrakecmd.setText("E Brake Command: Off")
 
     def engine_failure(self):
-        self.train.engine_failure(self.ui.enginefail.isChecked())
-        self.ui.enginefailure.setText("Engine Failure: " + str(self.train.enginefail))
+        if not(self.train.fault) or self.train.enginefail:
+            self.train.engine_failure(self.ui.enginefail.isChecked())
+            self.ui.enginefailure.setText("Engine Failure: " + str(self.train.enginefail))
+            if self.train.fault:
+                self.ui.brakefail.setDisabled(True)
+                self.ui.signalfail.setDisabled(True)
+            else:
+                self.ui.brakefail.setDisabled(False)
+                self.ui.signalfail.setDisabled(False)
     
     def brake_failure(self):
-        self.train.brake_failure(self.ui.brakefail.isChecked())
-        self.ui.brakefailure.setText("Brake Failure: " + str(self.train.brakefail))
+        if not(self.train.fault) or self.train.brakefail:
+            self.train.brake_failure(self.ui.brakefail.isChecked())
+            self.ui.brakefailure.setText("Brake Failure: " + str(self.train.brakefail))
+            if self.train.fault:
+                self.ui.enginefail.setDisabled(True)
+                self.ui.signalfail.setDisabled(True)
+            else:
+                self.ui.enginefail.setDisabled(False)
+                self.ui.signalfail.setDisabled(False)
 
     def signal_failure(self):
-        self.train.signal_failure(self.ui.signalfail.isChecked())
-        self.ui.signalfailure.setText("Signal Failure: " + str(self.train.signalfail))
+        if not(self.train.fault) or self.train.signalfail:
+            self.train.signal_failure(self.ui.signalfail.isChecked())
+            self.ui.signalfailure.setText("Signal Failure: " + str(self.train.signalfail))
+            if self.train.fault:
+                self.ui.enginefail.setDisabled(True)
+                self.ui.brakefail.setDisabled(True)
+            else:
+                self.ui.enginefail.setDisabled(False)
+                self.ui.brakefail.setDisabled(False)
 
     def right_door(self):
         if (self.train.rdoor):

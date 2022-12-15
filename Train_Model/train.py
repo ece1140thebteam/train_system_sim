@@ -51,6 +51,7 @@ class Train():
         self.override_lights = False
         self.line = line
         self.real = True
+        self.fault = False
 
         s.timer_tick.connect(self.timer)
 
@@ -184,28 +185,34 @@ class Train():
             self.ldoor = False
 
     def engine_failure(self, check):
-        if check:
+        if check and self.fault:
             self.enginefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Engine")
+            self.fault = True
         else:
             self.enginefail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
     
     def brake_failure(self, check):
-        if check:
+        if check and self.fault:
             self.brakefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Brake")
+            self.fault = True
         else:
             self.brakefail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
 
     def signal_failure(self, check):
-        if check:
+        if check and self.fault:
             self.signalfail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Signal")
+            self.fault = True
         else:
             self.signalfail = False
             self.sig.send_TrainCtrl_failure.emit(False, "None")
+            self.fault = False
 
     def calc_accel(self):
         power = self.powercmd
@@ -235,11 +242,6 @@ class Train():
             force = 25000
             if (power == 0):
                 force = 0
-
-        # handling if there is a brake failure caused by Murphy
-        if (self.brakefail):
-            self.ebrakecmd = False
-            self.sbrakecmd = False
 
         # calculating the acceleration
         self.prev_accel = self.accel
