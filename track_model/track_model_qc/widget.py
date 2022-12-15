@@ -73,9 +73,13 @@ class TrackModel(QWidget):
         s.send_TrackModel_switch_position.connect(self.update_switch_position)
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
-        s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
         s.send_TrackModel_railway_crossing_status.connect(self.update_crossing_position)
         # self.print_track_info_dict()
+
+        #from track controller
+        s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
+
+
 
     def print_track_info_dict(self):
         track_dict = dict()
@@ -165,8 +169,7 @@ class TrackModel(QWidget):
 
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
-        section = section.split(' ')[1]
-        block = int(block.split(' ')[1])
+        # block = int(block.split(' ')[1])
 
         self.display_block_info(self.track.track_lines[line].blocks[block])
 
@@ -228,12 +231,18 @@ class TrackModel(QWidget):
         self.blockDirectionsOfTravel.setText(travstr)
 
     def block_list_item_clicked(self, item):
+        # if this is the yard block
+        if '0' in item.text(0):
+            line  = item.parent().text(0)
+            self.load_block_clicked_info(line, '', 0)
+
         # if this is a block
-        if item.parent() is not None:
+        elif item.parent() is not None:
             if item.parent().parent() is not None:
                 line    = item.parent().parent().text(0)
                 section = item.parent().text(0)
                 block   = item.text(0)
+                block   = int(block.split(' ')[1])
                 self.load_block_clicked_info(line, section, block)
 
     def open_new_file(self):
@@ -249,19 +258,32 @@ class TrackModel(QWidget):
             self.load_track(track_file)
 
     def update_block_color(self, line, block, color, column):
-        num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
-        for line_num in range(0, num_lines):
-            l = self.blockListTreeWidget.invisibleRootItem().child(line_num)
-            num_sections = l.childCount()
-            if l.text(0).split(' ')[0].lower() == line.lower():
-                for section_num in range(0, num_sections):
-                    section = l.child(section_num)
-                    num_blocks = section.childCount()
+        if block != 0:
+            num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+            for line_num in range(0, num_lines):
+                l = self.blockListTreeWidget.invisibleRootItem().child(line_num)
+                num_sections = l.childCount()
+                if l.text(0).split(' ')[0].lower() == line.lower():
+                    for section_num in range(0, num_sections):
+                        section = l.child(section_num)
+                        num_blocks = section.childCount()
 
-                    for block_num in range(0, num_blocks):
-                        b = section.child(block_num)
-                        if int(b.text(0).split(' ')[1]) == block:
-                            b.setBackground(column, color)                         
+                        for block_num in range(0, num_blocks):
+                            b = section.child(block_num)
+                            if int(b.text(0).split(' ')[1]) == block:
+                                b.setBackground(column, color)
+        
+        else:
+            num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
+            for line_num in range(0, num_lines):
+                l = self.blockListTreeWidget.invisibleRootItem().child(line_num)
+                num_sections = l.childCount()
+                if l.text(0).split(' ')[0].lower() == line.lower():
+                    for section_num in range(0, num_sections):
+                        yard = l.child(section_num)
+                        if '0' in section.text():
+                            section.setBackground(column, color)
+
 
     def update_switch_tree_pos_color(self, line, block):
         # print('updating station tree')
@@ -347,6 +369,7 @@ class TrackModel(QWidget):
                             # print('from yard, adding connection')
                             # print(i)
                             self.track.yard.add_connection(line, blocknum)
+                            self.track.track_lines[line].blocks[0].can_travel_to.append(blocknum)
                         i=i.lower().replace('yard','0')
                         block_matches = re.findall(numbers_re, i)
                         positions = []
@@ -433,6 +456,9 @@ class TrackModel(QWidget):
         items = []
         for line in self.track.track_lines:
             lineItem = QTreeWidgetItem([f'{line} line'])
+            lineyard = QTreeWidgetItem(['Yard: Block 0'])
+            lineItem.addChild(lineyard)
+
             for section in self.track.track_lines[line].sections:
                 sec = QTreeWidgetItem([f'Section {section}'])
                 for block in self.track.track_lines[line].sections[section]:
@@ -443,6 +469,7 @@ class TrackModel(QWidget):
                     sec.addChild(b)
                 # sec.expandAll();
                 lineItem.addChild(sec)
+
             items.append(lineItem)
         self.blockListTreeWidget.insertTopLevelItems(0, items)
         self.blockListTreeWidget.itemClicked.connect(self.block_list_item_clicked)
@@ -556,6 +583,9 @@ class TrackModel(QWidget):
             self.track.track_lines[line].blocks[block].commanded_speed = speed
             self.display_block_info()
 
+    def update_signal_tc(self, line, block, sig):
+        self.update_signal(line, block, 'Green' if sig == 1 else 'Red')
+
     def update_signal(self, line, block, sig):
         if sig == 'Green':
             color = QtGui.QColor(0,255, 0, 255)
@@ -658,21 +688,22 @@ class TrackModel(QWidget):
         block_info['beacon'] = None
 
         # if the train is leaving a block w a station
-        #TODO UPDATE
         if current_block_num > 0:
             curr_block = self.track.track_lines[line].blocks[current_block_num]
             if curr_block.station is not None:
-                block_info['beacon'] = {
-                    'station_name' : block.station, 
-                    'station_side' : 'right',
-                    'next_station' : None   
-                }
-        # if the train is entering a block w a station
-        # elif block.station is not None:
-        block_info['beacon'] = {
-            'station_name' : block.station, 
-            'station_side' : 'right'   
-        }
+                if next_block_num > current_block_num:
+                    block_info['beacon'] = curr_block.beacon2
+                else:
+                    block_info['beacon'] = curr_block.beacon1
+
+        # if the train is entering a block with a station
+        if block.station is not None:
+            if next_block_num > current_block_num:
+                block_info['beacon'] = curr_block.beacon1
+            else:
+                block_info['beacon'] = curr_block.beacon2
+            
+
 
         # the block the train will enter
         block_info['block_num']          = block.block_number

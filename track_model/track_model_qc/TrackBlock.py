@@ -68,9 +68,10 @@ class TrackBlock():
             print('unassigned side for station')
 
         self.station_side = None
-        if station_side == 'L': self.station_side = 'left'
-        if station_side == 'R': self.station_side = 'right'
-        if 'B' in station_side: self.station_side = 'both'
+        if station_side is not None:
+            if station_side == 'L': self.station_side = 'left'
+            if station_side == 'R': self.station_side = 'right'
+            if 'B' in station_side: self.station_side = 'both'
 
         # TODO Update for multidirection blocks
         self.station_side_1 = self.station_side
@@ -80,12 +81,12 @@ class TrackBlock():
             # TODO Add side of track
             # becon 1 is at the lower track 
             self.beacon1 = {
-                'station': self.station,
-                'side': self.station_side_1
+                'station_name': self.station,
+                'station_side': self.station_side_1
             }
             self.beacon2 = {
-                'station': self.next_station,
-                'side': self.station_side_2
+                'station_name': self.station,
+                'station_side': self.station_side_2
             }
 
     def passengers_onboarded(self, deboarded):
