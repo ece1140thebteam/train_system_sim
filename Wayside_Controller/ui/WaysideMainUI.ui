@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1010</width>
-    <height>625</height>
+    <width>1012</width>
+    <height>632</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -313,7 +313,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC1">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
@@ -896,7 +896,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC2">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
@@ -1594,7 +1594,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC3">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
@@ -2292,7 +2292,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC4">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
@@ -2990,7 +2990,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC5">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
@@ -3663,7 +3663,7 @@
            <item row="4" column="4">
             <widget class="QPushButton" name="uploadPLC6">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="font">
               <font>
