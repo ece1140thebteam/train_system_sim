@@ -74,12 +74,12 @@ class TrackModel(QWidget):
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
         s.send_TrackModel_railway_crossing_status.connect(self.update_crossing_position)
-        s.send_TrackController_crossing.connect(self.update_crossing_position_tc) # Line, block, (0=deactivated, 1=activated)
         # self.print_track_info_dict()
 
         #from track controller
         s.send_TrackController_switch_pos.connect(self.tc_set_switch_pos)
-
+        s.send_TrackController_crossing.connect(self.update_crossing_position_tc) # Line, block, (0=deactivated, 1=activated)
+        s.send_TrackController_traffic_light.connect(self.update_signal_tc) # [{'line':line, 'block':block, 'traffic_light':0 for RED, 1 for GREEN}]
 
 
     def print_track_info_dict(self):
@@ -588,8 +588,12 @@ class TrackModel(QWidget):
             self.track.track_lines[line].blocks[block].commanded_speed = speed
             self.display_block_info()
 
-    def update_signal_tc(self, line, block, sig):
-        self.update_signal(line, block, 'Green' if sig == 1 else 'Red')
+    def update_signal_tc(self, update_list):# [{'line':line, 'block':block, 'traffic_light':0 for RED, 1 for GREEN}]
+        for update in update_list:
+            line = update['line']
+            block = update['block']
+            sig = update['traffic_light']
+            self.update_signal(line, block, 'Green' if sig == 1 else 'Red')
 
     def update_signal(self, line, block, sig):
         if sig == 'Green':

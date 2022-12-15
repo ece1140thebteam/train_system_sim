@@ -65,7 +65,7 @@ class TrackModelTestUI(QWidget):
                 s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)
                 self.train_derailed()
                 return
-            if 'yard' in block_info:
+            if block_info['yard']:
                 print('ARRIVED AT YARD')
                 s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)
                 self.train_derailed()
