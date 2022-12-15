@@ -305,7 +305,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
-         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+
+         if (speed > track_info[line][block]['speed_limit']): # SAFETY CRITICAL: can NOT allow speed to be over speed limit!
+            track_info[line][block]['commanded_speed'] = track_info[line][block]['speed_limit']
+         else: # set commanded_speed to suggested_speed by default, but this will change if needed in run_controllerx
+            track_info[line][block]['commanded_speed'] = speed
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -314,28 +318,37 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
    # update block maintenance coming from ctc
    def update_maintenance_mode(self, updates_list):
-      controllers_to_update = []
       for update in updates_list:
          line = update['line']
          block = update['block']
          maintenance = update['mode']
 
-         track_info[line][block]['maintenance'] = maintenance
+      #    track_info[line][block]['maintenance'] = maintenance
          
-         controller = track_info[line][block]['controller']
-         if controller not in controllers_to_update: 
-            controllers_to_update.append(controller)
+      #    controller = track_info[line][block]['controller']
+      #    if controller not in controllers_to_update: 
+      #       controllers_to_update.append(controller)
 
-         #s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
+      #    #s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
          
-      for controller in controllers_to_update:
-         self.run_controllerx(controller)
+      # for controller in controllers_to_update:
+      #    self.run_controllerx(controller)
 
+      track_info[line][block]['maintenance'] = maintenance
+
+      if (maintenance == 1):
+         track_info[line][block]['authority'] = 0
+         track_info[line][block-1]['authority'] = 0
+         track_info[line][block]['commanded_speed'] = 0
+         track_info[line][block-1]['commanded_speed'] = 0
+         s.send_TrackModel_block_authority.emit(line, block, authority)
+         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+
+   
 
 
    # update manual switch positions coming from ctc
    def update_switch_position(self, updates_list):
-      controllers_to_update = []
       for update in updates_list:
          line = update['line']
          block = update['block']
@@ -345,15 +358,16 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          controller = track_info[line][block]['controller']
          maintenance = track_info[line][block]['maintenance']
          
-         if (maintenance == 1):
-            if controller not in controllers_to_update: 
-               controllers_to_update.append(controller)
+         # if (maintenance == 1):
+         #    if controller not in controllers_to_update: 
+         #       controllers_to_update.append(controller)
 
-         if sw != '-':
-            s.send_TrackController_switch_pos.emit(line, block, sw)
-
-      for controller in controllers_to_update:
-         self.run_controllerx(controller)
+         # if sw != '-':
+         #    s.send_TrackController_switch_pos.emit(line, block, sw)
+         # if block is in maintenance mode, allow CTC to set switch position by overriding PLC logic
+         if (maintenance == 1): # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
+            track_info[line][block]['switch_pos'] = switch
+            s.send_TrackController_switch_pos.emit(line, block, switch)
 
 
 
@@ -366,12 +380,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          # for statement in self.controllers[controller_num]:
          #    exec(statement)
          for line in track_info:
-            if line =='Green':
-               for block in track_info[line]:
-                  if track_info[line][block]['controller'] == controller_num:
-                     # print('updating')
-                     if track_info[line][block]['switch_pos']!='-':
-                        s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+            for block in track_info[line]:
+               if track_info[line][block]['controller'] == controller_num:
+                  # print('updating')
+                  if track_info[line][block]['switch_pos']!='-':
+                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
       # else:
       #    # print('no plc uploaded for that controllers')
       #    pass
