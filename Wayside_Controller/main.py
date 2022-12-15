@@ -510,12 +510,15 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
+         print(f'suggested {line} {block} {speed}')
          track_info[line][block]['suggested_speed'] = speed
 
          if (speed > track_info[line][block]['speed_limit']): # SAFETY CRITICAL: can NOT allow speed to be over speed limit!
             track_info[line][block]['commanded_speed'] = track_info[line][block]['speed_limit']
          else: # set commanded_speed to suggested_speed by default, but this will change if needed in run_controllerx
             track_info[line][block]['commanded_speed'] = speed
+         settp = track_info[line][block]['commanded_speed']
+         print(f'ACUTAL {line} {block} {settp}')
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -735,27 +738,28 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       #          #TODO remove
       #          s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
       #          s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
-         lights = []
+      lights = []
 
-         for line in track_info:
-            for block in track_info[line]:
-               if track_info[line][block]['controller'] == controller_num  and track_info[line][block]['maintenance'] != 1: # only emit signals for blocks in corresponding controller
-                  
-                  if track_info[line][block]['switch_pos']!='-':
-                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+      for line in track_info:
+         for block in track_info[line]:
+            if track_info[line][block]['controller'] == controller_num  and track_info[line][block]['maintenance'] != 1: # only emit signals for blocks in corresponding controller
+               
+               if track_info[line][block]['switch_pos']!='-':
+                  s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-                  if track_info[line][block]['track_crossing']!='-':
-                     s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
+               if track_info[line][block]['track_crossing']!='-':
+                  s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
 
-                  if track_info[line][block]['traffic_light']!='-':
-                     lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
-                                 
-                  if track_info[line][block]['authority'] == 0:
-                     track_info[line][block]['commanded_speed'] = 0
+               if track_info[line][block]['traffic_light']!='-':
+                  lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
+                              
+               if track_info[line][block]['authority'] == 0:
+                  track_info[line][block]['commanded_speed'] = 0
 
-                  s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
-                  s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
-         
+               s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+               speed = track_info[line][block]['commanded_speed']
+               s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
+      
          s.send_TrackController_traffic_light.emit(lights)   
          
 

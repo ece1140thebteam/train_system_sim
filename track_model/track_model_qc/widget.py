@@ -782,7 +782,6 @@ class TrackModel(QWidget):
         block_info['underground'] = block.underground
         block_info['speed_limit'] = block.speed_limit
 
-        print(block_info)
         s.send_TrackModel_block_info.emit(train_num, block_info)
 
     # def get_block)_(self, line, block):
