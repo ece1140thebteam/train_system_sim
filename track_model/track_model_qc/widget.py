@@ -40,6 +40,7 @@ class TrackModel(QWidget):
     default_track_file = str(
         Path(__file__).resolve().parent / default_track_file)
 
+    # constructor
     def __init__(self, track=None, parent=None):
         super().__init__(parent)
         self.displayed_block = None
@@ -126,6 +127,8 @@ class TrackModel(QWidget):
 
         s.send_TrackModel_map_info.emit(track_dict)
 
+    # this is called when a train gets to a station
+    # simulates passengers leaving the train
     def passengers_onboarded(self, line, block, deboarded):
         onboarded = self.track.track_lines[line].blocks[block].passengers_onboarded(
             deboarded)
@@ -141,6 +144,7 @@ class TrackModel(QWidget):
         s.send_TrackModel_throughput_signal.emit(line, int(tp))
         self.update_station_tree(line, block)
 
+    # receives a blocks to update the switch pos of 
     def tc_set_switch_pos(self, line, block, pos):
         sw = -1
         if pos == 0:
@@ -157,6 +161,7 @@ class TrackModel(QWidget):
         crossing_open = pos_int == 0
         self.update_crossing_position(line, block, crossing_open)
 
+    # update the crossing position
     def update_crossing_position(self, line, block, pos):
         # if pos is true, crossing is open
         self.track.track_lines[line].blocks[block].crossing_open = pos
@@ -165,22 +170,26 @@ class TrackModel(QWidget):
         if block == self.displayed_block.block_number:
             self.display_block_info()
 
+    # summ for the time elapsed for throughput calc
     def handle_time_increment(self, mutliplier):
         # timer called every 100ms
         self.time_elapsed_s += .1*mutliplier
 
+    # set the failure in the main ui 
     def handle_failure_dropdown(self):
         failure_type = self.failureDropDown.currentText()
         block = self.displayed_block
 
         self.update_failures(block.line, block.block_number, failure_type)
 
+    # load the block in the list that was clicked
     def load_block_clicked_info(self, line, section, block):
         line = line.split(' ')[0]
         # block = int(block.split(' ')[1])
 
         self.display_block_info(self.track.track_lines[line].blocks[block])
 
+    # display info for the block in the main window
     def display_block_info(self, block=None):
         if block is not None:
             self.displayed_block = block
@@ -246,6 +255,7 @@ class TrackModel(QWidget):
 
         self.blockDirectionsOfTravel.setText(travstr)
 
+    # handle clicking a block list item
     def block_list_item_clicked(self, item):
         # if this is the yard block
         if 'Yard' in item.text(0):
@@ -261,6 +271,7 @@ class TrackModel(QWidget):
                 block = int(block.split(' ')[1])
                 self.load_block_clicked_info(line, section, block)
 
+    # handle opening a new track
     def open_new_file(self):
         print('opening new file')
         dlg = QFileDialog()
@@ -274,6 +285,7 @@ class TrackModel(QWidget):
             # notify others which track is loaded
             self.load_track(track_file)
 
+    # updates the block color in the block list
     def update_block_color(self, line, block, color, column):
         if block != 0:
             num_lines = self.blockListTreeWidget.invisibleRootItem().childCount()
@@ -301,6 +313,7 @@ class TrackModel(QWidget):
                         if '0' in yard.text(0):
                             yard.setBackground(column, color)
 
+    # updates switch tree with current switch pos
     def update_switch_tree_pos_color(self, line, block):
         # print('updating station tree')
         block = self.track.track_lines[line].blocks[block]
@@ -324,6 +337,7 @@ class TrackModel(QWidget):
                         sw.setBackground(1, pos_1_color)
                         sw.setBackground(2, pos_2_color)
 
+    # update the failure of a block
     def update_failures(self, line, block, failure):
         if failure != 'None':
             color = QtGui.QColor(200, 0, 0, 255)
@@ -335,6 +349,7 @@ class TrackModel(QWidget):
         self.display_block_info()
         s.send_TrackModel_tc_track_failure.emit(line, block, failure)
 
+    #updat occupncy of block
     def update_block_occupancy(self, line, block, occupancy):
         if block in self.track.track_lines[line].blocks:
             if occupancy:
@@ -346,11 +361,13 @@ class TrackModel(QWidget):
             self.track.track_lines[line].blocks[block].circuit_open = not occupancy
             self.display_block_info()
 
+    #update authority of block
     def update_block_authority(self, line, block, authority):
         if block in self.track.track_lines[line].blocks:
             self.track.track_lines[line].blocks[block].authority = authority
             self.display_block_info()
 
+    # load track 
     def load_track(self, track_file):
         tracklines = {}
 
@@ -468,6 +485,7 @@ class TrackModel(QWidget):
         self.blockListTreeWidget.expandAll()
         self.stationTree.expandAll()
 
+    # display the tree of tracks
     def display_track_tree(self):
         self.blockListTreeWidget.clear()
         items = []
@@ -627,7 +645,7 @@ class TrackModel(QWidget):
 
     def get_next_block(self, line, current_block_num, previous_block_num, train_num):
         # print('get next block')
-        print(f'{current_block_num} {previous_block_num} {train_num}')
+        # print(f'{current_block_num} {previous_block_num} {train_num}')
         next_block_num = -1
         dispatching = False
         if current_block_num == 0:  # connections from the yard
@@ -648,7 +666,7 @@ class TrackModel(QWidget):
         else:
             if self.track.track_lines[line].blocks[current_block_num].switch is None:
                 next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
-                print(next_block_num)
+                # print(next_block_num)
 
                 if len(next_block_num) > 1:
                     for block in next_block_num:
@@ -675,7 +693,7 @@ class TrackModel(QWidget):
                 curr_b = self.track.track_lines[line].blocks[current_block_num]
                 block_options = [blk_num for blk_num in curr_b.can_travel_to if abs(
                     blk_num) != previous_block_num]
-                print(block_options)
+                # print(block_options)
                 # bidirectional block that can travel to both of the switches
                 if len(block_options) > 1:
                     found = False
@@ -747,7 +765,7 @@ class TrackModel(QWidget):
 
         block_info['passengers_waiting'] = block.passengers_waiting
 
-        print(block_info)
+        # print(block_info)
         s.send_TrackModel_next_block_info.emit(train_num, block_info)
 
     def get_block_info(self, line, block, train_num):
