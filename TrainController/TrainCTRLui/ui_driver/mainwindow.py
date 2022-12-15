@@ -182,6 +182,39 @@ class TrainController(QMainWindow):
         powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
         self.ui.powOut.setText(powStr)
 
+        #Read current brake states of train and update UI accordingly
+        if(self.curTrain.eBrake == True):
+            self.ui.eBrakeBtn.setChecked(True)
+        if(self.curTrain.sBrake == True):
+            self.ui.sBrakeBtn.setChecked(True)
+        if(self.curTrain.eBrake == False):
+            self.ui.eBrakeBtn.setChecked(False)
+        if(self.curTrain.sBrakeBtn == False):
+            self.ui.sBrakeBtn.setChecked(False)
+        
+        #Read current light states and update accordingly
+        if(self.curTrain.ilights == True):
+            self.ui.iLightBtn = True
+        if(self.curTrain.elights == True):
+            self.ui.eLightBtn = True
+        if(self.curTrain.ilights == False):
+            self.ui.iLightBtn = False
+        if(self.curTrain.elights == False):
+            self.ui.eLightBtn = False
+
+        #Update door status
+        if(self.curTrain.rdoors == True):
+            self.ui.rdoorBtn = True
+        if(self.curTrain.ldoors == True):
+            self.ui.ldoorBtn = True
+        if(self.curTrain.rdoors == False):
+            self.ui.rdoorBtn = False
+        if(self.curTrain.ldoors == False):
+            self.ui.ldoorBtn = False
+
+        #Update temp
+        self.ui.curTempLabel.setText("Current Temp: " + self.curTrain.temp)
+
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
             if self.curTrain.trackSigFault:
