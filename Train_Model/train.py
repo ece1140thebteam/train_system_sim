@@ -105,6 +105,7 @@ class Train():
 
     def temp_set(self, cmd):
         self.temp = cmd
+        self.tempcmd = cmd
 
     def s_brake(self, cmd):
         if not(self.brakefail):
