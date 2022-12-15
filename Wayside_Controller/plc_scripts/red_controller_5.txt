@@ -1,0 +1,48 @@
+# Wayside Controller 5
+# Red blocks 31-40, 71-75 (Sections Q, R, S, and part of H)
+
+
+#----------------------------------------------------------------------
+# Logic for Switches
+#----------------------------------------------------------------------
+
+if (track_info['Red'][32]['occupancy'] == 1) and (track_info['Red'][33]['authority'] == 1):
+    if (track_info['Red'][33]['switch_pos'] == 0) and (track_info['Red'][38]['switch_pos'] == 0):
+        track_info['Red'][32]['traffic_light'] = 1
+        track_info['Red'][32]['authority'] = 1
+        track_info['Red'][39]['traffic_light'] = 1
+        track_info['Red'][71]['traffic_light'] = 0
+        track_info['Red'][71]['authority'] = 0
+
+if (track_info['Red'][71]['occupancy'] == 1) and (track_info['Red'][38]['authority'] == 1):
+    if (track_info['Red'][32]['occupancy'] == 0) and (track_info['Red'][33]['occupancy'] == 0) and (track_info['Red'][34]['occupancy'] == 0) and (track_info['Red'][35]['occupancy'] == 0) and (track_info['Red'][36]['occupancy'] == 0) and (track_info['Red'][37]['occupancy'] == 0) and (track_info['Red'][38]['occupancy'] == 0):
+        track_info['Red'][33]['switch_pos'] = 1
+        track_info['Red'][38]['switch_pos'] = 1
+        track_info['Red'][71]['traffic_light'] = 1
+        track_info['Red'][71]['authority'] = 1
+        track_info['Red'][39]['traffic_light'] = 0
+        track_info['Red'][72]['traffic_light'] = 1
+        track_info['Red'][32]['traffic_light'] = 0
+        track_info['Red'][32]['authority'] = 0
+
+# return to default switch position and traffic light colors once train in block 71 has passed
+if (track_info['Red'][71]['occupancy'] == 0) and (track_info['Red'][33]['occupancy'] == 0) and (track_info['Red'][34]['occupancy'] == 0) and (track_info['Red'][35]['occupancy'] == 0) and (track_info['Red'][36]['occupancy'] == 0) and (track_info['Red'][37]['occupancy'] == 0) and (track_info['Red'][38]['occupancy'] == 0):
+    track_info['Red'][33]['switch_pos'] = 0
+    track_info['Red'][38]['switch_pos'] = 0
+    track_info['Red'][32]['traffic_light'] = 0
+    track_info['Red'][72]['traffic_light'] = 0
+    track_info['Red'][39]['traffic_light'] = 0
+    track_info['Red'][71]['traffic_light'] = 0
+
+
+#----------------------------------------------------------------------
+# change traffic lights at stations
+#----------------------------------------------------------------------
+
+# traffic light turns green if train is just passing through or when it starts moving again
+if (track_info['Red'][35]['authority'] == 1):
+    track_info['Red'][35]['traffic_light'] = 1
+
+# after train passes station, return traffic light to red
+if (track_info['Red'][35]['occupancy'] == 0):
+    track_info['Red'][35]['traffic_light'] = 0

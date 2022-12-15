@@ -13,9 +13,6 @@ from pathlib import Path
 
 from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
 from Wayside_Controller.blockInfo import track_info as track_info
-#from Wayside_Controller.plc_scripts import green_controller_4 as Controller4
-#from Wayside_Controller.plc_scripts import green_controller_5 as Controller5
-#from Wayside_Controller.plc_scripts import green_controller_6 as Controller6
 
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
@@ -82,10 +79,18 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       cont2 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_2.txt")
       cont3 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_3.txt")
 
+      # red controllers by default
+      cont4 = str(Path(__file__).resolve().parent / "plc_scripts" / "red_controller_4.txt")
+      cont5 = str(Path(__file__).resolve().parent / "plc_scripts" /  "red_controller_5.txt")
+      cont6 = str(Path(__file__).resolve().parent / "plc_scripts" /  "red_controller_6.txt")
+
 
       self.import_controller( cont1, 1)
       self.import_controller( cont2, 2)
       self.import_controller( cont3, 3)
+      self.import_controller( cont4, 4)
+      self.import_controller( cont5, 5)
+      self.import_controller( cont6, 6)
 
       # Initialize all waysides by running all PLC scripts
       for x in [1, 2, 3, 4, 5, 6]:
@@ -730,6 +735,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          if controller_num == 2: self.displayPLC2.setText(plc)
          if controller_num == 3: self.displayPLC3.setText(plc)
          if controller_num == 4: self.displayPLC4.setText(plc)
+         if controller_num == 5: self.displayPLC5.setText(plc)
+         if controller_num == 6: self.displayPLC6.setText(plc)
          
       print(self.controllers[controller_num])
 
