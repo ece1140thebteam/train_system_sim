@@ -185,6 +185,9 @@ class TrainModel(QMainWindow):
         self.elight_set()
         self.ilight_set()
         self.s_brake()
+        self.engine_failure()
+        self.brake_failure()
+        self.signal_failure()
             
 
     def first_train(self):
