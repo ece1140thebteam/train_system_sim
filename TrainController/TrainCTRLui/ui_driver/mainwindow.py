@@ -232,6 +232,7 @@ class TrainController(QMainWindow):
 #Test ui?
 #Test Fault Functionality between modules
 #Somewhat functioning test ui? Use signals from train signals file?
+#Passenger EBrake
 #DO NOT OPEN TRAIN CONTROL UI IF YOU HAVEN'T DISPATCHED A TRAIN
 
 if __name__ == "__main__":
