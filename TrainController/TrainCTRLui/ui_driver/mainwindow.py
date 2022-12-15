@@ -222,8 +222,9 @@ class TrainController(QMainWindow):
             #check authority of current working train
             #if no authority but stopped at a station: give beacon message
             if not self.curTrain.auth:
+                if self.curTrain.curSpd <= 0:
                     self.beaconHandler()
-                #otherwise, train is moving when it shouldn't be, give auth error message
+            #otherwise, train is moving when it shouldn't be, give auth error message
             else:
                 if self.curTrain.curSpd > 0:
                     dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
