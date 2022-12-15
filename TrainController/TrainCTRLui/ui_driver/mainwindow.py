@@ -107,12 +107,12 @@ class TrainController(QMainWindow):
     #Sbrake activation function
     def sBrakeToggle(self):
         self.curTrain.sBrake = self.ui.sBrakeBtn.isChecked()
-        self.curTrain.powerCalc()
+        self.curTrain.sBrakeSig()
 
     #Ebrake activation function
     def eBrakeToggle(self):
         self.curTrain.eBrake = self.ui.eBrakeBtn.isChecked()
-        self.curTrain.powerCalc()
+        self.curTrain.eBrakeSig()
     
     #Manual Mode toggling function
     def setManMode(self):
