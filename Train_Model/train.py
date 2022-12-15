@@ -217,10 +217,6 @@ class Train():
     def calc_accel(self):
         power = self.powercmd
 
-        # handling if there is an engine failure caused by Murphy
-        if (self.enginefail):
-            power = 0
-
         # calculating the slope of the current block
         angle = math.radians(self.grade)
 
