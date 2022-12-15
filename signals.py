@@ -94,6 +94,10 @@ class signals(QObject):
   # Send throughput from Track Model test to Track Model
   send_TrackModel_next_block_info = pyqtSignal(int, dict) #trainID, block info
   send_TrackModel_block_info = pyqtSignal(int, dict) #trainID, block info
+
+  #######################################################
+  #Train to train model and train controller when train is deleted
+  send_delete_train = pyqtSignal(int) #train id
   
   timer_tick = pyqtSignal(int) # Timer multiplier
 
