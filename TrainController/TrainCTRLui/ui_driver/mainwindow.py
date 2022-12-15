@@ -233,7 +233,7 @@ class TrainController(QMainWindow):
                     self.beaconHandler()
             #otherwise, train is moving when it shouldn't be, give auth error message
                 else:
-                    if self.curTrain.curSpd > 0:
+                    if (self.curTrain.atStation == False) and (self.curTrain.curSpd > 0):
                         if(self.authPopupHappened == False):
                             dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
                             self.authPopupHappened = True 
@@ -269,13 +269,9 @@ class TrainController(QMainWindow):
 
 
 #TODO:
-#Popup when at station displaying door side and station name via beacon data
-#Automatic light functionality
 #Test ui?
 #Test Fault Functionality between modules
 #Somewhat functioning test ui? Use signals from train signals file?
-#Passenger EBrake
-#DO NOT OPEN TRAIN CONTROL UI IF YOU HAVEN'T DISPATCHED A TRAIN
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
