@@ -246,9 +246,10 @@ class TrainController(QMainWindow):
 
         #If authority is good and no faults, continue with update
         else:
-            if not(self.ui.speedSlider.isEnabled()):
-                self.ui.speedSlider.setDisabled(False)
-            self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
+            if(self.curTrain.manMode == True):
+                if not(self.ui.speedSlider.isEnabled()):
+                    self.ui.speedSlider.setDisabled(False)
+                self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
     def update_train(self):
         id = int(self.ui.trainSelect.currentText()[6:]) - 1
