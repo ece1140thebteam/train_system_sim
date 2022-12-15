@@ -501,15 +501,70 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          track_info[line][block]['maintenance'] = maintenance
 
-         if (maintenance == 1):
-            track_info[line][block]['authority'] = 0
-            track_info[line][block-1]['authority'] = 0
-            track_info[line][block]['commanded_speed'] = 0
-            track_info[line][block-1]['commanded_speed'] = 0
-            s.send_TrackModel_block_authority.emit(line, block, authority)
-            s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+         # Maintenance mode of a block affects the previous block's authority and commanded speed but previous block is not always the previous number in chronological order, so specific logic for track layout needs to done to determine previous block on the route
+         if line == 'Green':
+            if (29 <= block <= 62) or (64 <= block <= 76) or (86 <= block <= 100) or (102 <= block <= 150):
+               blocks_to_update = [block-1]
+            elif (14 <= block <= 27) or (77 <= block <= 84):
+               blocks_to_update = [block-1, block+1]
+            elif (1 <= block <= 12):
+               blocks_to_update = [block+1]
+            elif block == 13:
+               blocks_to_update = [1, 14]
+            elif block == 28:
+               blocks_to_update = [27, 150]
+            elif block == 63:
+               blocks_to_update = [0, 62]
+            elif block == 85:
+               blocks_to_update = [84, 100]
+            elif block == 101:
+               blocks_to_update = [77]
+         else: # Red line logic
+            if (2 <= block <= 8) or (10 <= block <= 15) or (17 <= block <= 26) or (28 <= block <= 32) or (34 <= block <= 37) or (39 <= block <= 43) or (45 <= block <= 51) or (53 <= block <= 65) or (68 <= block <= 70) or (73 <= block <= 75):
+               blocks_to_update = [block-1, block+1]
+            elif block == 1:
+               blocks_to_update = [2, 16]
+            elif block == 9:
+               blocks_to_update = [0, 8, 10]
+            elif block == 16:
+               blocks_to_update = [1, 15, 17]
+            elif block == 27:
+               blocks_to_update = [26, 28, 76]
+            elif block == 33:
+               blocks_to_update = [32, 34, 72]
+            elif block == 38:
+               blocks_to_update = [37, 39, 71]
+            elif block == 44:
+               blocks_to_update = [43, 45, 67]
+            elif block == 52:
+               blocks_to_update = [51, 53, 66]
+            elif block == 66:
+               blocks_to_update = [52, 65]
+            elif block == 67:
+               blocks_to_update = [44, 68]
+            elif block == 71:
+               blocks_to_update = [38, 70]
+            elif block == 72:
+               blocks_to_update = [33, 73]
+            elif block == 76:
+               blocks_to_update = [27, 75]
+               
 
-      
+         for b in blocks_to_update:
+            if maintenance == 1: # SAFETY CRITICAL: if block is set to maintenance mode, then NO train can go on it. therefore, previous block authority and commanded speed must be 0
+               track_info[line][b]['authority'] = 0
+               track_info[line][b]['commanded_speed'] = 0
+               s.send_TrackModel_block_authority.emit(line, block, 0)
+               s.send_TrackModel_commanded_speed.emit(line, block, 0)
+            #elif maintenance == 0: # WHEN MAINTENANCE GOES OFF, DO YOU AUTOMATICALLY CHANGE AUTHORITY TO LET TRAIN GO OVER THE BLOCK???????????????????????????????????????????????
+            #   track_info[line][b]['authority'] = 1
+            #   track_info[line][b]['commanded_speed'] = track_info[line][b]['speed_limit']
+            #   s.send_TrackModel_block_authority.emit(line, block, 1)
+            #   s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][b]['commanded_speed'])
+        
+
+         blocks_to_update.clear()
+
 
 
    # update manual switch positions coming from ctc
@@ -519,11 +574,10 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          block = update['block']
          switch = update['switch']
 
-         controller = track_info[line][block]['controller']
          maintenance = track_info[line][block]['maintenance']
          
          # if block is in maintenance mode, allow CTC to set switch position by overriding PLC logic
-         if (maintenance == 1): # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
+         if maintenance == 1: # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
             track_info[line][block]['switch_pos'] = switch
             s.send_TrackController_switch_pos.emit(line, block, switch)
 
@@ -539,7 +593,68 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    # update block status (failures) coming from track model
    def update_status(self, line, block, failure):
       track_info[line][block]['failure'] = int(failure != 'None')
-      self.run_controllerx(track_info[line][block]['controller'])
+
+      # A block failure affects the previous block's authority and commanded speed but previous block is not always the previous number in chronological order, so specific logic for track layout needs to done to determine previous block on the route
+      if line == 'Green':
+         if (29 <= block <= 62) or (64 <= block <= 76) or (86 <= block <= 100) or (102 <= block <= 150):
+            blocks_to_update = [block-1]
+         elif (14 <= block <= 27) or (77 <= block <= 84):
+            blocks_to_update = [block-1, block+1]
+         elif (1 <= block <= 12):
+            blocks_to_update = [block+1]
+         elif block == 13:
+            blocks_to_update = [1, 14]
+         elif block == 28:
+            blocks_to_update = [27, 150]
+         elif block == 63:
+            blocks_to_update = [0, 62]
+         elif block == 85:
+            blocks_to_update = [84, 100]
+         elif block == 101:
+            blocks_to_update = [77]
+      else: # Red line logic
+         if (2 <= block <= 8) or (10 <= block <= 15) or (17 <= block <= 26) or (28 <= block <= 32) or (34 <= block <= 37) or (39 <= block <= 43) or (45 <= block <= 51) or (53 <= block <= 65) or (68 <= block <= 70) or (73 <= block <= 75):
+            blocks_to_update = [block-1, block+1]
+         elif block == 1:
+            blocks_to_update = [2, 16]
+         elif block == 9:
+            blocks_to_update = [0, 8, 10]
+         elif block == 16:
+            blocks_to_update = [1, 15, 17]
+         elif block == 27:
+            blocks_to_update = [26, 28, 76]
+         elif block == 33:
+            blocks_to_update = [32, 34, 72]
+         elif block == 38:
+            blocks_to_update = [37, 39, 71]
+         elif block == 44:
+            blocks_to_update = [43, 45, 67]
+         elif block == 52:
+            blocks_to_update = [51, 53, 66]
+         elif block == 66:
+            blocks_to_update = [52, 65]
+         elif block == 67:
+            blocks_to_update = [44, 68]
+         elif block == 71:
+            blocks_to_update = [38, 70]
+         elif block == 72:
+            blocks_to_update = [33, 73]
+         elif block == 76:
+            blocks_to_update = [27, 75]
+            
+
+      for b in blocks_to_update:
+         if track_info[line][block]['failure'] == 1: # SAFETY CRITICAL: if block has failure, then NO train can go on it. therefore, previous block authority and commanded speed must be 0
+            track_info[line][b]['authority'] = 0
+            track_info[line][b]['commanded_speed'] = 0
+            s.send_TrackModel_block_authority.emit(line, block, 0)
+            s.send_TrackModel_commanded_speed.emit(line, block, 0)
+         #elif track_info[line][block]['failure'] == 0: # AFTER FAILURE IS FIXED, DO YOU AUTOMATICALLY CHANGE AUTHORITY TO LET TRAIN GO OVER THE BLOCK???????????????????????????????????????????????
+         #   track_info[line][b]['authority'] = 1
+         #   track_info[line][b]['commanded_speed'] = track_info[line][b]['speed_limit']
+         #   s.send_TrackModel_block_authority.emit(line, block, 1)
+         #   s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][b]['commanded_speed'])
+      
 
 
    # run PLC script for specified controller

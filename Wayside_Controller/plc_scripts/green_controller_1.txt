@@ -10,7 +10,7 @@
 if (track_info['Green'][0]['occupancy'] == 1) and (track_info['Green'][63]['authority'] == 1):
     track_info['Green'][0]['traffic_light'] = 1
     track_info['Green'][62]['traffic_light'] = 0
-    
+
     track_info['Green'][62]['commanded_speed'] = 0
     track_info['Green'][62]['authority'] = 0 #stops within block 62
 
