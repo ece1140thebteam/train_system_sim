@@ -118,10 +118,8 @@ class Train():
         if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
         self.block = block
-        if 'yard' in self.block:
-            if self.block['yard']:
-                #handle yard
-                pass
+        if self.block['yard']:
+            s.send_TrackModel_track_occupancy.emit(self.line, self.prev_block['block_num'], False)
         s.send_TrackModel_track_occupancy.emit(self.line, self.block['block_num'], True)
         self.grade = self.block['grade']
         self.speedcmd = self.block['commanded_speed']*0.277777
