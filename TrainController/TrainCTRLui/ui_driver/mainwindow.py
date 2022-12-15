@@ -238,6 +238,7 @@ class TrainController(QMainWindow):
         #if no authority but stopped at a station: give beacon message
         if not self.curTrain.auth:
             if self.curTrain.beacon is not None:
+                
                 #self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
                 pass
             #otherwise, train is moving when it shouldn't be, give auth error message
