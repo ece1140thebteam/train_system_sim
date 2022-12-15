@@ -159,8 +159,11 @@ class TrainModel(QMainWindow):
             self.first_train()
 
     def update_train(self):
-        id = int(self.ui.trainSelect.currentText()[6:]) - 1
-        self.train = self.directory.trains[id]
+        try:
+            id = int(self.ui.trainSelect.currentText()[6:]) - 1
+            self.train = self.directory.trains[id]
+        except:
+            self.train = None
 
     def delete(self, id):
         self.ui.trainSelect.removeItem(id-self.totalRemoved)
@@ -195,20 +198,17 @@ class TrainModel(QMainWindow):
 
     def first_train(self):
         try:
-            self.train = self.directory.trains[0]
+            self.train = self.directory.trains[self.totalRemoved]
         except:
             return
 
     def beacon_set(self):
-        try:
-            if (self.train.beacon is None):
-                self.ui.beacon.setText("Beacon: None")
-                self.ui.station.setText("Station: None")
-            else:
-                self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
-                self.ui.station.setText("Station: " + self.train.beacon['station_name'])
-        except:
-            pass
+        if (self.train.beacon is None):
+            self.ui.beacon.setText("Beacon: None")
+            self.ui.station.setText("Station: None")
+        else:
+            self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
+            self.ui.station.setText("Station: " + self.train.beacon['station_name'])
         self.ui.auth.setText("Authority: " + str(self.train.auth))
 
     def e_brake(self):

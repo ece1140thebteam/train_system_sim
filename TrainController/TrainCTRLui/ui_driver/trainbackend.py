@@ -32,9 +32,11 @@ class Train_CTRL_BE():
         self.elights = False
         self.ilights = False
 
+        self.intercom = False
         self.station = None
         self.side = None
         self.beacon = None
+        self.atStation = False
 
         self.sBrake = False
         self.eBrake = False
@@ -49,24 +51,27 @@ class Train_CTRL_BE():
         self.eLights = lightState
         self.iLights = lightState
 
-
     def passEBrake(self):
         self.eBrake = True
 
     def beaconHandler(self, info):
+        self.beacon = info['beacon']
         if info['beacon'] is not None:
-            self.beacon = info['beacon']
+            self.atStation = True
             self.side = self.beacon['station_side']
             self.station = self.beacon['station_name']
+        else:
+            self.atStation = False
 
     def failHandle(self, failActive, failType): 
-            self.failMode = failActive
-            if failType == 'Engine':
-                self.engineFault = True
-            elif failType == 'Brake':
-                self.brakeFault = True
-            elif failType == 'Signal':
-                self.trackSigFault = True
+            self.faultMode = failActive
+            if self.faultMode:
+                if failType == 'Engine':
+                    self.engineFault = True
+                elif failType == 'Brake':
+                    self.brakeFault = True
+                elif failType == 'Signal':
+                    self.trackSigFault = True
             else:
                 self.engineFault = False
                 self.brakeFault = False
@@ -75,6 +80,8 @@ class Train_CTRL_BE():
 
     #Function to adjust commanded speed, is called externally
     def cmdSpdAdjust(self, info):
+        if (info['yard']):
+            return
         self.cmdSpd = info['commanded_speed']
         self.auth = info['authority']
         self.dispatch = True
@@ -161,15 +168,10 @@ class Train_CTRL_BE():
                         self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
                         #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     else:
-                        print('No Brakes Enabled, calculating power...')
-                else:
-                    pass
-                    #self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                    #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)      
+                        print('No Brakes Enabled, calculating power...')     
                 
                 self.powOutput = pow
                 self.sigs.send_TrainModel_powerOutput.emit(self.powOutput)
-
         else:
             self.sBrake = True
             self.sigs.send_TrainModel_sBrake.emit(self.sBrake) 

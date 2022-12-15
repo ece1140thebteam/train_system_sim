@@ -23,6 +23,8 @@ class TrainController(QMainWindow):
         self.directory = directory
         self.totalRemoved = 0
 
+        self.authPopupHappened = False
+
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
         self.ui.manModeBtn.toggle()
@@ -169,8 +171,16 @@ class TrainController(QMainWindow):
         self.curTrain.driverCmd = self.ui.speedSlider.value()
         self.ui.driverSpd.setText(str(int(self.curTrain.driverCmd*0.621371))+'MPH')
         
-
-
+    def beaconHandler(self):
+        if (self.curTrain.beacon is not None) and (self.curTrain.atStation == True):
+            self.intercomstr = ('Arrived at '+ str(self.curTrain.station) + ' Station \nDoors opening on ' + str(self.curTrain.side) + ' side')
+            self.curTrain.intercom = True
+            self.ui.intercomBtn.setChecked(True)
+            self.ui.label.setText(self.intercomstr)
+        else:
+            self.intercomstr = ('Intercom Not Active')
+            self.ui.intercomBtn.setChecked(False)
+            self.ui.label.setText(self.intercomstr)
 
     #Function to periodically update ui based on backend train data
     def UpdateUI(self):
@@ -186,7 +196,6 @@ class TrainController(QMainWindow):
         #update power output
         powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
         self.ui.powOut.setText(powStr)
-
         
         #Read current brake states of train and update UI accordingly
         self.ui.eBrakeBtn.setChecked(self.curTrain.eBrake)
@@ -200,7 +209,6 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.setChecked(self.curTrain.rdoors)
         self.ui.ldoorBtn.setChecked(self.curTrain.ldoors)
 
-       
         #Update temp
         self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
@@ -218,52 +226,52 @@ class TrainController(QMainWindow):
             self.ui.engFailStatus.setText('Engine Status: Working')
             self.ui.trackSigStatus.setText('Track Signal Status: Detected')
 
-        #check authority of current working train
-        #if no authority but stopped at a station: give beacon message
-        if not self.curTrain.auth:
-            if self.curTrain.beacon is not None:
-                
-                #self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
-                pass
+            #check authority of current working train
+            #if no authority but stopped at a station: give beacon message
+            if not self.curTrain.auth:
+                if self.curTrain.curSpd <= 0:
+                    self.beaconHandler()
             #otherwise, train is moving when it shouldn't be, give auth error message
+                else:
+                    if (self.curTrain.atStation == False) and (self.curTrain.curSpd > 0):
+                        if(self.authPopupHappened == False):
+                            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                            self.authPopupHappened = True 
+                            dialog.exec()
+                        self.ui.speedSlider.setDisabled(True)
+                        self.ui.speedSlider.setValue(0)
+                        self.ui.driverSpd.setText('0MPH')        
             else:
-                if self.curTrain.curSpd > 0:
-                    dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
-                    self.ui.speedSlider.setDisabled(True)
-                    self.ui.speedSlider.setValue(0)
-                    self.ui.driverSpd.setText('0MPH')
-                    dialog.exec()
+                self.authPopupHappened = False
 
         #If authority is good and no faults, continue with update
-        else:
             if(self.curTrain.manMode == True):
                 if not(self.ui.speedSlider.isEnabled()):
                     self.ui.speedSlider.setDisabled(False)
                 self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
     def update_train(self):
-        id = int(self.ui.trainSelect.currentText()[6:]) - 1
-        self.curTrain = self.directory.trainctrl[id]
+        try:
+            id = int(self.ui.trainSelect.currentText()[6:]) - 1
+            self.curTrain = self.directory.trainctrl[id]
+        except:
+            self.curTrain = None
 
 
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
         self.UpdateUI()
 
-    def delete(self):
+    def delete(self, id):
         self.ui.trainSelect.removeItem(id-self.totalRemoved)
         self.totalRemoved += 1
 
 
 
 #TODO:
-#Popup when at station displaying door side and station name via beacon data
-#Automatic light functionality
 #Test ui?
 #Test Fault Functionality between modules
 #Somewhat functioning test ui? Use signals from train signals file?
-#Passenger EBrake
-#DO NOT OPEN TRAIN CONTROL UI IF YOU HAVEN'T DISPATCHED A TRAIN
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

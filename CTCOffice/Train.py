@@ -80,6 +80,7 @@ class Train():
     self.dwelling_t = 0
     self.at_yard = 1
     self.time_to_dispatch = time_to_dispatch
+    self.calc_speed = 0
   
 class Train_Sim():
   def __init__(self):
@@ -261,6 +262,11 @@ class Train_Sim():
         # Remove station from list
         train.destinations.pop(0)
 
+        # if len(train.destinations) == 0:
+        #   train.cacl_speed = 0
+        # else:
+        #   train.calc_speed = self.calculate_speed_to_next(train.line, train.route_block, train.destinations[0][0], train.destinations[0][1])
+
         if (train.line == 'Green'):
           if train.route_block == 1:
             prevBlock = green_route[len(green_route) - 1]
@@ -290,8 +296,8 @@ class Train_Sim():
       # Set authority from current block to next station to 1
       origin_block = train.current_block
       dest_block = train.destinations[0][0]
-      # speed = self.calculate_speed_to_next(train.line, train.route_block, dest_block, 0)
-      speed= 0
+      # speed = self.calculate_speed_to_next(train.line, train.route_block, dest_block, train.destinations[0][1])
+      speed = 0
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block, speed)
 
   def calculate_speed_to_next(self, line, route_block, destination, tts):
@@ -304,7 +310,8 @@ class Train_Sim():
         destination = 57
 
       while cur_block != destination:
-        distance += self.green_lengths[cur_block]
+        if cur_block != 0:
+          distance += self.green_lengths[cur_block]
         cur_route_index += 1
         if(cur_route_index >= len(green_route)):
           cur_route_index = 1
