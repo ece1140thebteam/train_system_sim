@@ -341,8 +341,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          track_info[line][block-1]['authority'] = 0
          track_info[line][block]['commanded_speed'] = 0
          track_info[line][block-1]['commanded_speed'] = 0
-         s.send_TrackModel_block_authority.emit(line, block, authority)
-         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+         s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+         s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['suggested_speed'])
 
    
 
@@ -366,8 +366,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          #    s.send_TrackController_switch_pos.emit(line, block, sw)
          # if block is in maintenance mode, allow CTC to set switch position by overriding PLC logic
          if (maintenance == 1): # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
-            track_info[line][block]['switch_pos'] = switch
-            s.send_TrackController_switch_pos.emit(line, block, switch)
+            track_info[line][block]['switch_pos'] = sw
+            s.send_TrackController_switch_pos.emit(line, block, sw)
 
 
 
