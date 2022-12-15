@@ -1,0 +1,44 @@
+# Wayside Controller 2
+# Green blocks 1-35, 144-150 (Sections A, B, C, D, E, F, G, H, X, Y, Z)
+
+
+#----------------------------------------------------------------------
+# Switches at block 13 (default position: 13-1) and 28 (default position: 28-29)
+#----------------------------------------------------------------------
+
+if (track_info['Green'][1]['occupancy'] == 1) and (track_info['Green'][13]['authority'] == 1):
+    if (track_info['Green'][13]['switch_pos'] == 0) and (track_info['Green'][28]['switch_pos'] == 0):
+        track_info['Green'][1]['traffic_light'] = 1
+        track_info['Green'][1]['authority'] = 1
+        track_info['Green'][29]['traffic_light'] = 1
+        track_info['Green'][150]['traffic_light'] = 0
+        track_info['Green'][150]['authority'] = 0
+
+if (track_info['Green'][150]['occupancy'] == 1) and (track_info['Green'][28]['authority'] == 1) and (track_info['Green'][1]['occupancy'] == 0):
+    if (track_info['Green'][13]['occupancy'] == 0) and (track_info['Green'][14]['occupancy'] == 0) and (track_info['Green'][15]['occupancy'] == 0) and (track_info['Green'][16]['occupancy'] == 0) and (track_info['Green'][17]['occupancy'] == 0) and (track_info['Green'][18]['occupancy'] == 0) and (track_info['Green'][19]['occupancy'] == 0) and (track_info['Green'][20]['occupancy'] == 0) and (track_info['Green'][21]['occupancy'] == 0) and (track_info['Green'][22]['occupancy'] == 0) and (track_info['Green'][23]['occupancy'] == 0) and (track_info['Green'][24]['occupancy'] == 0) and (track_info['Green'][25]['occupancy'] == 0) and (track_info['Green'][26]['occupancy'] == 0) and (track_info['Green'][27]['occupancy'] == 0) and (track_info['Green'][28]['occupancy'] == 0):
+        track_info['Green'][13]['switch_pos'] = 1
+        track_info['Green'][28]['switch_pos'] = 1
+        track_info['Green'][1]['traffic_light'] = 0
+        track_info['Green'][1]['authority'] = 0
+        track_info['Green'][12]['traffic_light'] = 1
+        track_info['Green'][29]['traffic_light'] = 0
+        track_info['Green'][150]['traffic_light'] = 1
+        track_info['Green'][150]['authority'] = 1
+
+# return to default switch position and traffic light colors once train in block 150 has passed
+if (track_info['Green'][150]['occupancy'] == 0) and (track_info['Green'][13]['occupancy'] == 0) and (track_info['Green'][14]['occupancy'] == 0) and (track_info['Green'][15]['occupancy'] == 0) and (track_info['Green'][16]['occupancy'] == 0) and (track_info['Green'][17]['occupancy'] == 0) and (track_info['Green'][18]['occupancy'] == 0) and (track_info['Green'][19]['occupancy'] == 0) and (track_info['Green'][20]['occupancy'] == 0) and (track_info['Green'][21]['occupancy'] == 0) and (track_info['Green'][22]['occupancy'] == 0) and (track_info['Green'][23]['occupancy'] == 0) and (track_info['Green'][24]['occupancy'] == 0) and (track_info['Green'][25]['occupancy'] == 0) and (track_info['Green'][26]['occupancy'] == 0) and (track_info['Green'][27]['occupancy'] == 0) and (track_info['Green'][28]['occupancy'] == 0):
+    track_info['Green'][13]['switch_pos'] = 0
+    track_info['Green'][28]['switch_pos'] = 0
+    track_info['Green'][1]['traffic_light'] = 0
+    track_info['Green'][12]['traffic_light'] = 0
+    track_info['Green'][29]['traffic_light'] = 0
+    track_info['Green'][150]['traffic_light'] = 0
+
+
+#----------------------------------------------------------------------
+# Set Railway Crossing
+#----------------------------------------------------------------------
+if (track_info['Green'][19]['occupancy'] == 1):
+    track_info['Green'][19]['track_crossing'] == 1
+else:
+    track_info['Green'][19]['track_crossing'] == 0

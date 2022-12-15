@@ -9,17 +9,20 @@ from PyQt6.QtWidgets import *
 
 # signals used to communicate between modules
 from signals import s
+from pathlib import Path
 
 from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
 from Wayside_Controller.blockInfo import track_info as track_info
+#from Wayside_Controller.plc_scripts import green_controller_4 as Controller4
+#from Wayside_Controller.plc_scripts import green_controller_5 as Controller5
+#from Wayside_Controller.plc_scripts import green_controller_6 as Controller6
+
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
       super(MainWindow, self).__init__(parent)
       self.setupUi(self)
       self.controllers = dict()
-
-      # TODO: initialize all waysides by running all PLC scripts
 
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
@@ -73,6 +76,21 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                elif (block >= 41 and block <= 70):
                   track_info[line][block]['controller'] = 6
                   self.blockSelect6.addItem(str(block))
+
+      # green controllers by default
+      cont1 = str(Path(__file__).resolve().parent / "plc_scripts" / "green_controller_1.txt")
+      cont2 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_2.txt")
+      cont3 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_3.txt")
+
+
+      self.import_controller( cont1, 1)
+      self.import_controller( cont2, 2)
+      self.import_controller( cont3, 3)
+
+      # Initialize all waysides by running all PLC scripts
+      for x in [1, 2, 3, 4, 5, 6]:
+         self.run_controllerx(x)
+
 
 
    # CONTROLLER 1 GUI
@@ -664,6 +682,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       #for statement in self.controllers[controller_num]:
       #   exec(statement)
 
+      lights = []
+
       for line in track_info:
          for block in track_info[line]:
             if track_info[line][block]['controller'] == controller_num: # only emit signals for blocks in corresponding controller
@@ -671,24 +691,54 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                if track_info[line][block]['switch_pos']!='-':
                   s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-               #s.send_TrackModel_block_authority.emit(line, block, authority)
-               #s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+               if track_info[line][block]['track_crossing']!='-':
+                  s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
+
+               if track_info[line][block]['traffic_light']!='-':
+                  lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
+                              
+               if track_info[line][block]['authority'] == 0:
+                  track_info[line][block]['commanded_speed'] = 0
+
+               s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+               s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
+      
+      s.send_TrackController_traffic_light.emit(lights)   
       
 
    
 
+   def import_controller(self, filename, controller_num):
+      print(self.controllers)
+      self.controllers[controller_num] = []
 
+      print(filename)
+
+      script = []
+      with open(filename, 'r') as file:
+         for line in file:
+            script.append(line)
+
+         # temp = file.read(controller_num)
+         # print(temp)
+         self.controllers[controller_num] = script
+         print(self.controllers)
+         print(self.controllers[controller_num])
+         plc = ''
+         for line in self.controllers[controller_num]: plc+=line
+         if controller_num == 1: self.displayPLC1.setText(plc)
+         if controller_num == 2: self.displayPLC2.setText(plc)
+         if controller_num == 3: self.displayPLC3.setText(plc)
+         if controller_num == 4: self.displayPLC4.setText(plc)
+         
+      print(self.controllers[controller_num])
 
    def getFile1(self):
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
       self.controllers[1] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[1] = file.readlines()
-            plc = ''
-            for line in self.controllers[1]: plc+=line
-            self.displayPLC1.setText(plc)
+         self.import_controller(filename[0], 1)
       print(self.controllers[1])
 
 
@@ -697,11 +747,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       self.controllers[2] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[2] = file.readlines()
-            plc = ''
-            for line in self.controllers[2]: plc+=line
-            self.displayPLC2.setText(plc)
+         self.import_controller(filename[0], 2)
+
       print(self.controllers[2])
 
 
@@ -711,11 +758,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       self.controllers[3] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[3] = file.readlines()
-            plc = ''
-            for line in self.controllers[3]: plc+=line
-            self.displayPLC3.setText(plc)
+         self.import_controller(filename[0], 3)
       print(self.controllers[3])
 
 

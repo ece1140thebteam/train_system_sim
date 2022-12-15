@@ -2,17 +2,49 @@
 # Green blocks 74-143 (Sections M, N, O, P, Q, R, S, T, U, V, W)
 
 
-# sw 77 -> 76 if b76.o && b77.a sw = 0
-# sw 77 -> 101 if b101.a && b77.o sw=1
+#----------------------------------------------------------------------
+# Switches at block 77 (default position: 77-76) and 85 (default position: 86-85)
+#----------------------------------------------------------------------
 
-# sw 85 -> 86 if b85.o && b86.a sw=0
-# sw 85 -> 100 if b100.o && b85.a sw=1
+if (track_info['Green'][76]['occupancy'] == 1) and (track_info['Green'][77]['authority'] == 1):
+    if (track_info['Green'][77]['switch_pos'] = 0) and (track_info['Green'][85]['switch_pos'] = 0):
+        track_info['Green'][76]['traffic_light'] = 1
+        track_info['Green'][76]['authority'] = 1
+        track_info['Green'][86]['traffic_light'] = 1
+        track_info['Green'][100]['traffic_light'] = 0
+        track_info['Green'][100]['authority'] = 0
 
-# track_info['Green'][78]['authority']  track_info['Green'][2]['authority']
+if (track_info['Green'][100]['occupancy'] == 1) and (track_info['Green'][85]['authority'] == 1) and (track_info['Green'][76]['occupancy'] == 0):
+    if (track_info['Green'][77]['occupancy'] == 0) and (track_info['Green'][78]['occupancy'] == 0) and (track_info['Green'][79]['occupancy'] == 0) and (track_info['Green'][80]['occupancy'] == 0) and (track_info['Green'][81]['occupancy'] == 0) and (track_info['Green'][82]['occupancy'] == 0) and (track_info['Green'][83]['occupancy'] == 0) and (track_info['Green'][84]['occupancy'] == 0) and (track_info['Green'][85]['occupancy'] == 0):
+        track_info['Green'][77]['switch_pos'] = 1
+        track_info['Green'][85]['switch_pos'] = 1
+        track_info['Green'][76]['traffic_light'] = 0
+        track_info['Green'][76]['authority'] = 0
+        track_info['Green'][101]['traffic_light'] = 1
+        track_info['Green'][86]['traffic_light'] = 0
+        track_info['Green'][100]['traffic_light'] = 1
+        track_info['Green'][100]['authority'] = 1
 
+# return to default switch position and traffic light colors once train in block 100 has passed
+if (track_info['Green'][100]['occupancy'] == 0) and (track_info['Green'][77]['occupancy'] == 0) and (track_info['Green'][78]['occupancy'] == 0) and (track_info['Green'][79]['occupancy'] == 0) and (track_info['Green'][80]['occupancy'] == 0) and (track_info['Green'][81]['occupancy'] == 0) and (track_info['Green'][82]['occupancy'] == 0) and (track_info['Green'][83]['occupancy'] == 0) and (track_info['Green'][84]['occupancy'] == 0) and (track_info['Green'][85]['occupancy'] == 0):
+    track_info['Green'][77]['switch_pos'] = 0
+    track_info['Green'][85]['switch_pos'] = 0
+    track_info['Green'][76]['traffic_light'] = 0
+    track_info['Green'][86]['traffic_light'] = 0
+    track_info['Green'][100]['traffic_light'] = 0
+    track_info['Green'][101]['traffic_light'] = 0
 
+#----------------------------------------------------------------------
+# change traffic lights at stations
+#----------------------------------------------------------------------
 
+stations = [77, 88, 96, 105, 114, 123, 132, 141]
+for x in stations:
 
+    # traffic light turns green if train is just passing through or when it starts moving again
+    if (track_info['Green'][x]['authority'] == 1):
+        track_info['Green'][x]['traffic_light'] = 1
 
-track_info['Green'][77]['switch_pos'] = not (track_info['Green'][76]['authority'])
-track_info['Green'][85]['switch_pos'] = track_info['Green'][100]['occupancy'] or track_info['Green'][99]['occupancy'] or track_info['Green'][98]['occupancy'] 
+    # after train passes station, return traffic light to red
+    if (track_info['Green'][x]['occupancy'] == 0):
+        track_info['Green'][x]['traffic_light'] = 0

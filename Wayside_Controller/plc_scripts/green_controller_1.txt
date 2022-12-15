@@ -9,19 +9,17 @@
 # when a train is in yard ready for dispath
 if (track_info['Green'][0]['occupancy'] == 1) and (track_info['Green'][63]['authority'] == 1):
     track_info['Green'][0]['traffic_light'] = 1
+    track_info['Green'][0]['authority'] = 1
     track_info['Green'][62]['traffic_light'] = 0
-
-    track_info['Green'][62]['commanded_speed'] = 0
-    track_info['Green'][62]['authority'] = 0 #stops within block 62
+    track_info['Green'][62]['authority'] = 0
 
 # when a train is traveling on J to do another loop around the track, allow all trains waiting in yard to dispatch first
 if (track_info['Green'][62]['occupancy'] == 1) and (track_info['Green'][0]['occupancy'] == 0) and (track_info['Green'][63]['authority'] == 1):
     track_info['Green'][63]['switch_pos'] = 1
     track_info['Green'][0]['traffic_light'] = 0
-    track_info['Green'][0]['commanded_speed'] = 0
-    track_info['Green'][63]['commanded_speed'] = 1 #????????????
+    track_info['Green'][0]['authority'] = 0
     track_info['Green'][62]['traffic_light'] = 1
-    track_info['Green'][62]['commanded_speed'] = 1 #????????????
+    track_info['Green'][62]['authority'] = 1
 
 # after train in J has passed, return switch to default position
 if (track_info['Green'][62]['occupancy'] == 0):
@@ -36,7 +34,6 @@ if (track_info['Green'][62]['occupancy'] == 0):
 
 if (track_info['Green'][57]['occupancy'] == 1) and (track_info['Green'][0]['authority'] == 1):
     track_info['Green'][0]['traffic_light'] = 1
-    # do i need to change commanded speed?
 elif (track_info['Green'][57]['occupancy'] == 1) and (track_info['Green'][58]['authority'] == 1):
     track_info['Green'][57]['switch_pos'] = 1    
     track_info['Green'][58]['traffic_light'] = 1
@@ -48,18 +45,16 @@ if (track_info['Green'][57]['occupancy'] == 0):
     track_info['Green'][58]['traffic_light'] = 0
 
 
-#------------------------------------------------------
+#----------------------------------------------------------------------
 # change traffic lights at stations
-#------------------------------------------------------
+#----------------------------------------------------------------------
 
 stations = [39, 48, 57, 65, 73]
 for x in stations:
 
-    # next line is executed when train is just passing through and when moving again
-    if (track_info['Green'][x]['authority'] == 1) and (track_info['Green'][x]['suggested_speed'] == 1):
-        track_info['Green'][x]['traffic_light'] = 1 # green light bc train is just passing by
-        # assuming here that if train needs to stop at station, 
-    
+    # traffic light turns green if train is just passing through or when it starts moving again
+    if (track_info['Green'][x]['authority'] == 1):
+        track_info['Green'][x]['traffic_light'] = 1
 
     # after train passes station, return traffic light to red
     if (track_info['Green'][x]['occupancy'] == 0):
