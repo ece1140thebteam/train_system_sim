@@ -509,7 +509,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
    # update manual switch positions coming from ctc
    def update_switch_position(self, updates_list):
-      controllers_to_update = []
       for update in updates_list:
          line = update['line']
          block = update['block']
@@ -518,16 +517,10 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          controller = track_info[line][block]['controller']
          maintenance = track_info[line][block]['maintenance']
          
-         if (maintenance == 1):
-            if controller not in controllers_to_update: 
-               controllers_to_update.append(controller)
-
-         track_info[line][block]['switch_pos'] = switch
-         if switch != '-':
+         # if block is in maintenance mode, allow CTC to set switch position by overriding PLC logic
+         if (maintenance == 1): # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
+            track_info[line][block]['switch_pos'] = switch
             s.send_TrackController_switch_pos.emit(line, block, switch)
-
-      for controller in controllers_to_update:
-         self.run_controllerx(controller)
 
 
 
