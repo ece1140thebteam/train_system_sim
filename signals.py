@@ -42,14 +42,17 @@ class signals(QObject):
   #######################################################
   # Wayside to CTC 
   # Send track occupancy from Track Controller to CTC
+  # SHOULD NOT BE USED CURRENTLY
   send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
 
   # Send crossing status from Track Controller to CTC
-  send_TrackController_crossing = pyqtSignal(list) # Line, status (0=deactivated, 1=activated)
+  send_TrackController_crossing = pyqtSignal(str, int, int) # Line, block, (0=deactivated, 1=activated)
 
   # Send track failure from Track Controller to CTC
+  # SHOULD NOT BE USED CURRENTLY
   send_TrackController_failure = pyqtSignal(str, int, int) # Line, failure type
 
+  send_TrackController_traffic_light = pyqtSignal(list) # [{'line':line, 'block':block, 'traffic_light':0 for RED, 1 for GREEN}]
   #######################################################
   # Wayside to Track Model
   # send switch position from Track controller to track model

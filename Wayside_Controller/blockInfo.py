@@ -9,13 +9,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -31,13 +31,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -53,15 +53,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -75,15 +75,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -97,15 +97,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -119,15 +119,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -141,15 +141,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -163,13 +163,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -185,15 +185,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -213,9 +213,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -229,13 +229,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -251,15 +251,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -273,15 +273,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -295,15 +295,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -317,15 +317,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -339,13 +339,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -367,7 +367,7 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -383,15 +383,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -405,15 +405,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -427,15 +427,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -449,15 +449,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -471,13 +471,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -493,15 +493,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -515,15 +515,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -537,15 +537,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -559,13 +559,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -581,15 +581,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -609,9 +609,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -625,13 +625,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -647,15 +647,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -669,15 +669,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -691,15 +691,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -713,13 +713,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -741,9 +741,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -757,15 +757,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -779,13 +779,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -801,15 +801,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -823,15 +823,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -851,9 +851,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -867,13 +867,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -889,15 +889,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -911,15 +911,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -933,15 +933,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -955,13 +955,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -983,9 +983,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -999,13 +999,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1021,15 +1021,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1043,7 +1043,7 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
@@ -1051,7 +1051,7 @@ track_info = {
 
             "track_crossing": 0,
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1065,13 +1065,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1087,15 +1087,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1109,15 +1109,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1131,15 +1131,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1159,9 +1159,9 @@ track_info = {
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1175,13 +1175,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1197,15 +1197,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1219,15 +1219,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1241,15 +1241,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1263,15 +1263,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1285,15 +1285,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1307,15 +1307,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1329,13 +1329,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1351,15 +1351,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1373,15 +1373,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1395,15 +1395,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1417,15 +1417,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1439,15 +1439,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1461,13 +1461,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1483,13 +1483,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1505,15 +1505,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1527,15 +1527,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1549,15 +1549,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1571,13 +1571,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1593,13 +1593,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
@@ -1615,15 +1615,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1637,15 +1637,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1659,15 +1659,15 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
-            "traffic_light": 0,
+            "traffic_light": '-',
 
             "commanded_speed": 0,
 
@@ -1681,13 +1681,13 @@ track_info = {
 
             "authority": 0,
 
-            "switch_pos": 0,
+            "switch_pos": '-',
 
             "failure": 0,
 
             "suggested_speed": 0,
 
-            "track_crossing": 0,
+            "track_crossing": '-',
 
             "traffic_light": 0,
 
