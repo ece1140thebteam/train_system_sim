@@ -100,17 +100,17 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['switch_pos'] == 0: # default position
          if block == 57:
             self.switchFromValue1.setText('57')
+            self.switchToValue1.setText('Yard')
+         elif block == 63:
+            self.switchFromValue1.setText('63')
+            self.switchToValue1.setText('Yard')
+      elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
+         if block == 57:
+            self.switchFromValue1.setText('57')
             self.switchToValue1.setText('58')
          elif block == 63:
             self.switchFromValue1.setText('63')
             self.switchToValue1.setText('62')
-      elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
-         if block == 57:
-            self.switchFromValue1.setText('57')
-            self.switchToValue1.setText('Yard')
-         elif block == 63:
-            self.switchFromValue1.setText('63')
-            self.switchToValue1.setText('Yard')
       else:
          self.switchFromValue1.setText(track_info['Green'][block]['switch_pos'])
          self.switchToValue1.setText(track_info['Green'][block]['switch_pos'])
@@ -228,14 +228,14 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['switch_pos'] == 0: # default position
          if block == 13:
             self.switchFromValue3.setText('13')
-            self.switchToValue3.setText('12')
+            self.switchToValue3.setText('1')
          elif block == 28:
             self.switchFromValue3.setText('28')
             self.switchToValue3.setText('29')
       elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
          if block == 13:
             self.switchFromValue3.setText('13')
-            self.switchToValue3.setText('1')
+            self.switchToValue3.setText('12')
          elif block == 28:
             self.switchFromValue3.setText('28')
             self.switchToValue3.setText('150')
@@ -248,7 +248,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['traffic_light'] == 0:
          self.trafficLightValue3.setText('Red')
       elif track_info['Green'][block]['traffic_light'] == 1:
-         self.trafficLightValue3setText('Green')
+         self.trafficLightValue3.setText('Green')
       else:
          self.trafficLightValue3.setText(track_info['Green'][block]['traffic_light'])
 
@@ -274,6 +274,192 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.commandedSpeedValue3.setText(str(track_info['Green'][block]['commanded_speed']))
 
 
+   def displayController4Blocks(self, blockText):
+      
+      block = int(blockText)
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 9:
+            self.switchFromValue4.setText('9')
+            self.switchToValue4.setText('Yard')
+         elif block == 16:
+            self.switchFromValue4.setText('16')
+            self.switchToValue4.setText('1')
+         elif block == 27:
+            self.switchFromValue4.setText('27')
+            self.switchToValue4.setText('28')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 9:
+            self.switchFromValue4.setText('9')
+            self.switchToValue4.setText('10')
+         elif block == 16:
+            self.switchFromValue4.setText('16')
+            self.switchToValue4.setText('15')
+         elif block == 27:
+            self.switchFromValue4.setText('27')
+            self.switchToValue4.setText('76')
+      else:
+         self.switchFromValue4.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue4.setText(track_info['Red'][block]['switch_pos'])
+
+
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue4.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue4.setText('Green')
+      else:
+         self.trafficLightValue4.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue4.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue4.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue4.setText('Off')
+      else:
+         self.maintenanceValue4.setText('On')
+      
+
+      # displays Authority, Occupancy, Suggested Speed, Commanded Speed, and Railway Crossings
+      self.authorityValue4.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue4.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue4.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue4.setText(str(track_info['Red'][block]['commanded_speed']))
+      self.railwayGateValue4.setText(track_info['Red'][block]['track_crossing'])
+      self.railwayLightsValue4.setText(track_info['Red'][block]['track_crossing'])
+
+
+
+   # CONTROLLER 5 GUI
+   def displayController5Blocks(self, blockText):
+      
+      block = int(blockText)
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 33:
+            self.switchFromValue5.setText('33')
+            self.switchToValue5.setText('32')
+         elif block == 38:
+            self.switchFromValue5.setText('38')
+            self.switchToValue5.setText('39')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 33:
+            self.switchFromValue5.setText('33')
+            self.switchToValue5.setText('72')
+         elif block == 38:
+            self.switchFromValue5.setText('38')
+            self.switchToValue5.setText('71')
+      else:
+         self.switchFromValue5.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue5.setText(track_info['Red'][block]['switch_pos'])
+
+
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue5.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue5.setText('Green')
+      else:
+         self.trafficLightValue5.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue5.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue5.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue5.setText('Off')
+      else:
+         self.maintenanceValue5.setText('On')
+
+      
+      # displays Authority, Occupancy, Suggested Speed, Commanded Speed, and Railway Crossings
+      self.authorityValue5.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue5.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue5.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue5.setText(str(track_info['Red'][block]['commanded_speed']))
+      self.railwayGateValue5.setText(track_info['Red'][block]['track_crossing'])
+      self.railwayLightsValue5.setText(track_info['Red'][block]['track_crossing'])
+
+
+
+   # CONTROLLER 6 GUI
+   def displayController6Blocks(self, blockText):
+     
+      block = int(blockText)
+
+      # displays Railway Crossings
+      if track_info['Red'][block]['track_crossing'] == 0: # railway crossing inactive
+         self.railwayGateValue6.setText('Up')
+         self.railwayLightsValue6.setText('Off')
+      elif track_info['Red'][block]['track_crossing'] == 1: # railway crossing active
+         self.railwayGateValue6.setText('Down')
+         self.railwayLightsValue6.setText('On')
+      else: # railway crossing does not exist for this block
+         self.railwayGateValue6.setText(track_info['Red'][block]['track_crossing'])
+         self.railwayLightsValue6.setText(track_info['Red'][block]['track_crossing'])
+
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 44:
+            self.switchFromValue6.setText('44')
+            self.switchToValue6.setText('43')
+         elif block == 52:
+            self.switchFromValue6.setText('52')
+            self.switchToValue6.setText('53')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 44:
+            self.switchFromValue6.setText('44')
+            self.switchToValue6.setText('67')
+         elif block == 52:
+            self.switchFromValue6.setText('52')
+            self.switchToValue6.setText('66')
+      else:
+         self.switchFromValue6.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue6.setText(track_info['Red'][block]['switch_pos'])
+
+
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue6.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue6.setText('Green')
+      else:
+         self.trafficLightValue6.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue6.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue6.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue6.setText('Off')
+      else:
+         self.maintenanceValue6.setText('On')
+
+      
+      # displays Authority, Occupancy, Suggested Speed, and Commanded Speed
+      self.authorityValue6.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue6.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue6.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue6.setText(str(track_info['Red'][block]['commanded_speed']))
 
    # update block occupancy coming from track model
    def update_occupancy(self, line, block, occupancy):
@@ -283,12 +469,12 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    
 
 
-   # update block status (failures) coming from track model
-   def update_status(self, line, block, failure):
-      track_info[line][block]['failure'] = int(failure != 'None')
-      if failure == 'None': failure = '' # ???????????????????????????????????????????????????????
-      s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
-      self.run_controllerx(track_info[line][block]['controller'])
+   # # update block status (failures) coming from track model
+   # def update_status(self, line, block, failure):
+   #    track_info[line][block]['failure'] = int(failure != 'None')
+   #    if failure == 'None': failure = '' # ???????????????????????????????????????????????????????
+   #    s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
+   #    self.run_controllerx(track_info[line][block]['controller'])
 
 
 
