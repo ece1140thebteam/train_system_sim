@@ -61,7 +61,7 @@ class TrackModel(QWidget):
         self.failureDropDown.currentTextChanged.connect(self.handle_failure_dropdown)
 
         # connect communication signals
-        # s.timer_tick.connect(self.handle_time_increment)
+        s.timer_tick.connect(self.handle_time_increment)
         s.send_TrackModel_failure_status.connect(self.update_failures)
         s.send_TrackModel_track_occupancy.connect(self.update_block_occupancy)
         s.get_TrackModel_map_info.connect(self.get_track_info)

@@ -128,7 +128,7 @@ class TrackModelTestUI(QWidget):
             self.traveled_in_block += distance
 
 
-            if self.current_block_info['beacon']['station_name'] is not None:
+            if self.current_block_info['beacon'] is not None:
                 if self.traveled_in_block > self.current_block_info['length']/2 and not self.stopped_at_station:
                     #stop onboard passengers
                     passengers_deboarded = random.randint(1, 20)

@@ -41,8 +41,9 @@ class trainDirectory():
         s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
-        self.trains[id].update_blocks(block)
-        self.trainctrl[id].cmdSpdAdjust(block)
+        if id in self.trains:
+            self.trains[id].update_blocks(block)
+            self.trainctrl[id].cmdSpdAdjust(block)
 
     def add_train(self, line):
         #create the signals for between model and controller then pass through each constructor
