@@ -156,6 +156,8 @@ class Train_Sim():
             next_route_block = train.route_block + 1
 
           if (block == green_route[next_route_block]) :
+            if train.current_block == 0:
+              s.send_CTC_authority.emit([{'line': 'Green', 'block': 0, 'authority': 0}])
             train.current_block = block
             if train.route_block != len(green_route)-1:
               train.route_block += 1
