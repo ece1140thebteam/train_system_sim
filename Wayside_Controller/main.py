@@ -407,8 +407,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          for b in blocks_to_update:
             if maintenance == 1: # SAFETY CRITICAL: if block is set to maintenance mode, then NO train can go on it. therefore, previous block authority and commanded speed must be 0
-               track_info[line][b]['authority'] = 0
-               track_info[line][b]['commanded_speed'] = 0
+               # track_info[line][b]['authority'] = 0
+               # track_info[line][b]['commanded_speed'] = 0
                s.send_TrackModel_block_authority.emit(line, block, 0)
                s.send_TrackModel_commanded_speed.emit(line, block, 0)
             #elif maintenance == 0: # WHEN MAINTENANCE GOES OFF, DO YOU AUTOMATICALLY CHANGE AUTHORITY TO LET TRAIN GO OVER THE BLOCK???????????????????????????????????????????????
