@@ -180,38 +180,13 @@ class TrainController(QMainWindow):
 
     #Function to periodically update ui based on backend train data
     def UpdateUI(self):
-        
-        #update current speed
-        curStr = 'Current Speed: ' + str(int((self.curTrain.curSpd*2.236935599991052))) + ' MPH'
-        self.ui.curSpd.setText(curStr)
-
-        #update commanded speed
-        cmdStr = 'Commanded Speed: ' + str(int(self.curTrain.cmdSpd*0.621371)) + ' MPH'
-        self.ui.cmdSpd.setText(cmdStr)
-
-        #update power output
-        powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
-        self.ui.powOut.setText(powStr)
-        
-        #Read current brake states of train and update UI accordingly
-        self.ui.eBrakeBtn.setChecked(self.curTrain.eBrake)
-        self.ui.sBrakeBtn.setChecked(self.curTrain.sBrake)
-        
-        #Read current light states and update accordingly
-        self.ui.ilightBtn.setChecked(self.curTrain.ilights)
-        self.ui.elightBtn.setChecked(self.curTrain.elights)
-
-        #Update door status
-        self.ui.rdoorBtn.setChecked(self.curTrain.rdoors)
-        self.ui.ldoorBtn.setChecked(self.curTrain.ldoors)
-
-        #Update temp
-        self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
             if self.curTrain.trackSigFault:
                 self.ui.trackSigStatus.setText('Track Signal Status: NOT DETECTED')
+                self.ui.cmdSpd.setText('Commanded Speed: UNDEFINED')
+                self.ui.curSpd.setText('Current Speed: UNDEFINED')
             if self.curTrain.engineFault:
                 self.ui.engFailStatus.setText('Engine Status: FAILING')
             if self.curTrain.brakeFault:
@@ -221,6 +196,33 @@ class TrainController(QMainWindow):
             self.ui.brakeFailStatus.setText('Brake Status: Working')
             self.ui.engFailStatus.setText('Engine Status: Working')
             self.ui.trackSigStatus.setText('Track Signal Status: Detected')
+
+            #update current speed
+            curStr = 'Current Speed: ' + str(int((self.curTrain.curSpd*2.236935599991052))) + ' MPH'
+            self.ui.curSpd.setText(curStr)
+
+            #update commanded speed
+            cmdStr = 'Commanded Speed: ' + str(int(self.curTrain.cmdSpd*0.621371)) + ' MPH'
+            self.ui.cmdSpd.setText(cmdStr)
+
+            #update power output
+            powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
+            self.ui.powOut.setText(powStr)
+            
+            #Read current brake states of train and update UI accordingly
+            self.ui.eBrakeBtn.setChecked(self.curTrain.eBrake)
+            self.ui.sBrakeBtn.setChecked(self.curTrain.sBrake)
+            
+            #Read current light states and update accordingly
+            self.ui.ilightBtn.setChecked(self.curTrain.ilights)
+            self.ui.elightBtn.setChecked(self.curTrain.elights)
+
+            #Update door status
+            self.ui.rdoorBtn.setChecked(self.curTrain.rdoors)
+            self.ui.ldoorBtn.setChecked(self.curTrain.ldoors)
+
+            #Update temp
+            self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
             #check authority of current working train
             #if no authority but stopped at a station: give beacon message
