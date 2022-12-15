@@ -138,7 +138,7 @@ class Train():
                 self.elightcmd = False
                 self.ilightcmd = False
                 self.override_lights = False
-                self.sig.send_TrainController_lights.emit(True)
+                self.sig.send_TrainController_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
 
     def station(self):
