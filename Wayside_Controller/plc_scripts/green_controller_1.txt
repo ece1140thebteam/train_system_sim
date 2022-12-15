@@ -9,9 +9,8 @@
 # when a train is in yard ready for dispath
 if (track_info['Green'][0]['occupancy'] == 1) and (track_info['Green'][63]['authority'] == 1):
     track_info['Green'][0]['traffic_light'] = 1
-    track_info['Green'][0]['commanded_speed'] = 1 #????????????
-    track_info['Green'][63]['commanded_speed'] = 1 #????????????
     track_info['Green'][62]['traffic_light'] = 0
+    
     track_info['Green'][62]['commanded_speed'] = 0
     track_info['Green'][62]['authority'] = 0 #stops within block 62
 
@@ -57,11 +56,10 @@ stations = [39, 48, 57, 65, 73]
 for x in stations:
 
     # next line is executed when train is just passing through and when moving again
-    if (track_info['Green'][x]['authority'] == 1) and (track_info['Green'][x]['suggested_speed'] == 1): # IS AUTHORITY FOR BLOCK ON STATION OR PREVIOUS OR NEXT??? WHAT ABOUT SUGGESTED SPEED??? HOW TO KNOW WHEN TO STOP AT STATION OR NOT
+    if (track_info['Green'][x]['authority'] == 1) and (track_info['Green'][x]['suggested_speed'] == 1):
         track_info['Green'][x]['traffic_light'] = 1 # green light bc train is just passing by
         # assuming here that if train needs to stop at station, 
-        # TO STOP AT A STATION: AUTHORITY OF 0 AND SUGG SPEED OF 0
-        # how do I know when train is moving again after stopping? THAT SAME BLOCK AUTHORITY IS CHANGED TO 1
+    
 
     # after train passes station, return traffic light to red
     if (track_info['Green'][x]['occupancy'] == 0):

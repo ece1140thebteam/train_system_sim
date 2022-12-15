@@ -19,6 +19,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.setupUi(self)
       self.controllers = dict()
 
+      # TODO: initialize all waysides by running all PLC scripts
+
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
@@ -460,7 +462,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['authority'] = authority
-         s.send_TrackModel_block_authority.emit(line, block, authority)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -480,10 +481,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
-         track_info[line][block]['commanded_speed'] = speed  # set suggested_speed as commanded_speed by default, but this will change if needed in PLC script
-
-         # NOTICE: run controller first!
-         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+         track_info[line][block]['commanded_speed'] = speed  # set suggested_speed as commanded_speed by default, but this will change if needed in run_controllerx
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -503,7 +501,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['maintenance'] = maintenance
-         s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
          
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -544,31 +541,23 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.run_controllerx(track_info[line][block]['controller'])
 
 
-      
+   # run PLC script for specified controller
    def run_controllerx(self, controller_num):
-      # print(self.controllers)
-      # print(controller_num)
-      if controller_num in self.controllers:
-         # print(self.controllers[controller_num])
-         # print(f'running wayside controller {controller_num}')
+         
+      # TODO: ACTUALLY EXECUTE PLC .TXT FILE
+      for statement in self.controllers[controller_num]:
+         exec(statement)
 
-         for statement in self.controllers[controller_num]:
-            exec(statement)
-         for line in track_info:
-            if line =='Green':
-               for block in track_info[line]:
-                  if track_info[line][block]['controller'] == controller_num:
-                     # print('updating')
-                     if track_info[line][block]['switch_pos']!='-':
-                        s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
-      else:
-         # print('no plc uploaded for that controllers')
-         pass
-      #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
+      for line in track_info:
+         for block in track_info[line]:
+            if track_info[line][block]['controller'] == controller_num: # only emit signals for blocks in corresponding controller
+               
+               if track_info[line][block]['switch_pos']!='-':
+                  s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-      if controller_num == 1:
-         if track_info['Green'][0]['occupancy'] == 1:
-            track_info['Green'][63]['switch_pos'] == 1
+               s.send_TrackModel_block_authority.emit(line, block, authority)
+               s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+      
 
    
 

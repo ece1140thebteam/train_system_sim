@@ -25,6 +25,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         1: {
@@ -46,6 +48,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -69,6 +73,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         3: {
@@ -90,6 +96,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -113,6 +121,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         5: {
@@ -134,6 +144,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -157,6 +169,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         7: {
@@ -178,6 +192,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -201,6 +217,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         9: {
@@ -222,6 +240,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -245,6 +265,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         11: {
@@ -266,6 +288,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -289,6 +313,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         13: {
@@ -310,6 +336,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -333,6 +361,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         15: {
@@ -354,6 +384,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -377,6 +409,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         17: {
@@ -398,6 +432,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -421,6 +457,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         19: {
@@ -442,6 +480,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -465,6 +505,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         21: {
@@ -486,6 +528,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -509,6 +553,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         23: {
@@ -530,6 +576,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -553,6 +601,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         25: {
@@ -574,6 +624,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -597,6 +649,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         27: {
@@ -618,6 +672,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -641,6 +697,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         29: {
@@ -662,6 +720,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -685,6 +745,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         31: {
@@ -706,6 +768,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -729,6 +793,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         33: {
@@ -750,6 +816,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -773,6 +841,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         35: {
@@ -794,6 +864,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -817,6 +889,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         37: {
@@ -838,6 +912,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -861,6 +937,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         39: {
@@ -882,6 +960,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -905,6 +985,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         41: {
@@ -926,6 +1008,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -949,6 +1033,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         43: {
@@ -970,6 +1056,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -993,6 +1081,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         45: {
@@ -1014,6 +1104,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -1037,6 +1129,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         47: {
@@ -1058,6 +1152,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -1081,6 +1177,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         49: {
@@ -1102,6 +1200,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 60
 
         },
 
@@ -1125,6 +1225,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 60
+
         },
 
         51: {
@@ -1146,6 +1248,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1169,6 +1273,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         53: {
@@ -1190,6 +1296,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1213,6 +1321,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         55: {
@@ -1234,6 +1344,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1257,6 +1369,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         57: {
@@ -1278,6 +1392,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1301,6 +1417,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         59: {
@@ -1322,6 +1440,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1345,6 +1465,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         61: {
@@ -1366,6 +1488,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1389,6 +1513,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         63: {
@@ -1410,6 +1536,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1433,6 +1561,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         65: {
@@ -1454,6 +1584,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1477,6 +1609,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         67: {
@@ -1498,6 +1632,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1521,6 +1657,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         69: {
@@ -1542,6 +1680,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1565,6 +1705,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         71: {
@@ -1586,6 +1728,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1609,6 +1753,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         73: {
@@ -1630,6 +1776,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1653,6 +1801,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         75: {
@@ -1675,6 +1825,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 55
+
         },
 
         76: {
@@ -1696,6 +1848,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 55
 
         },
 
@@ -1722,6 +1876,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+            
+            "speed_limit": 45
 
         },
 
@@ -1745,6 +1901,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         2: {
@@ -1766,6 +1924,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -1789,6 +1949,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         4: {
@@ -1810,6 +1972,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -1833,6 +1997,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         6: {
@@ -1854,6 +2020,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -1877,6 +2045,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         8: {
@@ -1898,6 +2068,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -1921,6 +2093,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         10: {
@@ -1942,6 +2116,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -1965,6 +2141,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 45
+
         },
 
         12: {
@@ -1986,6 +2164,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 45
 
         },
 
@@ -2009,6 +2189,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         14: {
@@ -2030,6 +2212,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -2053,6 +2237,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         16: {
@@ -2074,6 +2260,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -2097,6 +2285,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 60
+
         },
 
         18: {
@@ -2118,6 +2308,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 60
 
         },
 
@@ -2141,6 +2333,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 60
+
         },
 
         20: {
@@ -2162,6 +2356,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 60
 
         },
 
@@ -2185,6 +2381,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         22: {
@@ -2206,6 +2404,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -2229,6 +2429,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         24: {
@@ -2250,6 +2452,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -2273,6 +2477,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         26: {
@@ -2294,6 +2500,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -2317,6 +2525,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         28: {
@@ -2338,6 +2548,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2361,6 +2573,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         30: {
@@ -2382,6 +2596,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2405,6 +2621,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         32: {
@@ -2426,6 +2644,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2449,6 +2669,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         34: {
@@ -2470,6 +2692,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2493,6 +2717,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         36: {
@@ -2514,6 +2740,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2537,6 +2765,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         38: {
@@ -2558,6 +2788,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2581,6 +2813,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         40: {
@@ -2602,6 +2836,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2625,6 +2861,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         42: {
@@ -2646,6 +2884,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2669,6 +2909,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         44: {
@@ -2690,6 +2932,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2713,6 +2957,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         46: {
@@ -2734,6 +2980,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2757,6 +3005,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         48: {
@@ -2778,6 +3028,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2801,6 +3053,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         50: {
@@ -2822,6 +3076,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2845,6 +3101,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         52: {
@@ -2866,6 +3124,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2889,6 +3149,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         54: {
@@ -2910,6 +3172,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2933,6 +3197,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         56: {
@@ -2954,6 +3220,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -2977,6 +3245,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         58: {
@@ -2998,6 +3268,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -3021,6 +3293,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         60: {
@@ -3042,6 +3316,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -3065,6 +3341,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         62: {
@@ -3086,6 +3364,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -3109,6 +3389,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         64: {
@@ -3130,6 +3412,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3153,6 +3437,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         66: {
@@ -3174,6 +3460,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3197,6 +3485,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         68: {
@@ -3218,6 +3508,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -3241,6 +3533,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         70: {
@@ -3262,6 +3556,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -3285,6 +3581,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         72: {
@@ -3306,6 +3604,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -3329,6 +3629,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         74: {
@@ -3350,6 +3652,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -3373,6 +3677,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 40
+
         },
 
         76: {
@@ -3394,6 +3700,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 40
 
         },
 
@@ -3417,6 +3725,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         78: {
@@ -3438,6 +3748,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3461,6 +3773,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         80: {
@@ -3482,6 +3796,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3505,6 +3821,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         82: {
@@ -3526,6 +3844,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3549,6 +3869,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         84: {
@@ -3570,6 +3892,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 70
 
         },
 
@@ -3593,6 +3917,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 70
+
         },
 
         86: {
@@ -3614,6 +3940,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3637,6 +3965,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         88: {
@@ -3658,6 +3988,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3681,6 +4013,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         90: {
@@ -3702,6 +4036,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3725,6 +4061,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         92: {
@@ -3746,6 +4084,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3769,6 +4109,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         94: {
@@ -3790,6 +4132,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3813,6 +4157,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         96: {
@@ -3834,6 +4180,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3857,6 +4205,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         98: {
@@ -3878,6 +4228,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3901,6 +4253,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 25
+
         },
 
         100: {
@@ -3922,6 +4276,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 25
 
         },
 
@@ -3945,6 +4301,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 26
+
         },
 
         102: {
@@ -3966,6 +4324,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 28
 
         },
 
@@ -3989,6 +4349,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 28
+
         },
 
         104: {
@@ -4010,6 +4372,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 28
 
         },
 
@@ -4033,6 +4397,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 28
+
         },
 
         106: {
@@ -4054,6 +4420,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 28
 
         },
 
@@ -4077,6 +4445,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 28
+
         },
 
         108: {
@@ -4098,6 +4468,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 28
 
         },
 
@@ -4121,6 +4493,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 28
+
         },
 
         110: {
@@ -4142,6 +4516,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -4165,6 +4541,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         112: {
@@ -4186,6 +4564,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
         },
 
         113: {
@@ -4207,6 +4587,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -4230,6 +4612,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         115: {
@@ -4251,6 +4635,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 30
 
         },
 
@@ -4274,6 +4660,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 30
+
         },
 
         117: {
@@ -4295,6 +4683,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 15
 
         },
 
@@ -4318,6 +4708,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 15
+
         },
 
         119: {
@@ -4339,6 +4731,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 15
 
         },
 
@@ -4362,6 +4756,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 15
+
         },
 
         121: {
@@ -4383,6 +4779,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 15
 
         },
 
@@ -4406,6 +4804,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         123: {
@@ -4427,6 +4827,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4450,6 +4852,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         125: {
@@ -4471,6 +4875,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4494,6 +4900,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         127: {
@@ -4515,6 +4923,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4538,6 +4948,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         129: {
@@ -4559,6 +4971,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4582,6 +4996,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         131: {
@@ -4603,6 +5019,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4626,6 +5044,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         133: {
@@ -4647,6 +5067,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4670,6 +5092,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         135: {
@@ -4691,6 +5115,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4714,6 +5140,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         137: {
@@ -4735,6 +5163,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4758,6 +5188,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         139: {
@@ -4779,6 +5211,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4802,6 +5236,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         141: {
@@ -4823,6 +5259,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4846,6 +5284,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         143: {
@@ -4867,6 +5307,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4890,6 +5332,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         145: {
@@ -4911,6 +5355,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4934,6 +5380,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         147: {
@@ -4955,6 +5403,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
@@ -4978,6 +5428,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         149: {
@@ -5000,6 +5452,8 @@ track_info = {
 
             "occupancy": 0,
 
+            "speed_limit": 20
+
         },
 
         150: {
@@ -5021,6 +5475,8 @@ track_info = {
             "maintenance": 0,
 
             "occupancy": 0,
+
+            "speed_limit": 20
 
         },
 
