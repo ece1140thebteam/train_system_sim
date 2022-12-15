@@ -72,6 +72,10 @@ class Train():
             self.atStation = False
             if self.beacon is None:
                 return
+            self.rdoorcmd = False
+            self.ldoorcmd = False
+            self.right_door(False)
+            self.left_door(False)
 
     def e_brake(self, cmd):
         self.ebrakecmd = cmd
