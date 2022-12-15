@@ -7,6 +7,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
 from signals import s
+import platform
 
 from CTCOffice.testUiMain import MainTestWindow as MainTestWindowCTC
 from CTCOffice.main import MainWindow as MainWindowCTC
@@ -17,6 +18,8 @@ from track_model.track_model_qc.widget import TrackModel as TrackModelGUI
 from track_model.TrackModelTestUI.trackmodeltestui import TrackModelTestUI as TrackModelTestUI
 from Wayside_Controller.main import MainWindow as TrackControllerWindow
 from Train_Model.TrainModel import TrainModel, TestTrainModel
+from Train_Model.train import Train
+from Train_Model.trainDirectory import trainDirectory
 
 
 class SystemWindow(QMainWindow, system.Ui_MainWindow):
@@ -26,10 +29,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
       self.second = 50400+3300
       self.label_time.setText(str(round(self.second, 1)))
-
-      #Create list of trains for indexing
-      self.Trains = []
-      self.Trains.append(TrainController())
 
       # CTC variables
       self.main_windowCTC = MainWindowCTC()
@@ -49,16 +48,17 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.pushButton_trackmodel_test.clicked.connect(self.open_TrackModelTestUI)
 
       # Train Model Variables
-      self.trainmodel = TrainModel()
+      self.trainDirectory = trainDirectory()
+      self.trainmodel = TrainModel(self.trainDirectory)
       self.trainmodel_test = TestTrainModel(self.trainmodel)
       self.pushButton_trainmodel.clicked.connect(self.open_trainmodel)
       self.pushButton_trainmodel_test.clicked.connect(self.open_trainmodel_test)
 
       # Train Controller Variables
       # self.Trains.append(TrainController())
+      self.trainController = TrainController(self.trainDirectory)
       self.pushButton_traincontrol.clicked.connect(self.open_traincontrol)
       self.pushButton_traincontrol_test.clicked.connect(self.open_traincontrol_test)
-      
 
       self.pushButton_start.clicked.connect(self.pause_timer)
 
@@ -68,8 +68,6 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 
       self.update_speed()
       self.horizontalSlider.valueChanged.connect(self.update_speed)
-
-      s.send_CTC_create_train.connect(self.open_traincontrol)
 
     def open_CTC(self):
       
@@ -100,10 +98,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.trainmodel_test.show()
 
     def open_traincontrol(self, line):
-      self.Train = self.Trains[0]
-      self.engWindow = engineerUI(self.Train)
-      self.Train.show()
-      self.engWindow.show()
+      self.trainController.setManMode()
+      self.trainController.show()
+
 
     def open_traincontrol_test(self):
       self.test_window = TrainCTRLTestUI(self.Trains[0])
@@ -119,6 +116,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.label_speed.setText(str(self.horizontalSlider.value()))
 
 if __name__ == "__main__":
+    platform = platform.platform()
+    if 'mac' not in platform: 
+      sys.argv += ['-platform', 'windows:darkmode=2', '-style', 'fusion']
     app = QApplication(sys.argv)
     window = SystemWindow()
     window.show()

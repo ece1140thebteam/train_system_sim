@@ -1,5 +1,5 @@
 import random
-
+from . import TrackBlock
 class TrackLine():
     def __init__(self, line_name: str):
         self.line_name = line_name
@@ -10,6 +10,23 @@ class TrackLine():
         self.switches = dict()
         self.stations = dict()  #{station: passengers}
         self.total_sales = 0
+
+        self.blocks[0] = TrackBlock.TrackBlock(
+                    line = self.line_name,
+                    section = None,
+                    block_number = 0,
+                    block_len = 35,
+                    block_grade = 0,
+                    speed_limit = 100,
+                    underground = False,
+                    station = None,
+                    switch = None,
+                    elevation = 0,
+                    cum_elevation = 0,
+                    has_rail_crossing = False,
+                    can_travel_to = [],
+                    station_side = None
+                )
 
     def get_block(self, block_num):
         return self.blocks[block_num]

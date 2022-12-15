@@ -1,18 +1,24 @@
 import unittest
-import Track
-import TrackBlock
-import track_model_gui
+from track_model.track_model_qc import Track
+from track_model.track_model_qc import TrackBlock
+from track_model.track_model_qc.widget import TrackModel
+from PyQt6.QtWidgets import QApplication, QWidget, QTreeWidgetItem, QFileDialog
+from signals import s
+
+import sys
 
 class TestTrackModelClass(unittest.TestCase):
     def test_parse_file(self):
-        track = track_model_gui.parse_track('blueline.csv')
-        for line in track.track_lines:
-            assert('Blue' in line)
-            for block in track.track_lines[line].blocks:
-                assert(block>=1 and block<=15)
+        app = QApplication(sys.argv)
+        tm = TrackModel()
+        for line in tm.track.track_lines:
+            assert('Green' in line or 'Red' in line)
+            for block in tm.track.track_lines[line].blocks:
+                assert(block>=0)
 
     def test_add_block(self):
-        track = track_model_gui.parse_track('blueline.csv')
+        app = QApplication(sys.argv)
+        tm = TrackModel()        
         b = TrackBlock.TrackBlock(
             line = "Test",
             section = "Test",
@@ -22,12 +28,13 @@ class TestTrackModelClass(unittest.TestCase):
             speed_limit = "404",
             underground = "Test",
             station = "Test",
-            switch = "Test",
+            switch = None,
             elevation = "404",
             has_rail_crossing = "Test",
             cum_elevation = "404",
             can_travel_to = "Test"
         )
+        track = tm.track
         track.add_block(b)
         
         assert('Test' in track.track_lines)
@@ -39,13 +46,9 @@ class TestTrackModelClass(unittest.TestCase):
         assert(track.track_lines['Test'].blocks[404].block_number   == 404)
         assert(track.track_lines['Test'].blocks[404].underground    == "Test")
         assert(track.track_lines['Test'].blocks[404].station        == "Test")
-        assert(track.track_lines['Test'].blocks[404].switch         == "Test")
+        assert(track.track_lines['Test'].blocks[404].switch         == None)
         assert(track.track_lines['Test'].blocks[404].can_travel_to  == "Test")
         assert(track.track_lines['Test'].blocks[404].has_rail_crossing == "Test")
-
-
-    def test_set_maintenance_mode(self):
-        pass
 
 
 if __name__ == '__main__':
