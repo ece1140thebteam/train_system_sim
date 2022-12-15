@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="eBrake">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>380</y>
+      <x>310</x>
+      <y>370</y>
       <width>201</width>
       <height>111</height>
      </rect>
@@ -322,8 +322,8 @@
    <widget class="QPushButton" name="enginefail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>290</y>
+      <x>30</x>
+      <y>330</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -338,8 +338,8 @@
    <widget class="QPushButton" name="brakefail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>360</y>
+      <x>30</x>
+      <y>390</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -354,8 +354,8 @@
    <widget class="QPushButton" name="signalfail">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>430</y>
+      <x>30</x>
+      <y>450</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -471,6 +471,25 @@
      <string>TextLabel</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>280</y>
+      <width>201</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>page_5.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -478,7 +497,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
   </widget>

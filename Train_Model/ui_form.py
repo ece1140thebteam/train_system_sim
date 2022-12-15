@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.3.2
+## Created by: Qt User Interface Compiler version 6.4.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_TrainModel(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.eBrake = QPushButton(self.centralwidget)
         self.eBrake.setObjectName(u"eBrake")
-        self.eBrake.setGeometry(QRect(210, 380, 201, 111))
+        self.eBrake.setGeometry(QRect(310, 370, 201, 111))
         self.eBrake.setCheckable(True)
         self.eBrake.setChecked(False)
         self.height = QLabel(self.centralwidget)
@@ -98,15 +98,15 @@ class Ui_TrainModel(object):
         self.grade.setGeometry(QRect(40, 240, 151, 16))
         self.enginefail = QPushButton(self.centralwidget)
         self.enginefail.setObjectName(u"enginefail")
-        self.enginefail.setGeometry(QRect(570, 290, 201, 51))
+        self.enginefail.setGeometry(QRect(30, 330, 201, 51))
         self.enginefail.setCheckable(True)
         self.brakefail = QPushButton(self.centralwidget)
         self.brakefail.setObjectName(u"brakefail")
-        self.brakefail.setGeometry(QRect(570, 360, 201, 51))
+        self.brakefail.setGeometry(QRect(30, 390, 201, 51))
         self.brakefail.setCheckable(True)
         self.signalfail = QPushButton(self.centralwidget)
         self.signalfail.setObjectName(u"signalfail")
-        self.signalfail.setGeometry(QRect(570, 430, 201, 51))
+        self.signalfail.setGeometry(QRect(30, 450, 201, 51))
         self.signalfail.setCheckable(True)
         self.enginefailure = QLabel(self.centralwidget)
         self.enginefailure.setObjectName(u"enginefailure")
@@ -132,10 +132,15 @@ class Ui_TrainModel(object):
         self.auth = QLabel(self.centralwidget)
         self.auth.setObjectName(u"auth")
         self.auth.setGeometry(QRect(440, 300, 181, 16))
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(600, 280, 201, 251))
+        self.label.setPixmap(QPixmap(u"page_5.jpg"))
+        self.label.setScaledContents(True)
         TrainModel.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(TrainModel)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 21))
+        self.menubar.setGeometry(QRect(0, 0, 800, 31))
         TrainModel.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(TrainModel)
         self.statusbar.setObjectName(u"statusbar")
@@ -182,5 +187,6 @@ class Ui_TrainModel(object):
         self.station.setText(QCoreApplication.translate("TrainModel", u"TextLabel", None))
         self.beacon.setText(QCoreApplication.translate("TrainModel", u"TextLabel", None))
         self.auth.setText(QCoreApplication.translate("TrainModel", u"TextLabel", None))
+        self.label.setText("")
     # retranslateUi
 
