@@ -14,8 +14,9 @@ class MainTestWindow(QWidget, ctcOfficeTestLayout.Ui_CTCOffice_Testing):
 
 
         # Initialize Static Data
-        self.redBlocks = []
-        self.greenBlocks = []
+        self.redBlocks = list(range(1,76))
+        self.greenBlocks = list(range(1,76))
+        self.redBlocks = (str(block) for block in self.greenBlocks)
         self.redCrossings = []
         self.greenCrossings = []
         self.blueBlocks = []

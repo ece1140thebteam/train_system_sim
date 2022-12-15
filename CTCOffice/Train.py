@@ -70,10 +70,10 @@ class Train():
     self.id = train_id
     self.line = line
     if (line == 'Green'):
-      self.current_block = 63
+      self.current_block = 0
     else:
-      self.current_block = 9
-    self.route_block = 1
+      self.current_block = 0
+    self.route_block = 0
     self.destinations = destinations
     self.is_dwelling = 0
     self.is_stopped = 0
@@ -124,7 +124,7 @@ class Train_Sim():
         if train.time_to_dispatch < 0:
           s.send_CTC_create_train.emit(train.line)
           train.at_yard = 0
-          train.current_block = 63
+          train.current_block = 0
           self.update_authority(train.id)
 
   # Called when train is dispatched or scheduled
@@ -154,7 +154,7 @@ class Train_Sim():
           else:
             next_route_block = train.route_block + 1
 
-          if (block == green_route[next_route_block]) or (train.current_block == 0):
+          if (block == green_route[next_route_block]) :
             train.current_block = block
             if train.route_block != len(green_route)-1:
               train.route_block += 1
@@ -290,7 +290,8 @@ class Train_Sim():
       # Set authority from current block to next station to 1
       origin_block = train.current_block
       dest_block = train.destinations[0][0]
-      speed = self.calculate_speed_to_next(train.line, train.route_block, dest_block, 0)
+      # speed = self.calculate_speed_to_next(train.line, train.route_block, dest_block, 0)
+      speed= 0
       self.set_authority_speed(train.line, train.route_block, origin_block, dest_block, speed)
 
   def calculate_speed_to_next(self, line, route_block, destination, tts):
@@ -389,7 +390,9 @@ class Train_Sim():
         # Set authority and speed to 1 and default
         else:
           self.green_authority[block] = 1
-          if speed == 0:
+          if block == 0:
+            block_speed = 50
+          elif speed == 0:
             block_speed = self.green_speeds[block]
 
           authorities.append({'line': 'Green', 'block': block, 'authority': 1})

@@ -210,7 +210,7 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setDisabled(True)
                 self.ui.speedSlider.setValue(0)
                 self.ui.driverSpd.setText('0MPH')
-                dialog.exec()
+                # dialog.exec()
 
         #If authority is good and no faults, continue with update
         else:
