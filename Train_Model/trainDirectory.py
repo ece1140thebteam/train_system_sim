@@ -41,9 +41,17 @@ class trainDirectory():
         s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
-        if id < self.idCounter:
-            self.trains[id].update_blocks(block)
-            self.trainctrl[id].cmdSpdAdjust(block)
+        if 'yard' in block:
+            if block['yard']:
+                print('Train {id} has reached the yard.')
+                self.trains[id].update_blocks(block)
+                self.trainctrl[id].cmdSpdAdjust(block)
+                self.trains[id] = None
+                self.trainctrl[id] = None
+        elif id < self.idCounter:
+            if self.trains[id] is not None:
+                self.trains[id].update_blocks(block)
+                self.trainctrl[id].cmdSpdAdjust(block)
 
     def add_train(self, line):
         #create the signals for between model and controller then pass through each constructor

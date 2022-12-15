@@ -690,6 +690,7 @@ class TrackModel(QWidget):
         block = self.track.track_lines[line].blocks[next_block_num]
         block.print()
         block_info = dict()
+        block_info['yard'] = False
         block_info['beacon'] = None
 
         # if the train is leaving a block w a station
@@ -728,6 +729,7 @@ class TrackModel(QWidget):
         block = self.track.track_lines[line].blocks[block]
         block_info = dict()
         block_info['beacon'] = block.beacon1
+        block_info['yard'] = False
 
         # # if the train is leaving a block w a station
         # block.beacon1
