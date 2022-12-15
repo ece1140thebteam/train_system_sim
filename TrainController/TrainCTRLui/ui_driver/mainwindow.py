@@ -204,11 +204,12 @@ class TrainController(QMainWindow):
                 pass
             #otherwise, train is moving when it shouldn't be, give auth error message
             else:
-                dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
-                self.ui.speedSlider.setDisabled(True)
-                self.ui.speedSlider.setValue(0)
-                self.ui.driverSpd.setText('0MPH')
-                dialog.exec()
+                if self.curTrain.curSpd > 0:
+                    dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                    self.ui.speedSlider.setDisabled(True)
+                    self.ui.speedSlider.setValue(0)
+                    self.ui.driverSpd.setText('0MPH')
+                    dialog.exec()
 
         #If authority is good and no faults, continue with update
         else:
@@ -228,7 +229,10 @@ class TrainController(QMainWindow):
 #TODO:
 #Popup when at station displaying door side and station name via beacon data
 #Automatic light functionality
-
+#Test ui?
+#Test Fault Functionality between modules
+#Somewhat functioning test ui? Use signals from train signals file?
+#DO NOT OPEN TRAIN CONTROL UI IF YOU HAVEN'T DISPATCHED A TRAIN
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
