@@ -155,6 +155,8 @@ class Train():
                 self.override_lights = False
                 self.sig.send_TrainCtrl_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
+        self.ilight_set(self.ilightcmd)
+        self.elight_set(self.elightcmd)
 
     def station(self):
         if self.beacon is not None and not(self.atStation):
