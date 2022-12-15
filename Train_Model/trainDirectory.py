@@ -41,7 +41,10 @@ class trainDirectory():
         s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
-        if id in self.trains:
+        print(id)
+        print(self.idCounter)
+
+        if id < self.idCounter:
             self.trains[id].update_blocks(block)
             self.trainctrl[id].cmdSpdAdjust(block)
 
@@ -50,8 +53,8 @@ class trainDirectory():
         signals = trainSignals()
         self.trainctrl.append(Train_CTRL_BE(signals))
         self.trains.append(Train(self.idCounter, signals, line))
-        self.trains[self.idCounter].next_track()
         self.idCounter += 1
+        self.trains[self.idCounter-1].next_track()
         s.send_Update_Combo.emit(self.idCounter)
 
         #create engineer Kp/Ki window at the time of train controller's instantiation

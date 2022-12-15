@@ -105,7 +105,7 @@ class Train():
             s.send_TrackModel_get_block_info.emit(self.line, 0, self.id)
         else:
             s.send_TrackModel_get_block_info.emit(self.line, self.block['block_num'], self.id)
-
+    
     def next_track(self):
         if self.block is None:
             s.send_TrackModel_get_next_block_info.emit(self.line, 0, -1, self.id)
@@ -137,7 +137,7 @@ class Train():
         self.speedlmt = self.block['speed_limit']/3.6
 
     def station(self):
-        if self.beacon['station_name'] != None and not(self.atStation):
+        if self.beacon is not None and not(self.atStation):
             self.atStation = True
         if self.speed == 0 and self.atStation and not(self.stationStop):
             self.passenger += self.prev_block['passengers_waiting']

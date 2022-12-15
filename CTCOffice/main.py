@@ -629,6 +629,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     
     # Temporarily connected to signal from track model
     def set_single_occupancy(self, line, block, occupancy):
+        if block==0: return
         if line == 'Green':
             self.lines[1].get(block).occupancy = int(occupancy)
         else:

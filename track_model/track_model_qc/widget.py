@@ -281,8 +281,8 @@ class TrackModel(QWidget):
                 if l.text(0).split(' ')[0].lower() == line.lower():
                     for section_num in range(0, num_sections):
                         yard = l.child(section_num)
-                        if '0' in section.text():
-                            section.setBackground(column, color)
+                        if '0' in yard.text(0):
+                            yard.setBackground(column, color)
 
 
     def update_switch_tree_pos_color(self, line, block):
@@ -684,6 +684,7 @@ class TrackModel(QWidget):
             return
 
         block = self.track.track_lines[line].blocks[next_block_num]
+        block.print()
         block_info = dict()
         block_info['beacon'] = None
 
@@ -722,11 +723,27 @@ class TrackModel(QWidget):
     def get_block_info(self, line, block, train_num):
         block = self.track.track_lines[line].blocks[block]
         block_info = dict()
+        block_info['beacon'] = block.beacon1
 
+        # # if the train is leaving a block w a station
+        # block.beacon1
+        # if current_block_num > 0:
+        #     curr_block = self.track.track_lines[line].blocks[current_block_num]
+        #     if curr_block.station is not None:
+        #         if next_block_num > current_block_num:
+        #             block_info['beacon'] = curr_block.beacon2
+        #         else:
+        #             block_info['beacon'] = curr_block.beacon1
+
+        # # if the train is entering a block with a station
+        # if block.station is not None:
+        #     if next_block_num > current_block_num:
+        #         block_info['beacon'] = curr_block.beacon1
+        #     else:
+        #         block_info['beacon'] = curr_block.beacon2
         # the block the train will enter
         block_info['block_num']          = block.block_number
         block_info['grade']              = block.block_grade
-        block_info['beacon']             = {'station_name' : block.station, 'station_side' : 'right'}
         block_info['length']             = block.block_len
         block_info['commanded_speed']    = block.commanded_speed
         block_info['authority']          = block.authority
