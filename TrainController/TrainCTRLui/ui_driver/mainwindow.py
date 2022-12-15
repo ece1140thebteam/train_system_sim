@@ -194,23 +194,23 @@ class TrainController(QMainWindow):
         
         #Read current light states and update accordingly
         if(self.curTrain.ilights == True):
-            self.ui.iLightBtn = True
+            self.ui.ilightBtn.setChecked(True)
         if(self.curTrain.elights == True):
-            self.ui.eLightBtn = True
+            self.ui.elightBtn.setChecked(True)
         if(self.curTrain.ilights == False):
-            self.ui.iLightBtn = False
+            self.ui.ilightBtn.setChecked(False)
         if(self.curTrain.elights == False):
-            self.ui.eLightBtn = False
+            self.ui.elightBtn.setChecked(False)
 
         #Update door status
         if(self.curTrain.rdoors == True):
-            self.ui.rdoorBtn = True
+            self.ui.rdoorBtn.setChecked(True)
         if(self.curTrain.ldoors == True):
-            self.ui.ldoorBtn = True
+            self.ui.ldoorBtn.setChecked(True)
         if(self.curTrain.rdoors == False):
-            self.ui.rdoorBtn = False
+            self.ui.rdoorBtn.setChecked(False)
         if(self.curTrain.ldoors == False):
-            self.ui.ldoorBtn = False
+            self.ui.ldoorBtn.setChecked(False)
 
         #Update temp
         self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
