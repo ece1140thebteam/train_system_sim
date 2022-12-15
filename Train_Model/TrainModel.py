@@ -201,7 +201,7 @@ class TrainModel(QMainWindow):
 
     def beacon_set(self):
         try:
-            if (self.train.beacon['station_name'] is None):
+            if (self.train.beacon is None):
                 self.ui.beacon.setText("Beacon: None")
                 self.ui.station.setText("Station: None")
             else:
