@@ -25,9 +25,9 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
       self.uploadPLC3.clicked.connect(self.getFile3)
-      #self.uploadPLC4.clicked.connect(self.getFile4)
-      #self.uploadPLC5.clicked.connect(self.getFile5)
-      #self.uploadPLC6.clicked.connect(self.getFile6)
+      self.uploadPLC4.clicked.connect(self.getFile4)
+      self.uploadPLC5.clicked.connect(self.getFile5)
+      self.uploadPLC6.clicked.connect(self.getFile6)
 
       self.blockSelect1.currentTextChanged.connect(self.displayController1Blocks)
       self.blockSelect2.currentTextChanged.connect(self.displayController2Blocks)
@@ -588,6 +588,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          blocks_to_update.clear()
 
+      #self.uploadPlcScript()
+
 
 
    # update manual switch positions coming from ctc
@@ -740,6 +742,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          
       print(self.controllers[controller_num])
 
+
    def getFile1(self):
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
@@ -767,6 +770,33 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if filename[0] != '':
          self.import_controller(filename[0], 3)
       print(self.controllers[3])
+
+   def getFile4(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[4] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 4)
+      print(self.controllers[4])
+
+   def getFile5(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[5] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 5)
+      print(self.controllers[5])
+
+   def getFile6(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[6] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 6)
+      print(self.controllers[6])
 
 
 
