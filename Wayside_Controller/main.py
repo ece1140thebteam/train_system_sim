@@ -481,7 +481,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
-         track_info[line][block]['commanded_speed'] = speed  # set suggested_speed as commanded_speed by default, but this will change if needed in run_controllerx
+
+         if (speed > track_info[line][block]['speed_limit']): # SAFETY CRITICAL: can NOT allow speed to be over speed limit!
+            track_info[line][block]['commanded_speed'] = track_info[line][block]['speed_limit']
+         else: # set commanded_speed to suggested_speed by default, but this will change if needed in run_controllerx
+            track_info[line][block]['commanded_speed'] = speed
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -490,21 +494,22 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
    # update block maintenance coming from ctc
    def update_maintenance_mode(self, updates_list):
-      controllers_to_update = []
       for update in updates_list:
          line = update['line']
          block = update['block']
          maintenance = update['mode']
-         
-         controller = track_info[line][block]['controller']
-         if controller not in controllers_to_update: 
-            controllers_to_update.append(controller)
 
          track_info[line][block]['maintenance'] = maintenance
-         
-      for controller in controllers_to_update:
-         self.run_controllerx(controller)
 
+         if (maintenance == 1):
+            track_info[line][block]['authority'] = 0
+            track_info[line][block-1]['authority'] = 0
+            track_info[line][block]['commanded_speed'] = 0
+            track_info[line][block-1]['commanded_speed'] = 0
+            s.send_TrackModel_block_authority.emit(line, block, authority)
+            s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+
+      
 
 
    # update manual switch positions coming from ctc
