@@ -183,36 +183,20 @@ class TrainController(QMainWindow):
         powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
         self.ui.powOut.setText(powStr)
 
+        
         #Read current brake states of train and update UI accordingly
-        if(self.curTrain.eBrake == True):
-            self.ui.eBrakeBtn.setChecked(True)
-        if(self.curTrain.sBrake == True):
-            self.ui.sBrakeBtn.setChecked(True)
-        if(self.curTrain.eBrake == False):
-            self.ui.eBrakeBtn.setChecked(False)
-        if(self.curTrain.sBrake == False):
-            self.ui.sBrakeBtn.setChecked(False)
+        self.ui.eBrakeBtn.setChecked(self.curTrain.eBrake)
+        self.ui.sBrakeBtn.setChecked(self.curTrain.sBrake)
         
         #Read current light states and update accordingly
-        if(self.curTrain.ilights == True):
-            self.ui.ilightBtn.setChecked(True)
-        if(self.curTrain.elights == True):
-            self.ui.elightBtn.setChecked(True)
-        if(self.curTrain.ilights == False):
-            self.ui.ilightBtn.setChecked(False)
-        if(self.curTrain.elights == False):
-            self.ui.elightBtn.setChecked(False)
+        self.ui.ilightBtn.setChecked(self.curTrain.ilights)
+        self.ui.elightBtn.setChecked(self.curTrain.elights)
 
         #Update door status
-        if(self.curTrain.rdoors == True):
-            self.ui.rdoorBtn.setChecked(True)
-        if(self.curTrain.ldoors == True):
-            self.ui.ldoorBtn.setChecked(True)
-        if(self.curTrain.rdoors == False):
-            self.ui.rdoorBtn.setChecked(False)
-        if(self.curTrain.ldoors == False):
-            self.ui.ldoorBtn.setChecked(False)
+        self.ui.rdoorBtn.setChecked(self.curTrain.rdoors)
+        self.ui.ldoorBtn.setChecked(self.curTrain.ldoors)
 
+       
         #Update temp
         self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
@@ -255,6 +239,7 @@ class TrainController(QMainWindow):
     def update_train(self):
         id = int(self.ui.trainSelect.currentText()[6:]) - 1
         self.curTrain = self.directory.trainctrl[id]
+
 
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
