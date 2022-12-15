@@ -329,22 +329,23 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       #    if controller not in controllers_to_update: 
       #       controllers_to_update.append(controller)
 
-      #    #s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
+         s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
          
-      # for controller in controllers_to_update:
-      #    self.run_controllerx(controller)
+         # for controller in controllers_to_update:
+         #    self.run_controllerx(controller)
 
-      track_info[line][block]['maintenance'] = maintenance
+         track_info[line][block]['maintenance'] = maintenance
 
-      if (maintenance == 1):
-         track_info[line][block]['authority'] = 0
-         track_info[line][block-1]['authority'] = 0
-         track_info[line][block]['commanded_speed'] = 0
-         track_info[line][block-1]['commanded_speed'] = 0
-         s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
-         s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['suggested_speed'])
+         if (maintenance == 1):
+            # track_info[line][block]['authority'] = 0
+            # track_info[line][block-1]['authority'] = 0
+            # track_info[line][block]['commanded_speed'] = 0
+            # track_info[line][block-1]['commanded_speed'] = 0
+            s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+            s.send_TrackModel_commanded_speed.emit(line, block, int(track_info[line][block]['suggested_speed']))
+            s.send_TrackModel_commanded_speed.emit(line, block, int(track_info[line][block]['suggested_speed']))
 
-   
+      
 
 
    # update manual switch positions coming from ctc
@@ -381,7 +382,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          #    exec(statement)
          for line in track_info:
             for block in track_info[line]:
-               if track_info[line][block]['controller'] == controller_num:
+               if track_info[line][block]['controller'] == controller_num and track_info[line][block]['maintenance'] != 1:
                   # print('updating')
                   if track_info[line][block]['switch_pos']!='-':
                      s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
