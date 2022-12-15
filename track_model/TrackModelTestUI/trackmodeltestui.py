@@ -316,7 +316,7 @@ class TrackModelTestUI(QWidget):
             for b in self.track[text]['switches']:
                 self.blockDropDown.addItem(str(b))
 
-        if self.updateTypeDropdown.currentText() == "Rail Crossing":
+        elif self.updateTypeDropdown.currentText() == "Rail Crossing":
             for b in self.track[text]['crossings']:
                 self.blockDropDown.addItem(str(b))
 
