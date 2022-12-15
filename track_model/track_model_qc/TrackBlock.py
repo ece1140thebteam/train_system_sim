@@ -29,9 +29,10 @@ class TrackBlock():
             station:            str,
             switch:             str,
             elevation:          str,
-            has_rail_crossing:  str,
+            has_rail_crossing:  bool,
             cum_elevation:      str,
             can_travel_to:      str,
+            station_side:       str = None
         ):
 
         self.line           = line
@@ -47,13 +48,13 @@ class TrackBlock():
         self.cum_elevation  = float(cum_elevation)
         self.has_rail_crossing = has_rail_crossing
         self.can_travel_to  = can_travel_to
-        self.crossing_open  = None if not has_rail_crossing else False
+        self.crossing_open  = True if has_rail_crossing else None
         self.circuit_open   = True
         self.signal         = "Red"
         self.light          = "Off"
         self.switch_pos     = switch if switch is None else switch.curr_pos
         self.track_heater   = 'Off'
-        self.failure_mode   = 'No Failures'
+        self.failure_mode   = 'None'
         self.beacon1        = None
         self.beacon2        = None
         self.authority      = 0 #1 # TODO REMOVE
@@ -63,15 +64,29 @@ class TrackBlock():
         self.passengers_waiting = random.randint(6, 16)
         self.passengers_deboarded = 0
 
+        if station is not None and station_side is None:
+            print('unassigned side for station')
+
+        self.station_side = None
+        if station_side is not None:
+            if station_side == 'L': self.station_side = 'left'
+            if station_side == 'R': self.station_side = 'right'
+            if 'B' in station_side: self.station_side = 'both'
+
+        # TODO Update for multidirection blocks
+        self.station_side_1 = self.station_side
+        self.station_side_2 = self.station_side
+
         if self.station:
             # TODO Add side of track
+            # becon 1 is at the lower track 
             self.beacon1 = {
-                'station': self.station
-
+                'station_name': self.station,
+                'station_side': self.station_side_1
             }
             self.beacon2 = {
-                'station': self.station
-
+                'station_name': self.station,
+                'station_side': self.station_side_2
             }
 
     def passengers_onboarded(self, deboarded):

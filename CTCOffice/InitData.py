@@ -3,9 +3,11 @@ import pandas as pd
 from CTCOffice.BlockInfo import BlockInfo
 from CTCOffice.Blocks import Blocks
 from CTCOffice.LineInfo import LineInfo
+from pathlib import Path
 
-file_name = 'CTCOffice/DataFiles/Track Layout & Vehicle Data vF2.xlsx'
+file_name = './CTCOffice/DataFiles/Track Layout & Vehicle Data vF2.xlsx'
 
+file_name = str(Path(__file__).resolve().parent / "DataFiles"/ "Track Layout & Vehicle Data vF2.xlsx")
 
 class InitData(): 
     def get_throughput(self):

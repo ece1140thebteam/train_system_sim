@@ -51,7 +51,7 @@ class signals(QObject):
   send_TrackController_failure = pyqtSignal(str, int, int) # Line, failure type
 
   #######################################################
-  # Wayside to track controller
+  # Wayside to Track Model
   # send switch position from Track controller to track model
   send_TrackController_switch_pos = pyqtSignal(str, int, int)
 

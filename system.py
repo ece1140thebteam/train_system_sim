@@ -7,6 +7,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
 from signals import s
+import platform
 
 from CTCOffice.testUiMain import MainTestWindow as MainTestWindowCTC
 from CTCOffice.main import MainWindow as MainWindowCTC
@@ -115,6 +116,9 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
       self.label_speed.setText(str(self.horizontalSlider.value()))
 
 if __name__ == "__main__":
+    platform = platform.platform()
+    if 'mac' not in platform: 
+      sys.argv += ['-platform', 'windows:darkmode=2', '-style', 'fusion']
     app = QApplication(sys.argv)
     window = SystemWindow()
     window.show()

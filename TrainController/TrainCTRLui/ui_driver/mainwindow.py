@@ -122,6 +122,8 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setDisabled(True)
             self.ui.speedSlider.setDisabled(True)
             self.ui.trainSelect.setDisabled(False)
+            if self.curTrain is None:
+                return
             self.curTrain.manMode = False
         else: #Case for False
             self.ui.elightBtn.setDisabled(False)
