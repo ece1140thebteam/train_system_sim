@@ -163,7 +163,8 @@ class TrainController(QMainWindow):
     #Function to adjust driver set speed based on slider in ui. Called internally when slider is adjusted
     def setSpdSlider(self):
         self.curTrain.driverCmd = self.ui.speedSlider.value()
-        self.ui.driverSpd.setText(str(self.curTrain.driverCmd)+'MPH')
+        self.ui.driverSpd.setText(str(int(self.curTrain.driverCmd*0.621371))+'MPH')
+        
 
 
 
