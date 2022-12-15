@@ -20,9 +20,15 @@ class trainSignals(QObject):
     send_TrainModel_sBrake = pyqtSignal(bool) #brake state
     send_TrainModel_eBrake = pyqtSignal(bool) #brake state
 
+    #Send emergency brake command from Train Model to Train Controller (Passenger eBrake activation)
+    send_TrainCtrl_eBrake = pyqtSignal(bool)
+
     # Send external/internal light command from Train Controller to Train Model
     send_TrainModel_eLight = pyqtSignal(bool) #light state
     send_TrainModel_iLight = pyqtSignal(bool) #light state
+
+    #Send external/internal light command from Train Model to Train Controller for underground activation
+    send_TrainController_lights = pyqtSignal(bool)
 
     #Send left/right door command from Train Controller to Train Model
     send_TrainModel_lDoor = pyqtSignal(bool) #door state
