@@ -23,6 +23,8 @@ class TrainController(QMainWindow):
         self.directory = directory
         self.totalRemoved = 0
 
+        self.authPopupHappened = False
+
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
         self.ui.manModeBtn.toggle()
@@ -171,7 +173,7 @@ class TrainController(QMainWindow):
         
     def beaconHandler(self):
         if (self.curTrain.beacon is not None) and (self.curTrain.atStation == True):
-            self.intercomstr = ('Arrived at '+ str(self.curTrain.station) + ' Station, doors opening on ' + str(self.curTrain.side) + ' side')
+            self.intercomstr = ('Arrived at '+ str(self.curTrain.station) + ' Station \nDoors opening on ' + str(self.curTrain.side) + ' side')
             self.curTrain.intercom = True
             self.ui.intercomBtn.setChecked(True)
             self.ui.label.setText(self.intercomstr)
@@ -232,11 +234,15 @@ class TrainController(QMainWindow):
             #otherwise, train is moving when it shouldn't be, give auth error message
                 else:
                     if self.curTrain.curSpd > 0:
-                        dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                        if(self.authPopupHappened == False):
+                            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                            self.authPopupHappened = True 
+                            dialog.exec()
                         self.ui.speedSlider.setDisabled(True)
                         self.ui.speedSlider.setValue(0)
-                        self.ui.driverSpd.setText('0MPH')
-                        dialog.exec()
+                        self.ui.driverSpd.setText('0MPH')        
+            else:
+                self.authPopupHappened = False
 
         #If authority is good and no faults, continue with update
             if(self.curTrain.manMode == True):
