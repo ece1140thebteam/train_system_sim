@@ -677,14 +677,13 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 if signal['block'] != 0:
                     self.lines[1].get(signal['block']).signal_state = signal['signal']
 
-    def set_crossings(self, crossings):
-        for crossing in crossings:
-            if crossing['line'] == 'Red':
-                if crossing['block'] != 0:
-                    self.lines[0].get(crossing['block']).crossing = crossing['track_crossing']
-            if crossing['line'] == 'Green':
-                if crossing['block'] != 0:
-                    self.lines[1].get(crossing['block']).crossing = crossing['track_crossing']
+    def set_crossings(self, line, block, color):
+        if line == 'Red':
+            if block != 0:
+                self.lines[0].get(block).crossing = color
+        if line == 'Green':
+            if block != 0:
+                self.lines[1].get(block).crossing = color
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

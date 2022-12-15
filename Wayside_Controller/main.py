@@ -9,9 +9,14 @@ from PyQt6.QtWidgets import *
 
 # signals used to communicate between modules
 from signals import s
+from pathlib import Path
 
 from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
 from Wayside_Controller.blockInfo import track_info as track_info
+#from Wayside_Controller.plc_scripts import green_controller_4 as Controller4
+#from Wayside_Controller.plc_scripts import green_controller_5 as Controller5
+#from Wayside_Controller.plc_scripts import green_controller_6 as Controller6
+
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def __init__(self, parent=None):
@@ -69,6 +74,21 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                elif (block >= 41 and block <= 70):
                   track_info[line][block]['controller'] = 6
                   self.blockSelect6.addItem(str(block))
+
+      # green controllers by default
+      cont1 = str(Path(__file__).resolve().parent / "plc_scripts" / "green_controller_1.txt")
+      cont2 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_2.txt")
+      cont3 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_3.txt")
+
+
+      self.import_controller( cont1, 1)
+      self.import_controller( cont2, 2)
+      self.import_controller( cont3, 3)
+
+      # Initialize all waysides by running all PLC scripts
+      for x in [1, 2, 3, 4, 5, 6]:
+         self.run_controllerx(x)
+
 
 
    # controller 1 GUI
@@ -336,16 +356,70 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
          track_info[line][block]['maintenance'] = maintenance
 
-         if (maintenance == 1):
-            # track_info[line][block]['authority'] = 0
-            # track_info[line][block-1]['authority'] = 0
-            # track_info[line][block]['commanded_speed'] = 0
-            # track_info[line][block-1]['commanded_speed'] = 0
-            s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
-            s.send_TrackModel_commanded_speed.emit(line, block, int(track_info[line][block]['suggested_speed']))
-            s.send_TrackModel_commanded_speed.emit(line, block, int(track_info[line][block]['suggested_speed']))
+         # Maintenance mode of a block affects the previous block's authority and commanded speed but previous block is not always the previous number in chronological order, so specific logic for track layout needs to done to determine previous block on the route
+         if line == 'Green':
+            if (29 <= block <= 62) or (64 <= block <= 76) or (86 <= block <= 100) or (102 <= block <= 150):
+               blocks_to_update = [block-1]
+            elif (14 <= block <= 27) or (77 <= block <= 84):
+               blocks_to_update = [block-1, block+1]
+            elif (1 <= block <= 12):
+               blocks_to_update = [block+1]
+            elif block == 13:
+               blocks_to_update = [1, 14]
+            elif block == 28:
+               blocks_to_update = [27, 150]
+            elif block == 63:
+               blocks_to_update = [0, 62]
+            elif block == 85:
+               blocks_to_update = [84, 100]
+            elif block == 101:
+               blocks_to_update = [77]
+         else: # Red line logic
+            if (2 <= block <= 8) or (10 <= block <= 15) or (17 <= block <= 26) or (28 <= block <= 32) or (34 <= block <= 37) or (39 <= block <= 43) or (45 <= block <= 51) or (53 <= block <= 65) or (68 <= block <= 70) or (73 <= block <= 75):
+               blocks_to_update = [block-1, block+1]
+            elif block == 1:
+               blocks_to_update = [2, 16]
+            elif block == 9:
+               blocks_to_update = [0, 8, 10]
+            elif block == 16:
+               blocks_to_update = [1, 15, 17]
+            elif block == 27:
+               blocks_to_update = [26, 28, 76]
+            elif block == 33:
+               blocks_to_update = [32, 34, 72]
+            elif block == 38:
+               blocks_to_update = [37, 39, 71]
+            elif block == 44:
+               blocks_to_update = [43, 45, 67]
+            elif block == 52:
+               blocks_to_update = [51, 53, 66]
+            elif block == 66:
+               blocks_to_update = [52, 65]
+            elif block == 67:
+               blocks_to_update = [44, 68]
+            elif block == 71:
+               blocks_to_update = [38, 70]
+            elif block == 72:
+               blocks_to_update = [33, 73]
+            elif block == 76:
+               blocks_to_update = [27, 75]
+               
 
-      
+         for b in blocks_to_update:
+            if maintenance == 1: # SAFETY CRITICAL: if block is set to maintenance mode, then NO train can go on it. therefore, previous block authority and commanded speed must be 0
+               track_info[line][b]['authority'] = 0
+               track_info[line][b]['commanded_speed'] = 0
+               s.send_TrackModel_block_authority.emit(line, block, 0)
+               s.send_TrackModel_commanded_speed.emit(line, block, 0)
+            #elif maintenance == 0: # WHEN MAINTENANCE GOES OFF, DO YOU AUTOMATICALLY CHANGE AUTHORITY TO LET TRAIN GO OVER THE BLOCK???????????????????????????????????????????????
+            #   track_info[line][b]['authority'] = 1
+            #   track_info[line][b]['commanded_speed'] = track_info[line][b]['speed_limit']
+            #   s.send_TrackModel_block_authority.emit(line, block, 1)
+            #   s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][b]['commanded_speed'])
+        
+
+         blocks_to_update.clear()
+
 
 
    # update manual switch positions coming from ctc
@@ -356,7 +430,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          sw = update['switch']
          track_info[line][block]['switch_pos'] = sw
 
-         controller = track_info[line][block]['controller']
          maintenance = track_info[line][block]['maintenance']
          
          # if (maintenance == 1):
@@ -372,44 +445,161 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
 
-   def run_controllerx(self, controller_num):
-         
-      # TODO: ACTUALLY EXECUTE PLC .TXT FILE
-      #for statement in self.controllers[controller_num]:
-      #   exec(statement)
+         # if maintenance == 1: # SAFETY CRITICAL: can NOT manually set switch position if maintenance mode is off!
+         #    track_info[line][block]['switch_pos'] = switch
+         #    s.send_TrackController_switch_pos.emit(line, block, switch)
 
-         # for statement in self.controllers[controller_num]:
-         #    exec(statement)
-         for line in track_info:
-            for block in track_info[line]:
-               if track_info[line][block]['controller'] == controller_num and track_info[line][block]['maintenance'] != 1:
-                  # print('updating')
-                  if track_info[line][block]['switch_pos']!='-':
-                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
-      # else:
-      #    # print('no plc uploaded for that controllers')
-      #    pass
-      # #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
 
-               #TODO remove
-               s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
-               s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
-      
 
+   # update block occupancy coming from track model
+   def update_occupancy(self, line, block, occupancy):
+      track_info[line][block]['occupancy'] = occupancy
+      self.run_controllerx(track_info[line][block]['controller'])
    
 
 
+   # update block status (failures) coming from track model
+   def update_status(self, line, block, failure):
+      track_info[line][block]['failure'] = int(failure != 'None')
+
+      # A block failure affects the previous block's authority and commanded speed but previous block is not always the previous number in chronological order, so specific logic for track layout needs to done to determine previous block on the route
+      if line == 'Green':
+         if (29 <= block <= 62) or (64 <= block <= 76) or (86 <= block <= 100) or (102 <= block <= 150):
+            blocks_to_update = [block-1]
+         elif (14 <= block <= 27) or (77 <= block <= 84):
+            blocks_to_update = [block-1, block+1]
+         elif (1 <= block <= 12):
+            blocks_to_update = [block+1]
+         elif block == 13:
+            blocks_to_update = [1, 14]
+         elif block == 28:
+            blocks_to_update = [27, 150]
+         elif block == 63:
+            blocks_to_update = [0, 62]
+         elif block == 85:
+            blocks_to_update = [84, 100]
+         elif block == 101:
+            blocks_to_update = [77]
+      else: # Red line logic
+         if (2 <= block <= 8) or (10 <= block <= 15) or (17 <= block <= 26) or (28 <= block <= 32) or (34 <= block <= 37) or (39 <= block <= 43) or (45 <= block <= 51) or (53 <= block <= 65) or (68 <= block <= 70) or (73 <= block <= 75):
+            blocks_to_update = [block-1, block+1]
+         elif block == 1:
+            blocks_to_update = [2, 16]
+         elif block == 9:
+            blocks_to_update = [0, 8, 10]
+         elif block == 16:
+            blocks_to_update = [1, 15, 17]
+         elif block == 27:
+            blocks_to_update = [26, 28, 76]
+         elif block == 33:
+            blocks_to_update = [32, 34, 72]
+         elif block == 38:
+            blocks_to_update = [37, 39, 71]
+         elif block == 44:
+            blocks_to_update = [43, 45, 67]
+         elif block == 52:
+            blocks_to_update = [51, 53, 66]
+         elif block == 66:
+            blocks_to_update = [52, 65]
+         elif block == 67:
+            blocks_to_update = [44, 68]
+         elif block == 71:
+            blocks_to_update = [38, 70]
+         elif block == 72:
+            blocks_to_update = [33, 73]
+         elif block == 76:
+            blocks_to_update = [27, 75]
+            
+
+      for b in blocks_to_update:
+         if track_info[line][block]['failure'] == 1: # SAFETY CRITICAL: if block has failure, then NO train can go on it. therefore, previous block authority and commanded speed must be 0
+            track_info[line][b]['authority'] = 0
+            track_info[line][b]['commanded_speed'] = 0
+            s.send_TrackModel_block_authority.emit(line, block, 0)
+            s.send_TrackModel_commanded_speed.emit(line, block, 0)
+         #elif track_info[line][block]['failure'] == 0: # AFTER FAILURE IS FIXED, DO YOU AUTOMATICALLY CHANGE AUTHORITY TO LET TRAIN GO OVER THE BLOCK???????????????????????????????????????????????
+         #   track_info[line][b]['authority'] = 1
+         #   track_info[line][b]['commanded_speed'] = track_info[line][b]['speed_limit']
+         #   s.send_TrackModel_block_authority.emit(line, block, 1)
+         #   s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][b]['commanded_speed'])
+      
+
+
+   # run PLC script for specified controller
+   def run_controllerx(self, controller_num):
+         
+      # TODO: ACTUALLY EXECUTE PLC .TXT FILE
+      # for statement in self.controllers[controller_num]:
+      if controller_num in self.controllers:
+         exec(self.controllers[controller_num])
+
+         # for statement in self.controllers[controller_num]:
+      #    #    exec(statement)
+      #    for line in track_info:
+      #       for block in track_info[line]:
+      #          if track_info[line][block]['controller'] == controller_num and track_info[line][block]['maintenance'] != 1:
+      #             # print('updating')
+      #             if track_info[line][block]['switch_pos']!='-':
+      #                s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+      # # else:
+      # #    # print('no plc uploaded for that controllers')
+      # #    pass
+      # # #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
+
+      #          #TODO remove
+      #          s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+      #          s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
+         lights = []
+
+         for line in track_info:
+            for block in track_info[line]:
+               if track_info[line][block]['controller'] == controller_num  and track_info[line][block]['maintenance'] != 1: # only emit signals for blocks in corresponding controller
+                  
+                  if track_info[line][block]['switch_pos']!='-':
+                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+
+                  if track_info[line][block]['track_crossing']!='-':
+                     s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
+
+                  if track_info[line][block]['traffic_light']!='-':
+                     lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
+                                 
+                  if track_info[line][block]['authority'] == 0:
+                     track_info[line][block]['commanded_speed'] = 0
+
+                  s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+                  s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
+         
+         s.send_TrackController_traffic_light.emit(lights)   
+         
+
+   def import_controller(self, filename, controller_num):
+      self.controllers[controller_num] = '[]'
+
+      script = ''
+      with open(filename, 'r') as file:
+         for line in file:
+            script += (line)
+
+         # temp = file.read(controller_num)
+         # print(temp)
+         self.controllers[controller_num] = script
+
+         plc = ''
+         for line in self.controllers[controller_num]: plc+=line
+         if controller_num == 1: self.displayPLC1.setText(plc)
+         if controller_num == 2: self.displayPLC2.setText(plc)
+         if controller_num == 3: self.displayPLC3.setText(plc)
+         if controller_num == 4: self.displayPLC4.setText(plc)
+         
+      print(self.controllers[controller_num])
 
    def getFile1(self):
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
 
       self.controllers[1] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[1] = file.readlines()
-            plc = ''
-            for line in self.controllers[1]: plc+=line
-            self.displayPLC1.setText(plc)
+         self.import_controller(filename[0], 1)
       print(self.controllers[1])
 
 
@@ -418,11 +608,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       self.controllers[2] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[2] = file.readlines()
-            plc = ''
-            for line in self.controllers[2]: plc+=line
-            self.displayPLC2.setText(plc)
+         self.import_controller(filename[0], 2)
+
       print(self.controllers[2])
 
 
@@ -432,11 +619,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
       self.controllers[3] = []
       if filename[0] != '':
-         with open(filename[0], 'r') as file:
-            self.controllers[3] = file.readlines()
-            plc = ''
-            for line in self.controllers[3]: plc+=line
-            self.displayPLC3.setText(plc)
+         self.import_controller(filename[0], 3)
       print(self.controllers[3])
 
 
