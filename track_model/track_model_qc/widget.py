@@ -232,7 +232,7 @@ class TrackModel(QWidget):
 
     def block_list_item_clicked(self, item):
         # if this is the yard block
-        if '0' in item.text(0):
+        if 'Yard' in item.text(0):
             line  = item.parent().text(0)
             self.load_block_clicked_info(line, '', 0)
 
