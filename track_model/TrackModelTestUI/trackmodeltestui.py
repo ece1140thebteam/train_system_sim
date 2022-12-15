@@ -15,7 +15,7 @@ class TrackModelTestUI(QWidget):
         self.load_ui()
         s.send_TrackModel_map_info.connect(self.update_track_info)
         s.get_TrackModel_map_info.emit()
-        s.send_TrackModel_updated.connect(self.update_track_info)
+        s.send_TrackModel_updated.connect(self.get_new_info)
         self.lineDropDown.currentTextChanged.connect(self.populate_block_dropdown)
         self.blockDropDown.currentTextChanged.connect(self.block_num_changed)
 
@@ -30,6 +30,9 @@ class TrackModelTestUI(QWidget):
         s.send_TrackModel_block_info.connect(self.receive_block_info)
         self.dispatchTrainButton.clicked.connect(self.test_train_run)
         self.reset_run_train()
+
+    def get_new_info(self):
+        s.get_TrackModel_map_info.emit()
 
     def reset_run_train(self):
         self.run_train = False

@@ -481,9 +481,10 @@ class TrackModel(QWidget):
         self.display_station_tree()
         self.display_switch_tree()
 
-        s.send_TrackModel_updated.emit()
         self.blockListTreeWidget.expandAll()
         self.stationTree.expandAll()
+        s.send_TrackModel_updated.emit()
+
 
     # display the tree of tracks
     def display_track_tree(self):
