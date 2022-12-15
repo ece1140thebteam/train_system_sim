@@ -102,13 +102,13 @@ class Train():
 
     def current_track(self):
         if self.block is None:
-            s.send_TrackModel_get_block_info.emit(self.line, 0, self.id)
+            s.send_TrackModel_get_block_info.emit(self.line, -1, self.id)
         else:
             s.send_TrackModel_get_block_info.emit(self.line, self.block['block_num'], self.id)
     
     def next_track(self):
         if self.block is None:
-            s.send_TrackModel_get_next_block_info.emit(self.line, 0, -1, self.id)
+            s.send_TrackModel_get_next_block_info.emit(self.line, -1, -1, self.id)
         elif self.prev_block is None:
             s.send_TrackModel_get_next_block_info.emit(self.line, self.block['block_num'], 0, self.id)
         else:

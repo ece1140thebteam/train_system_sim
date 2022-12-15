@@ -41,9 +41,6 @@ class trainDirectory():
         s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
-        print(id)
-        print(self.idCounter)
-
         if id < self.idCounter:
             self.trains[id].update_blocks(block)
             self.trainctrl[id].cmdSpdAdjust(block)

@@ -604,7 +604,8 @@ class TrackModel(QWidget):
         # print('get next block')
         print(f'{current_block_num} {previous_block_num} {train_num}')
         next_block_num = -1
-        if current_block_num == 0:  #dispatching from the yard
+        dispatching = False
+        if current_block_num == 0: # connections from the yard
             # next_block_num = 1
             # print(self.track.yard.get_connections(line))
             for block in self.track.yard.get_connections(line):
@@ -616,7 +617,9 @@ class TrackModel(QWidget):
                 # switch is in the right position
                 if switch.curr_pos != 0:
                     print('switch is not in the right position')
-
+        elif current_block_num == -1:   #dispatching now 
+            next_block_num = 0
+            dispatching = True
         else:
             if self.track.track_lines[line].blocks[current_block_num].switch is None:
                 next_block_num = self.track.track_lines[line].blocks[current_block_num].can_travel_to
@@ -677,7 +680,7 @@ class TrackModel(QWidget):
                         s.send_TrackModel_next_block_info.emit(train_num, {'block_num':-1})
                         return 
         
-        if next_block_num == 0:
+        if next_block_num == 0 and not dispatching:
             block_info = dict()
             block_info['block_num'] = 0
             block_info['yard'] = True
