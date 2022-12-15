@@ -2,7 +2,7 @@
 import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtCore import QTimer 
+from PySide6.QtCore import QTimer
 import math
 import random
 
@@ -122,6 +122,7 @@ class TrainModel(QMainWindow):
         self.train = None
         self.directory = trainD
         self.totalRemoved = 0
+        self.sigFail = False
 
         #buttons
         self.ui.eBrake.setCheckable(True)
@@ -184,8 +185,16 @@ class TrainModel(QMainWindow):
         self.ui.mass.setText("Mass: " + ("%.2f" % (self.train.mass*1.10231)) + " tons")
         self.ui.powercmd.setText("Power Command: " + ("%.2f" % (self.train.powercmd)) + " W")
         self.ui.tempcmd.setText("Temperature Cmd: " + str(self.train.tempcmd) + " F")
-        self.ui.speedcmd.setText("Speed Command: " + str(int(self.train.speedcmd*2.23694)) + " mph")
-        self.ui.speedlmt.setText("Speed Limit: " + str(int(self.train.speedlmt*2.23694)) + " mph")
+        try:
+            self.sigFail = self.train.signalfail
+        except:
+            self.sigFail = False
+        if not(self.sigFail):
+            self.ui.speedcmd.setText("Speed Command: " + str(int(self.train.speedcmd*2.23694)) + " mph")
+            self.ui.speedlmt.setText("Speed Limit: " + str(int(self.train.speedlmt*2.23694)) + " mph")
+        else:
+            self.ui.speedcmd.setText("Speed Command: undefined")
+            self.ui.speedlmt.setText("Speed Limit: undefined")
         self.ui.grade.setText("Grade: " + str(self.train.grade) + " deg")
         self.beacon_set()
         self.e_brake_update()
@@ -206,13 +215,18 @@ class TrainModel(QMainWindow):
             return
 
     def beacon_set(self):
-        if (self.train.beacon is None):
-            self.ui.beacon.setText("Beacon: None")
-            self.ui.station.setText("Station: None")
+        if not(self.sigFail):
+            if (self.train.beacon is None):
+                self.ui.beacon.setText("Beacon: None")
+                self.ui.station.setText("Station: None")
+            else:
+                self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
+                self.ui.station.setText("Station: " + self.train.beacon['station_name'])
+            self.ui.auth.setText("Authority: " + str(self.train.auth))
         else:
-            self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
-            self.ui.station.setText("Station: " + self.train.beacon['station_name'])
-        self.ui.auth.setText("Authority: " + str(self.train.auth))
+            self.ui.beacon.setText("Beacon: undefined")
+            self.ui.station.setText("Station: undefined")
+            self.ui.auth.setText("Authority: undefined")
 
     def e_brake(self):
         self.train.e_brake(self.ui.eBrake.isChecked())
