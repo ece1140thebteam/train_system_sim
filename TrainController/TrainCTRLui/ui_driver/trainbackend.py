@@ -36,6 +36,7 @@ class Train_CTRL_BE():
         self.station = None
         self.side = None
         self.beacon = None
+        self.atStation = False
 
         self.sBrake = False
         self.eBrake = False
@@ -54,10 +55,13 @@ class Train_CTRL_BE():
         self.eBrake = True
 
     def beaconHandler(self, info):
+        self.beacon = info['beacon']
         if info['beacon'] is not None:
-            self.beacon = info['beacon']
+            self.atStation = True
             self.side = self.beacon['station_side']
             self.station = self.beacon['station_name']
+        else:
+            self.atStation = False
 
     def failHandle(self, failActive, failType): 
             self.failMode = failActive

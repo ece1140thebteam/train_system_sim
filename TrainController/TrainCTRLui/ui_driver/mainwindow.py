@@ -166,14 +166,15 @@ class TrainController(QMainWindow):
         self.ui.driverSpd.setText(str(int(self.curTrain.driverCmd*0.621371))+'MPH')
         
     def beaconHandler(self):
-        if self.curTrain.beacon is not None:
-            intercomstr = ('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
+        if (self.curTrain.beacon is not None) and (self.curTrain.atStation == True):
+            self.intercomstr = ('Arrived at '+ str(self.curTrain.station) + ' Station, doors opening on ' + str(self.curTrain.side) + ' side')
             self.curTrain.intercom = True
             self.ui.intercomBtn.setChecked(True)
-            self.ui.label.setText(intercomstr)
+            self.ui.label.setText(self.intercomstr)
         else:
-            intercomstr = ('Intercom Not Active')
+            self.intercomstr = ('Intercom Not Active')
             self.ui.intercomBtn.setChecked(False)
+            self.ui.label.setText(self.intercomstr)
 
     #Function to periodically update ui based on backend train data
     def UpdateUI(self):
@@ -225,13 +226,13 @@ class TrainController(QMainWindow):
                 if self.curTrain.curSpd <= 0:
                     self.beaconHandler()
             #otherwise, train is moving when it shouldn't be, give auth error message
-            else:
-                if self.curTrain.curSpd > 0:
-                    dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
-                    self.ui.speedSlider.setDisabled(True)
-                    self.ui.speedSlider.setValue(0)
-                    self.ui.driverSpd.setText('0MPH')
-                    dialog.exec()
+                else:
+                    if self.curTrain.curSpd > 0:
+                        dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                        self.ui.speedSlider.setDisabled(True)
+                        self.ui.speedSlider.setValue(0)
+                        self.ui.driverSpd.setText('0MPH')
+                        dialog.exec()
 
         #If authority is good and no faults, continue with update
             if(self.curTrain.manMode == True):
