@@ -253,7 +253,7 @@ class TrainController(QMainWindow):
         self.ui.trainSelect.addItem("Train " + str(id))
         self.UpdateUI()
 
-    def delete(self):
+    def delete(self, id):
         self.ui.trainSelect.removeItem(id-self.totalRemoved)
         self.totalRemoved += 1
 
