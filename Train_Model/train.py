@@ -69,6 +69,7 @@ class Train():
             self.station()
         if self.auth == 1 and self.atStation:
             self.atStation = False
+            print(self.block)
             if self.beacon['station_side'] == 'right':
                 self.rdoorcmd = False
             else:

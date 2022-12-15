@@ -704,9 +704,9 @@ class TrackModel(QWidget):
         # if the train is entering a block with a station
         if block.station is not None:
             if next_block_num > current_block_num:
-                block_info['beacon'] = curr_block.beacon1
+                block_info['beacon'] = block.beacon1
             else:
-                block_info['beacon'] = curr_block.beacon2
+                block_info['beacon'] = block.beacon2
             
 
 
