@@ -70,16 +70,12 @@ class Train():
             self.station()
         if self.auth == 1 and self.atStation:
             self.atStation = False
-            print(self.block)
             if self.beacon is None:
                 return
-            if self.beacon['station_side'] == 'right':
-                self.rdoorcmd = False
-            else:
-                self.ldoorcmd = False
 
     def e_brake(self, cmd):
         self.ebrakecmd = cmd
+        self.sig.send_TrainCtrl_eBrake.emit(self.ebrakecmd)
 
     def elight_set(self, on):
         if on:
@@ -109,7 +105,7 @@ class Train():
             s.send_TrackModel_get_block_info.emit(self.line, -1, self.id)
         else:
             s.send_TrackModel_get_block_info.emit(self.line, self.block['block_num'], self.id)
-    
+
     def next_track(self):
         if self.block is None:
             s.send_TrackModel_get_next_block_info.emit(self.line, -1, -1, self.id)
@@ -122,6 +118,9 @@ class Train():
         if (self.block != None) and (self.block['block_num'] != block['block_num']):
             self.prev_block = self.block
         self.block = block
+        if (self.block['yard']):
+            s.send_TrackModel_track_occupancy.emit(self.line, self.prev_block['block_num'], False)
+            return
         s.send_TrackModel_track_occupancy.emit(self.line, self.block['block_num'], True)
         self.grade = self.block['grade']
         self.speedcmd = self.block['commanded_speed']*0.277777
@@ -135,14 +134,14 @@ class Train():
         if (self.block['underground']):
             self.elightcmd = True
             self.ilightcmd = True
-            self.sig.send_TrainController_lights.emit(True)
+            self.sig.send_TrainCtrl_lights.emit(True)
             self.override_lights = True
         else:
             if (self.override_lights):
                 self.elightcmd = False
                 self.ilightcmd = False
                 self.override_lights = False
-                self.sig.send_TrainController_lights.emit(False)
+                self.sig.send_TrainCtrl_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
 
     def station(self):
