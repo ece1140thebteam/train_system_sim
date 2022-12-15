@@ -69,7 +69,7 @@ class Train():
             return
         self.tickrate = 0.1*mul
         self.calc_speed()
-        if self.auth == 0:
+        if self.auth == 0 or self.speed == 0:
             self.current_track()
             self.station()
         if self.auth == 1 and self.atStation:
