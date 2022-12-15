@@ -5,17 +5,12 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 import sys
-# import sqlite3
-# import time
 from signals import s
 import CTCOffice.Train as Train
 
 from CTCOffice.testUiMain import MainTestWindow
 
 import CTCOffice.InitData as InitData
-
-# mydb = sqlite3.connect("CTCOffice/ctcOffice.db")
-# cursor = mydb.cursor()
 
 class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -140,6 +135,18 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         switch = self.comboBox_controlSwitch_switch.currentText()
         position = self.comboBox_controlSwitch_switchPosition.currentText()
 
+        # Check to see if block is in maintenance mode before setting speed
+        if line == 'Red':
+            if self.lines[0].get(int(switch)).maintenance_mode == 0:
+                print("Cannot set switch: block must be in maintenance mode")
+                self.outputLabel.setText("Cannot set switch: block must be in maintenance mode")
+                return
+        else:
+            if self.lines[1].get(int(switch)).maintenance_mode == 0:
+                print("Cannot set switch: block must be in maintenance mode")
+                self.outputLabel.setText("Cannot set switch: block must be in maintenance mode")
+                return
+
         print("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         self.outputLabel.setText("Setting Line " + line + " switch #: " + switch + " to position: " + position)
         if position == "Normal":
@@ -236,8 +243,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         time_to_dispatch = hour_sec + min_sec - 90
         print(time_to_dispatch)
 
-
-        Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+        if(line == 'Green'):
+            Train.trains.create_train('Green', stationBlocks, time_to_dispatch)
+        else:
+            Train.trains.create_train('Red', stationBlocks, time_to_dispatch)
 
        
         
@@ -400,8 +409,8 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
     # Get all data for a line and update table
     # Table is colored depending on value returned
     def get_line_data(self):
-        self.tableWidget_2.setRowCount(70)
-        for row in range(0, 70):
+        self.tableWidget_2.setRowCount(76)
+        for row in range(0, 76):
             block = self.lines[0].get(row+1)
             self.tableWidget_2.setItem(row, 0, QTableWidgetItem(str(block.block_number)))
             self.tableWidget_2.setItem(row, 1, QTableWidgetItem(str(block.line)))

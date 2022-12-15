@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="eBrake">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>40</x>
       <y>370</y>
       <width>201</width>
       <height>111</height>
@@ -322,8 +322,8 @@
    <widget class="QPushButton" name="enginefail">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>330</y>
+      <x>300</x>
+      <y>340</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -338,8 +338,8 @@
    <widget class="QPushButton" name="brakefail">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>390</y>
+      <x>300</x>
+      <y>400</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -354,8 +354,8 @@
    <widget class="QPushButton" name="signalfail">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>450</y>
+      <x>300</x>
+      <y>460</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -471,23 +471,17 @@
      <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QComboBox" name="trainSelect">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>280</y>
-      <width>201</width>
-      <height>251</height>
+      <x>650</x>
+      <y>30</y>
+      <width>141</width>
+      <height>24</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>page_5.jpg</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
+    <property name="editable">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
