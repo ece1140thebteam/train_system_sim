@@ -74,6 +74,7 @@ class TrackModel(QWidget):
         s.send_TrackModel_get_block_info.connect(self.get_block_info)
         s.send_TrackModel_passengers_onboarded.connect(self.passengers_onboarded)
         s.send_TrackModel_railway_crossing_status.connect(self.update_crossing_position)
+        s.send_TrackController_crossing.connect(self.update_crossing_position_tc) # Line, block, (0=deactivated, 1=activated)
         # self.print_track_info_dict()
 
         #from track controller
@@ -150,6 +151,10 @@ class TrackModel(QWidget):
             print('ERROR')
         self.update_switch_position(line, block, sw)
     
+    def update_crossing_position_tc(self, line, block, pos_int): # Line, block, (0=deactivated, 1=activated)
+        crossing_open = pos_int == 0
+        self.update_crossing_position(line, block, crossing_open)
+
     def update_crossing_position(self, line, block, pos):
         # if pos is true, crossing is open
         self.track.track_lines[line].blocks[block].crossing_open = pos
