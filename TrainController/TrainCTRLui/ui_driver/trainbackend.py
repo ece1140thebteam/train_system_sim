@@ -32,6 +32,7 @@ class Train_CTRL_BE():
         self.elights = False
         self.ilights = False
 
+        self.intercom = False
         self.station = None
         self.side = None
         self.beacon = None
@@ -48,7 +49,6 @@ class Train_CTRL_BE():
     def autoLights(self, lightState):
         self.eLights = lightState
         self.iLights = lightState
-
 
     def passEBrake(self):
         self.eBrake = True
@@ -161,11 +161,7 @@ class Train_CTRL_BE():
                         self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
                         #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     else:
-                        print('No Brakes Enabled, calculating power...')
-                else:
-                    pass
-                    #self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                    #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)      
+                        print('No Brakes Enabled, calculating power...')     
                 
                 self.powOutput = pow
                 self.sigs.send_TrainModel_powerOutput.emit(self.powOutput)
