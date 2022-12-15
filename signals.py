@@ -40,20 +40,24 @@ class signals(QObject):
   send_CTC_authority = pyqtSignal(list) # [{'line':line, 'block':block, 'authority':0}]
 
   #######################################################
-  # Wayside to CTC 
+  # Wayside to CTC AND Track Model
+
+  # send switch position from Track controller
+  send_TrackController_switch_pos = pyqtSignal(str, int, int)
+
+  # Send railway crossing status from Track Controller
+  send_TrackController_crossing = pyqtSignal(str, int, int) # Line, block, (0=deactivated, 1=activated)
+
+  # Send traffic light colors from Track Controller
+  send_TrackController_traffic_light = pyqtSignal(list) # [{'line':line, 'block':block, 'traffic_light':0 for RED, 1 for GREEN}]
+
   # Send track occupancy from Track Controller to CTC
+  # SHOULD NOT BE USED CURRENTLY......CTC SHOULD GET THIS STRAIGHT FROM TRACK MODEL
   send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
 
-  # Send crossing status from Track Controller to CTC
-  send_TrackController_crossing = pyqtSignal(list) # Line, status (0=deactivated, 1=activated)
-
   # Send track failure from Track Controller to CTC
+  # SHOULD NOT BE USED CURRENTLY......CTC SHOULD GET THIS STRAIGHT FROM TRACK MODEL
   send_TrackController_failure = pyqtSignal(str, int, int) # Line, failure type
-
-  #######################################################
-  # Wayside to Track Model
-  # send switch position from Track controller to track model
-  send_TrackController_switch_pos = pyqtSignal(str, int, int)
 
   #######################################################
   # CTC to Train Control
@@ -66,7 +70,7 @@ class signals(QObject):
   send_TrackModel_map_info          = pyqtSignal(dict) 
   get_TrackModel_map_info           = pyqtSignal()
 
-  # track model to track controller
+  # Track Model to track controller
   send_TrackModel_tc_track_failure = pyqtSignal(str, int, str)  #line, block, failure str
   #######################################################
   # Track Model test

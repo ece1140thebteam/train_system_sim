@@ -1,11 +1,68 @@
+# Wayside Controller 1
+# Green blocks 0, 36-73 (Sections I, J, K, L)
 
-# sw 77 -> 76 if b76.o && b77.a sw = 0
-# sw 77 -> 101 if b101.a && b77.o sw=1
 
-# sw 85 -> 86 if b85.o && b86.a sw=0
-# sw 85 -> 100 if b100.o && b85.a sw=1
+#----------------------------------------------------------------------
+# Switch at block 63 (default position: 0-63)
+#----------------------------------------------------------------------
 
-# track_info['Green'][78]['authority']  track_info['Green'][2]['authority']
+# when a train is in yard ready for dispath
+if (track_info['Green'][0]['occupancy'] == 1) and (track_info['Green'][63]['authority'] == 1):
+    track_info['Green'][0]['traffic_light'] = 1
+    track_info['Green'][62]['traffic_light'] = 0
+    
+    track_info['Green'][62]['commanded_speed'] = 0
+    track_info['Green'][62]['authority'] = 0 #stops within block 62
 
-track_info['Green'][77]['switch_pos'] = not (track_info['Green'][76]['authority'])
-track_info['Green'][85]['switch_pos'] = track_info['Green'][100]['occupancy'] or track_info['Green'][99]['occupancy'] or track_info['Green'][98]['occupancy'] 
+# when a train is traveling on J to do another loop around the track, allow all trains waiting in yard to dispatch first
+if (track_info['Green'][62]['occupancy'] == 1) and (track_info['Green'][0]['occupancy'] == 0) and (track_info['Green'][63]['authority'] == 1):
+    track_info['Green'][63]['switch_pos'] = 1
+    track_info['Green'][0]['traffic_light'] = 0
+    track_info['Green'][0]['commanded_speed'] = 0
+    track_info['Green'][63]['commanded_speed'] = 1 #????????????
+    track_info['Green'][62]['traffic_light'] = 1
+    track_info['Green'][62]['commanded_speed'] = 1 #????????????
+
+# after train in J has passed, return switch to default position
+if (track_info['Green'][62]['occupancy'] == 0):
+    track_info['Green'][63]['switch_pos'] = 0
+    track_info['Green'][62]['traffic_light'] = 0
+
+
+
+#----------------------------------------------------------------------
+# Switch at block 57 (default position: 57-0)
+#----------------------------------------------------------------------
+
+if (track_info['Green'][57]['occupancy'] == 1) and (track_info['Green'][0]['authority'] == 1):
+    track_info['Green'][0]['traffic_light'] = 1
+    # do i need to change commanded speed?
+elif (track_info['Green'][57]['occupancy'] == 1) and (track_info['Green'][58]['authority'] == 1):
+    track_info['Green'][57]['switch_pos'] = 1    
+    track_info['Green'][58]['traffic_light'] = 1
+
+# after train has passed, return switch and traffic lights to default
+if (track_info['Green'][57]['occupancy'] == 0):
+    track_info['Green'][57]['switch_pos'] = 0
+    track_info['Green'][0]['traffic_light'] = 0 
+    track_info['Green'][58]['traffic_light'] = 0
+
+
+#------------------------------------------------------
+# change traffic lights at stations
+#------------------------------------------------------
+
+stations = [39, 48, 57, 65, 73]
+for x in stations:
+
+    # next line is executed when train is just passing through and when moving again
+    if (track_info['Green'][x]['authority'] == 1) and (track_info['Green'][x]['suggested_speed'] == 1):
+        track_info['Green'][x]['traffic_light'] = 1 # green light bc train is just passing by
+        # assuming here that if train needs to stop at station, 
+    
+
+    # after train passes station, return traffic light to red
+    if (track_info['Green'][x]['occupancy'] == 0):
+        track_info['Green'][x]['traffic_light'] = 0
+
+

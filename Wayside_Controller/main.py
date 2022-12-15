@@ -19,6 +19,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.setupUi(self)
       self.controllers = dict()
 
+      # TODO: initialize all waysides by running all PLC scripts
+
       # GUI connections
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
@@ -30,20 +32,22 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.blockSelect1.currentTextChanged.connect(self.displayController1Blocks)
       self.blockSelect2.currentTextChanged.connect(self.displayController2Blocks)
       self.blockSelect3.currentTextChanged.connect(self.displayController3Blocks)
-      #self.blockSelect4.currentTextChanged.connect(self.displayController4Blocks)
-      #self.blockSelect5.currentTextChanged.connect(self.displayController5Blocks)
-      #self.blockSelect6.currentTextChanged.connect(self.displayController6Blocks)
+      self.blockSelect4.currentTextChanged.connect(self.displayController4Blocks)
+      self.blockSelect5.currentTextChanged.connect(self.displayController5Blocks)
+      self.blockSelect6.currentTextChanged.connect(self.displayController6Blocks)
       
-      # signals from Track Model
-      s.send_TrackModel_track_occupancy.connect(self.update_occupancy)
-      s.send_TrackModel_tc_track_failure.connect(self.update_status)
-
+      
       # signals from CTC
       s.send_CTC_authority.connect(self.update_authority) # [{'line':line, 'block':block, 'authority':0}]
       s.send_CTC_suggested_speed.connect(self.update_suggested_speed) # [{'line':line, 'block':block, 'speed':0}]
       s.send_CTC_maintenance_mode_signal.connect(self.update_maintenance_mode) # [{'line':line, 'block':block, 'mode':0}]
       s.send_CTC_switch_position_signal.connect(self.update_switch_position) # [{'line':line, 'block':block, 'switch':0}]
       #s.timer_tick.connect(self.handle_time_increment)
+      
+      # signals from Track Model
+      s.send_TrackModel_track_occupancy.connect(self.update_occupancy) #line, block, occupancy (true for occupied)
+      s.send_TrackModel_tc_track_failure.connect(self.update_status) #line, block, failure str
+
 
       # Allocate blocks with corresponding controller
       for line in track_info:
@@ -71,7 +75,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                   self.blockSelect6.addItem(str(block))
 
 
-   # controller 1 GUI
+   # CONTROLLER 1 GUI
    def displayController1Blocks(self, blockText):
       
       block = int(blockText)
@@ -80,17 +84,17 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['switch_pos'] == 0: # default position
          if block == 57:
             self.switchFromValue1.setText('57')
+            self.switchToValue1.setText('Yard')
+         elif block == 63:
+            self.switchFromValue1.setText('63')
+            self.switchToValue1.setText('Yard')
+      elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
+         if block == 57:
+            self.switchFromValue1.setText('57')
             self.switchToValue1.setText('58')
          elif block == 63:
             self.switchFromValue1.setText('63')
             self.switchToValue1.setText('62')
-      elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
-         if block == 57:
-            self.switchFromValue1.setText('57')
-            self.switchToValue1.setText('Yard')
-         elif block == 63:
-            self.switchFromValue1.setText('63')
-            self.switchToValue1.setText('Yard')
       else:
          self.switchFromValue1.setText(track_info['Green'][block]['switch_pos'])
          self.switchToValue1.setText(track_info['Green'][block]['switch_pos'])
@@ -117,8 +121,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          self.maintenanceValue1.setText('Off')
       else:
          self.maintenanceValue1.setText('On')
-
       
+
       # displays Authority, Occupancy, Suggested Speed, Commanded Speed, and Railway Crossings
       self.authorityValue1.setText(str(track_info['Green'][block]['authority']))
       self.occupancyValue1.setText(str(track_info['Green'][block]['occupancy']))
@@ -129,7 +133,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
 
-   # controller 2 GUI
+   # CONTROLLER 2 GUI
    def displayController2Blocks(self, blockText):
       
       block = int(blockText)
@@ -187,7 +191,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
 
-   # controller 3 GUI
+   # CONTROLLER 3 GUI
    def displayController3Blocks(self, blockText):
      
       block = int(blockText)
@@ -208,14 +212,14 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['switch_pos'] == 0: # default position
          if block == 13:
             self.switchFromValue3.setText('13')
-            self.switchToValue3.setText('12')
+            self.switchToValue3.setText('1')
          elif block == 28:
             self.switchFromValue3.setText('28')
             self.switchToValue3.setText('29')
       elif track_info['Green'][block]['switch_pos'] == 1: # nondefault position
          if block == 13:
             self.switchFromValue3.setText('13')
-            self.switchToValue3.setText('1')
+            self.switchToValue3.setText('12')
          elif block == 28:
             self.switchFromValue3.setText('28')
             self.switchToValue3.setText('150')
@@ -228,7 +232,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if track_info['Green'][block]['traffic_light'] == 0:
          self.trafficLightValue3.setText('Red')
       elif track_info['Green'][block]['traffic_light'] == 1:
-         self.trafficLightValue3setText('Green')
+         self.trafficLightValue3.setText('Green')
       else:
          self.trafficLightValue3.setText(track_info['Green'][block]['traffic_light'])
 
@@ -255,20 +259,193 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
 
 
 
-   # update block occupancy coming from track model
-   def update_occupancy(self, line, block, occupancy):
-      track_info[line][block]['occupancy'] = occupancy
-      #s.send_TrackController_track_occupancy.emit({'line':line, 'block':block, 'occupancy':occupancy}) # ?????????????????????????????????
-      self.run_controllerx(track_info[line][block]['controller'])
-   
+   # CONTROLLER 4 GUI
+   def displayController4Blocks(self, blockText):
+      
+      block = int(blockText)
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 9:
+            self.switchFromValue4.setText('9')
+            self.switchToValue4.setText('Yard')
+         elif block == 16:
+            self.switchFromValue4.setText('16')
+            self.switchToValue4.setText('1')
+         elif block == 27:
+            self.switchFromValue4.setText('27')
+            self.switchToValue4.setText('28')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 9:
+            self.switchFromValue4.setText('9')
+            self.switchToValue4.setText('10')
+         elif block == 16:
+            self.switchFromValue4.setText('16')
+            self.switchToValue4.setText('15')
+         elif block == 27:
+            self.switchFromValue4.setText('27')
+            self.switchToValue4.setText('76')
+      else:
+         self.switchFromValue4.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue4.setText(track_info['Red'][block]['switch_pos'])
 
 
-   # update block status (failures) coming from track model
-   def update_status(self, line, block, failure):
-      track_info[line][block]['failure'] = int(failure != 'None')
-      if failure == 'None': failure = '' # ???????????????????????????????????????????????????????
-      s.send_CTC_test_failure.emit(line, block, failure) # !!!!!!!!!!!!!
-      self.run_controllerx(track_info[line][block]['controller'])
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue4.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue4.setText('Green')
+      else:
+         self.trafficLightValue4.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue4.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue4.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue4.setText('Off')
+      else:
+         self.maintenanceValue4.setText('On')
+      
+
+      # displays Authority, Occupancy, Suggested Speed, Commanded Speed, and Railway Crossings
+      self.authorityValue4.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue4.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue4.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue4.setText(str(track_info['Red'][block]['commanded_speed']))
+      self.railwayGateValue4.setText(track_info['Red'][block]['track_crossing'])
+      self.railwayLightsValue4.setText(track_info['Red'][block]['track_crossing'])
+
+
+
+   # CONTROLLER 5 GUI
+   def displayController5Blocks(self, blockText):
+      
+      block = int(blockText)
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 33:
+            self.switchFromValue5.setText('33')
+            self.switchToValue5.setText('32')
+         elif block == 38:
+            self.switchFromValue5.setText('38')
+            self.switchToValue5.setText('39')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 33:
+            self.switchFromValue5.setText('33')
+            self.switchToValue5.setText('72')
+         elif block == 38:
+            self.switchFromValue5.setText('38')
+            self.switchToValue5.setText('71')
+      else:
+         self.switchFromValue5.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue5.setText(track_info['Red'][block]['switch_pos'])
+
+
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue5.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue5.setText('Green')
+      else:
+         self.trafficLightValue5.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue5.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue5.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue5.setText('Off')
+      else:
+         self.maintenanceValue5.setText('On')
+
+      
+      # displays Authority, Occupancy, Suggested Speed, Commanded Speed, and Railway Crossings
+      self.authorityValue5.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue5.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue5.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue5.setText(str(track_info['Red'][block]['commanded_speed']))
+      self.railwayGateValue5.setText(track_info['Red'][block]['track_crossing'])
+      self.railwayLightsValue5.setText(track_info['Red'][block]['track_crossing'])
+
+
+
+   # CONTROLLER 6 GUI
+   def displayController6Blocks(self, blockText):
+     
+      block = int(blockText)
+
+      # displays Railway Crossings
+      if track_info['Red'][block]['track_crossing'] == 0: # railway crossing inactive
+         self.railwayGateValue6.setText('Up')
+         self.railwayLightsValue6.setText('Off')
+      elif track_info['Red'][block]['track_crossing'] == 1: # railway crossing active
+         self.railwayGateValue6.setText('Down')
+         self.railwayLightsValue6.setText('On')
+      else: # railway crossing does not exist for this block
+         self.railwayGateValue6.setText(track_info['Red'][block]['track_crossing'])
+         self.railwayLightsValue6.setText(track_info['Red'][block]['track_crossing'])
+
+      
+      # displays Switch Positions
+      if track_info['Red'][block]['switch_pos'] == 0: # default position
+         if block == 44:
+            self.switchFromValue6.setText('44')
+            self.switchToValue6.setText('43')
+         elif block == 52:
+            self.switchFromValue6.setText('52')
+            self.switchToValue6.setText('53')
+      elif track_info['Red'][block]['switch_pos'] == 1: # nondefault position
+         if block == 44:
+            self.switchFromValue6.setText('44')
+            self.switchToValue6.setText('67')
+         elif block == 52:
+            self.switchFromValue6.setText('52')
+            self.switchToValue6.setText('66')
+      else:
+         self.switchFromValue6.setText(track_info['Red'][block]['switch_pos'])
+         self.switchToValue6.setText(track_info['Red'][block]['switch_pos'])
+
+
+      # displays Traffic Light Colors
+      if track_info['Red'][block]['traffic_light'] == 0:
+         self.trafficLightValue6.setText('Red')
+      elif track_info['Red'][block]['traffic_light'] == 1:
+         self.trafficLightValue6.setText('Green')
+      else:
+         self.trafficLightValue6.setText(track_info['Red'][block]['traffic_light'])
+
+
+      # displays Track Status
+      if track_info['Red'][block]['failure'] == 0:
+         self.statusValue6.setText('Normal')
+      elif track_info['Red'][block]['failure'] == 1:
+         self.statusValue6.setText('Failure')
+
+
+      # displays Track Maintenance
+      if track_info['Red'][block]['maintenance'] == 0:
+         self.maintenanceValue6.setText('Off')
+      else:
+         self.maintenanceValue6.setText('On')
+
+      
+      # displays Authority, Occupancy, Suggested Speed, and Commanded Speed
+      self.authorityValue6.setText(str(track_info['Red'][block]['authority']))
+      self.occupancyValue6.setText(str(track_info['Red'][block]['occupancy']))
+      self.suggestedSpeedValue6.setText(str(track_info['Red'][block]['suggested_speed']))
+      self.commandedSpeedValue6.setText(str(track_info['Red'][block]['commanded_speed']))
 
 
 
@@ -285,7 +462,6 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['authority'] = authority
-         s.send_TrackModel_block_authority.emit(line, block, authority)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -305,7 +481,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
             controllers_to_update.append(controller)
 
          track_info[line][block]['suggested_speed'] = speed
-         s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+         track_info[line][block]['commanded_speed'] = speed  # set suggested_speed as commanded_speed by default, but this will change if needed in run_controllerx
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -319,14 +495,12 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          line = update['line']
          block = update['block']
          maintenance = update['mode']
-
-         track_info[line][block]['maintenance'] = maintenance
          
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         #s.send_TrackModel_maintenance_status.emit(line, block, maintenance==1)
+         track_info[line][block]['maintenance'] = maintenance
          
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -339,45 +513,51 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       for update in updates_list:
          line = update['line']
          block = update['block']
-         sw = update['switch']
-         track_info[line][block]['switch_pos'] = sw
+         switch = update['switch']
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         if sw != '-':
-            s.send_TrackController_switch_pos.emit(line, block, sw)
+         track_info[line][block]['switch_pos'] = switch
+         if switch != '-':
+            s.send_TrackController_switch_pos.emit(line, block, switch)
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
 
 
 
+   # update block occupancy coming from track model
+   def update_occupancy(self, line, block, occupancy):
+      track_info[line][block]['occupancy'] = occupancy
+      self.run_controllerx(track_info[line][block]['controller'])
+   
+
+
+   # update block status (failures) coming from track model
+   def update_status(self, line, block, failure):
+      track_info[line][block]['failure'] = int(failure != 'None')
+      self.run_controllerx(track_info[line][block]['controller'])
+
+
+   # run PLC script for specified controller
    def run_controllerx(self, controller_num):
-      # print(self.controllers)
-      # print(controller_num)
-      if controller_num in self.controllers:
-         # print(self.controllers[controller_num])
-         # print(f'running wayside controller {controller_num}')
+         
+      # TODO: ACTUALLY EXECUTE PLC .TXT FILE
+      for statement in self.controllers[controller_num]:
+         exec(statement)
 
-         for statement in self.controllers[controller_num]:
-            exec(statement)
-         for line in track_info:
-            if line =='Green':
-               for block in track_info[line]:
-                  if track_info[line][block]['controller'] == controller_num:
-                     # print('updating')
-                     if track_info[line][block]['switch_pos']!='-':
-                        s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
-      else:
-         # print('no plc uploaded for that controllers')
-         pass
-      #TODO IMPLEMENT THE DIFFERENT CONTROLLERS
+      for line in track_info:
+         for block in track_info[line]:
+            if track_info[line][block]['controller'] == controller_num: # only emit signals for blocks in corresponding controller
+               
+               if track_info[line][block]['switch_pos']!='-':
+                  s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-      if controller_num == 1:
-         if track_info['Green'][0]['occupancy'] == 1:
-            track_info['Green'][63]['switch_pos'] == 1
+               s.send_TrackModel_block_authority.emit(line, block, authority)
+               s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+      
 
    
 
