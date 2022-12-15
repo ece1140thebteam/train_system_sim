@@ -11,7 +11,7 @@ class Train():
         self.length = 32.2 #m
         self.height = 3.42 #m
         self.width = 2.65 #m
-        self.passenger = 100
+        self.passenger = 0
         self.crew = 2
         self.mass = 48.55 #metric ton
         self.speed = 0 #m/s
@@ -187,7 +187,7 @@ class Train():
             self.ldoor = False
 
     def engine_failure(self, check):
-        if check and not(self.fault):
+        if check:
             self.enginefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Engine")
             self.fault = True
@@ -197,7 +197,7 @@ class Train():
             self.fault = False
     
     def brake_failure(self, check):
-        if check and not(self.fault):
+        if check:
             self.brakefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Brake")
             self.fault = True
@@ -207,7 +207,7 @@ class Train():
             self.fault = False
 
     def signal_failure(self, check):
-        if check and not(self.fault):
+        if check:
             self.signalfail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Signal")
             self.fault = True
