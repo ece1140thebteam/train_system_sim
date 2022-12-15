@@ -59,7 +59,7 @@ class TrackModelTestUI(QWidget):
         # do these per block with multiple trains
 
         # if its a new block
-        if block_info['block_num'] != self.current_block:
+        if block_info['block_num'] != self.current_block and self.run_train:
             if block_info['block_num'] == -1:
                 print(f'TRAIN DERAILED AT BLOCK {self.current_block}')
                 s.send_TrackModel_track_occupancy.emit(self.current_line, self.current_block, False)

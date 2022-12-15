@@ -118,7 +118,7 @@ class SystemWindow(QMainWindow, system.Ui_MainWindow):
 if __name__ == "__main__":
     platform = platform.platform()
     if 'mac' not in platform: 
-      sys.argv += ['-platform', 'windows:darkmode=1', '-style', 'windowsvista']
+      sys.argv += ['-platform', 'windows:darkmode=2', '-style', 'fusion']
     app = QApplication(sys.argv)
     window = SystemWindow()
     window.show()

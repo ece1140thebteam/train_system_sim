@@ -684,6 +684,7 @@ class TrackModel(QWidget):
             block_info = dict()
             block_info['block_num'] = 0
             block_info['yard'] = True
+            s.send_TrackModel_next_block_info.emit(train_num, block_info)
             return
 
         block = self.track.track_lines[line].blocks[next_block_num]
