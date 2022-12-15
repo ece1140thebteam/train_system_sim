@@ -140,6 +140,7 @@ class Train_CTRL_BE():
                     else:
                         if self.sBrake:
                             self.sBrake = False
+                            self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
 
 
                 #Check to make sure max power is not exceeded
@@ -153,11 +154,11 @@ class Train_CTRL_BE():
                         self.sBrake = False
                         #Send Brake State signals to train model
                         #self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
-                        #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
+                        self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     elif self.sBrake:
                         self.eBrake = False
                         #Send Brake State signals to train model
-                        #self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
+                        self.sigs.send_TrainModel_eBrake.emit(self.eBrake)
                         #self.sigs.send_TrainModel_sBrake.emit(self.sBrake)
                     else:
                         print('No Brakes Enabled, calculating power...')
