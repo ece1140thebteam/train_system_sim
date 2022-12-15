@@ -318,7 +318,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       for update in updates_list:
          line = update['line']
          block = update['block']
-         speed = update['speed']
+         speed = int(update['speed'])
 
          controller = track_info[line][block]['controller']
          if controller not in controllers_to_update: 
