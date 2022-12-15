@@ -185,7 +185,7 @@ class Train():
             self.ldoor = False
 
     def engine_failure(self, check):
-        if check and self.fault:
+        if check and not(self.fault):
             self.enginefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Engine")
             self.fault = True
@@ -195,7 +195,7 @@ class Train():
             self.fault = False
     
     def brake_failure(self, check):
-        if check and self.fault:
+        if check and not(self.fault):
             self.brakefail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Brake")
             self.fault = True
@@ -205,7 +205,7 @@ class Train():
             self.fault = False
 
     def signal_failure(self, check):
-        if check and self.fault:
+        if check and not(self.fault):
             self.signalfail = True
             self.sig.send_TrainCtrl_failure.emit(True, "Signal")
             self.fault = True
