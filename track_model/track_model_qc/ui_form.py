@@ -15,15 +15,16 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QHeaderView, QLabel,
-    QPushButton, QSizePolicy, QSpacerItem, QSpinBox,
-    QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView,
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+    QSpinBox, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_Widget(object):
     def setupUi(self, Widget):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(1067, 510)
+        Widget.resize(1067, 514)
         self.verticalLayoutWidget = QWidget(Widget)
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
         self.verticalLayoutWidget.setGeometry(QRect(310, 0, 151, 501))
@@ -352,7 +353,7 @@ class Ui_Widget(object):
 
         self.verticalLayoutWidget_4 = QWidget(Widget)
         self.verticalLayoutWidget_4.setObjectName(u"verticalLayoutWidget_4")
-        self.verticalLayoutWidget_4.setGeometry(QRect(620, 0, 160, 501))
+        self.verticalLayoutWidget_4.setGeometry(QRect(620, 2, 161, 501))
         self.verticalLayout_5 = QVBoxLayout(self.verticalLayoutWidget_4)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(10, 10, 10, 10)
@@ -416,23 +417,6 @@ class Ui_Widget(object):
 
         self.verticalLayout_5.addItem(self.verticalSpacer_20)
 
-        self.blockGradeTitle_32 = QLabel(self.verticalLayoutWidget_4)
-        self.blockGradeTitle_32.setObjectName(u"blockGradeTitle_32")
-        self.blockGradeTitle_32.setMaximumSize(QSize(16777215, 20))
-        self.blockGradeTitle_32.setFont(font)
-
-        self.verticalLayout_5.addWidget(self.blockGradeTitle_32)
-
-        self.blockFailureModeInfo = QLabel(self.verticalLayoutWidget_4)
-        self.blockFailureModeInfo.setObjectName(u"blockFailureModeInfo")
-        self.blockFailureModeInfo.setMaximumSize(QSize(16777215, 20))
-
-        self.verticalLayout_5.addWidget(self.blockFailureModeInfo)
-
-        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_5.addItem(self.verticalSpacer_16)
-
         self.blockGradeTitle_34 = QLabel(self.verticalLayoutWidget_4)
         self.blockGradeTitle_34.setObjectName(u"blockGradeTitle_34")
         self.blockGradeTitle_34.setMaximumSize(QSize(16777215, 20))
@@ -483,6 +467,23 @@ class Ui_Widget(object):
         self.verticalSpacer_21 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_21)
+
+        self.blockGradeTitle_39 = QLabel(self.verticalLayoutWidget_4)
+        self.blockGradeTitle_39.setObjectName(u"blockGradeTitle_39")
+        self.blockGradeTitle_39.setMaximumSize(QSize(16777215, 20))
+        self.blockGradeTitle_39.setFont(font)
+
+        self.verticalLayout_5.addWidget(self.blockGradeTitle_39)
+
+        self.failureDropDown = QComboBox(self.verticalLayoutWidget_4)
+        self.failureDropDown.addItem("")
+        self.failureDropDown.addItem("")
+        self.failureDropDown.addItem("")
+        self.failureDropDown.addItem("")
+        self.failureDropDown.setObjectName(u"failureDropDown")
+        self.failureDropDown.setEnabled(False)
+
+        self.verticalLayout_5.addWidget(self.failureDropDown)
 
         self.verticalLayoutWidget_5 = QWidget(Widget)
         self.verticalLayoutWidget_5.setObjectName(u"verticalLayoutWidget_5")
@@ -561,14 +562,18 @@ class Ui_Widget(object):
         self.blockBeaconInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_31.setText(QCoreApplication.translate("Widget", u"Commanded Speed", None))
         self.blockCommandedSpeedInfo.setText(QCoreApplication.translate("Widget", u"-", None))
-        self.blockGradeTitle_32.setText(QCoreApplication.translate("Widget", u"Failure Mode", None))
-        self.blockFailureModeInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_34.setText(QCoreApplication.translate("Widget", u"Switch Position", None))
         self.blockSwitchPositionInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_36.setText(QCoreApplication.translate("Widget", u"Signal", None))
         self.blockSignalInfo.setText(QCoreApplication.translate("Widget", u"-", None))
         self.blockGradeTitle_38.setText(QCoreApplication.translate("Widget", u"Track Circuit", None))
         self.blockTrackCircuitInfo.setText(QCoreApplication.translate("Widget", u"-", None))
+        self.blockGradeTitle_39.setText(QCoreApplication.translate("Widget", u"Failure Mode", None))
+        self.failureDropDown.setItemText(0, QCoreApplication.translate("Widget", u"None", None))
+        self.failureDropDown.setItemText(1, QCoreApplication.translate("Widget", u"Power Failure", None))
+        self.failureDropDown.setItemText(2, QCoreApplication.translate("Widget", u"Track Circuit Failure", None))
+        self.failureDropDown.setItemText(3, QCoreApplication.translate("Widget", u"Broken Rail", None))
+
         ___qtreewidgetitem1 = self.stationTree.headerItem()
         ___qtreewidgetitem1.setText(2, QCoreApplication.translate("Widget", u"Deboarded", None));
         ___qtreewidgetitem1.setText(1, QCoreApplication.translate("Widget", u"Waiting", None));

@@ -210,8 +210,10 @@ class TrainModel(QMainWindow):
 
     def e_brake_update(self):
         if self.train.ebrakecmd: 
+            self.ui.ebrake.setChecked(True)
             self.ui.ebrakecmd.setText("E Brake Command: On")
         else:
+            self.ui.ebrake.setChecked(False)
             self.ui.ebrakecmd.setText("E Brake Command: Off")
 
     def engine_failure(self):

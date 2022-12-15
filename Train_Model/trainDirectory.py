@@ -37,6 +37,10 @@ class trainSignals(QObject):
     #Send cabin temperature command from Train Controller to Train Model
     send_TrainModel_temp = pyqtSignal(int) #temp command
 
+    #Send doors to from train model to train controller
+    send_TrainCtrl_rdoor = pyqtSignal(bool) #door state
+    send_TrainCtrl_ldoor = pyqtSignal(bool) #door state
+
 class trainDirectory():
     def __init__(self):
         self.idCounter = 0
