@@ -1,0 +1,18 @@
+# Wayside Controller 2
+# Green blocks 74-143 (Sections M, N, O, P, Q, R, S, T, U, V, W)
+
+
+# sw 77 -> 76 if b76.o && b77.a sw = 0
+# sw 77 -> 101 if b101.a && b77.o sw=1
+
+# sw 85 -> 86 if b85.o && b86.a sw=0
+# sw 85 -> 100 if b100.o && b85.a sw=1
+
+# track_info['Green'][78]['authority']  track_info['Green'][2]['authority']
+
+
+
+
+
+track_info['Green'][77]['switch_pos'] = not (track_info['Green'][76]['authority'])
+track_info['Green'][85]['switch_pos'] = track_info['Green'][100]['occupancy'] or track_info['Green'][99]['occupancy'] or track_info['Green'][98]['occupancy'] 

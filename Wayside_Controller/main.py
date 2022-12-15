@@ -516,8 +516,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          switch = update['switch']
 
          controller = track_info[line][block]['controller']
-         if controller not in controllers_to_update: 
-            controllers_to_update.append(controller)
+         maintenance = track_info[line][block]['maintenance']
+         
+         if (maintenance == 1):
+            if controller not in controllers_to_update: 
+               controllers_to_update.append(controller)
 
          track_info[line][block]['switch_pos'] = switch
          if switch != '-':
@@ -545,8 +548,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
    def run_controllerx(self, controller_num):
          
       # TODO: ACTUALLY EXECUTE PLC .TXT FILE
-      for statement in self.controllers[controller_num]:
-         exec(statement)
+      #for statement in self.controllers[controller_num]:
+      #   exec(statement)
 
       for line in track_info:
          for block in track_info[line]:
@@ -555,8 +558,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
                if track_info[line][block]['switch_pos']!='-':
                   s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-               s.send_TrackModel_block_authority.emit(line, block, authority)
-               s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
+               #s.send_TrackModel_block_authority.emit(line, block, authority)
+               #s.send_TrackModel_commanded_speed.emit(line, block, int(speed))
       
 
    
