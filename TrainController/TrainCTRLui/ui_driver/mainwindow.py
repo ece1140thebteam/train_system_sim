@@ -242,8 +242,11 @@ class TrainController(QMainWindow):
                 self.ui.speedSlider.setMaximum(self.curTrain.cmdSpd)
 
     def update_train(self):
-        id = int(self.ui.trainSelect.currentText()[6:]) - 1
-        self.curTrain = self.directory.trainctrl[id]
+        try:
+            id = int(self.ui.trainSelect.currentText()[6:]) - 1
+            self.curTrain = self.directory.trainctrl[id]
+        except:
+            self.curTrain = None
 
 
     def update_combo(self, id):

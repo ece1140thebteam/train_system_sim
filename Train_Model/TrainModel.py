@@ -159,8 +159,11 @@ class TrainModel(QMainWindow):
             self.first_train()
 
     def update_train(self):
-        id = int(self.ui.trainSelect.currentText()[6:]) - 1
-        self.train = self.directory.trains[id]
+        try:
+            id = int(self.ui.trainSelect.currentText()[6:]) - 1
+            self.train = self.directory.trains[id]
+        except:
+            self.train = None
 
     def delete(self, id):
         self.ui.trainSelect.removeItem(id-self.totalRemoved)
@@ -195,7 +198,7 @@ class TrainModel(QMainWindow):
 
     def first_train(self):
         try:
-            self.train = self.directory.trains[0]
+            self.train = self.directory.trains[self.totalRemoved]
         except:
             return
 
