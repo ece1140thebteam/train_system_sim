@@ -165,9 +165,16 @@ class TrainController(QMainWindow):
         self.curTrain.driverCmd = self.ui.speedSlider.value()
         self.ui.driverSpd.setText(str(int(self.curTrain.driverCmd*0.621371))+'MPH')
         
-
-
-
+    def beaconHandler(self):
+        if self.curTrain.beacon is not None:
+            intercomstr = ('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
+            self.curTrain.intercom = True
+            self.ui.intercomBtn.setChecked(True)
+            self.ui.label.setText(intercomstr)
+        else:
+            intercomstr = ('Intercom Not Active')
+            self.ui.intercomBtn.setChecked(False)
+            
     #Function to periodically update ui based on backend train data
     def UpdateUI(self):
         
@@ -182,7 +189,6 @@ class TrainController(QMainWindow):
         #update power output
         powStr = 'Power Output: ' + str(int(self.curTrain.powOutput)) + ' kW'
         self.ui.powOut.setText(powStr)
-
         
         #Read current brake states of train and update UI accordingly
         self.ui.eBrakeBtn.setChecked(self.curTrain.eBrake)
@@ -196,7 +202,6 @@ class TrainController(QMainWindow):
         self.ui.rdoorBtn.setChecked(self.curTrain.rdoors)
         self.ui.ldoorBtn.setChecked(self.curTrain.ldoors)
 
-       
         #Update temp
         self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
@@ -217,9 +222,7 @@ class TrainController(QMainWindow):
         #check authority of current working train
         #if no authority but stopped at a station: give beacon message
         if not self.curTrain.auth:
-            if self.curTrain.beacon is not None:
-                #self.stationDialog = trainDialog('Arrived at '+ self.curTrain.station + ' Station, doors opening on ' + self.curTrain.side + ' side')
-                pass
+                self.beaconHandler()
             #otherwise, train is moving when it shouldn't be, give auth error message
             else:
                 if self.curTrain.curSpd > 0:
