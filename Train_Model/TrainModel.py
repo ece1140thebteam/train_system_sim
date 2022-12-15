@@ -200,15 +200,12 @@ class TrainModel(QMainWindow):
             return
 
     def beacon_set(self):
-        try:
-            if (self.train.beacon is None):
-                self.ui.beacon.setText("Beacon: None")
-                self.ui.station.setText("Station: None")
-            else:
-                self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
-                self.ui.station.setText("Station: " + self.train.beacon['station_name'])
-        except:
-            pass
+        if (self.train.beacon is None):
+            self.ui.beacon.setText("Beacon: None")
+            self.ui.station.setText("Station: None")
+        else:
+            self.ui.beacon.setText("Beacon: " + self.train.beacon['station_side'])
+            self.ui.station.setText("Station: " + self.train.beacon['station_name'])
         self.ui.auth.setText("Authority: " + str(self.train.auth))
 
     def e_brake(self):

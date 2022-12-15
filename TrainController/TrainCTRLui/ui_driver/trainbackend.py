@@ -169,7 +169,6 @@ class Train_CTRL_BE():
                 
                 self.powOutput = pow
                 self.sigs.send_TrainModel_powerOutput.emit(self.powOutput)
-
         else:
             self.sBrake = True
             self.sigs.send_TrainModel_sBrake.emit(self.sBrake) 
