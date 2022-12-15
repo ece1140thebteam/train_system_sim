@@ -28,7 +28,7 @@ class trainSignals(QObject):
     send_TrainModel_iLight = pyqtSignal(bool) #light state
 
     #Send external/internal light command from Train Model to Train Controller for underground activation
-    send_TrainController_lights = pyqtSignal(bool)
+    send_TrainCtrl_lights = pyqtSignal(bool)
 
     #Send left/right door command from Train Controller to Train Model
     send_TrainModel_lDoor = pyqtSignal(bool) #door state

@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -189,7 +189,7 @@ class TrainController(QMainWindow):
             self.ui.sBrakeBtn.setChecked(True)
         if(self.curTrain.eBrake == False):
             self.ui.eBrakeBtn.setChecked(False)
-        if(self.curTrain.sBrakeBtn == False):
+        if(self.curTrain.sBrake == False):
             self.ui.sBrakeBtn.setChecked(False)
         
         #Read current light states and update accordingly
@@ -213,7 +213,7 @@ class TrainController(QMainWindow):
             self.ui.ldoorBtn = False
 
         #Update temp
-        self.ui.curTempLabel.setText("Current Temp: " + self.curTrain.temp)
+        self.ui.curTempLabel.setText("Current Temp: " + str(self.curTrain.temp))
 
         #check for faults, give appropriate messages
         if self.curTrain.faultMode:
