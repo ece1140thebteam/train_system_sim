@@ -43,7 +43,7 @@ class Train_CTRL_BE():
         self.sigs.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         self.sigs.send_TrainCtrl_failure.connect(self.failHandle)
         self.sigs.send_TrainCtrl_eBrake.connect(self.passEBrake)
-        self.sigs.sendTrainCtrl_lights.connect(self.autoLights)
+        self.sigs.send_TrainCtrl_lights.connect(self.autoLights)
 
     def autoLights(self, lightState):
         self.eLights = lightState

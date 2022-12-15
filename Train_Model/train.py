@@ -48,6 +48,7 @@ class Train():
         self.stationStop = False
         self.id = id
         self.sig = signals
+        self.override_lights = False
 
         s.timer_tick.connect(self.timer)
 
@@ -130,9 +131,14 @@ class Train():
         if (self.block['underground']):
             self.elightcmd = True
             self.ilightcmd = True
+            self.sig.send_TrainController_lights.emit(True)
+            self.override_lights = True
         else:
-            self.elightcmd = False
-            self.ilightcmd = False
+            if (self.override_lights):
+                self.elightcmd = False
+                self.ilightcmd = False
+                self.override_lights = False
+                self.sig.send_TrainController_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
 
     def station(self):
