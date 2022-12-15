@@ -121,6 +121,7 @@ class TrainModel(QMainWindow):
         #data
         self.train = None
         self.directory = trainD
+        self.totalRemoved = 0
 
         #buttons
         self.ui.eBrake.setCheckable(True)
@@ -146,6 +147,7 @@ class TrainModel(QMainWindow):
         self.ui.signalfail.clicked.connect(self.signal_failure)
         self.ui.trainSelect.currentTextChanged.connect(self.update_train)
         s.send_Update_Combo.connect(self.update_combo)
+        s.send_delete_train.connect(self.delete)
 
         s.timer_tick.connect(self.timer)
 
@@ -159,6 +161,10 @@ class TrainModel(QMainWindow):
     def update_train(self):
         id = int(self.ui.trainSelect.currentText()[6:]) - 1
         self.train = self.directory.trains[id]
+
+    def delete(self, id):
+        self.ui.trainSelect.removeItem(id-self.totalRemoved)
+        self.totalRemoved += 1
 
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
@@ -195,7 +201,7 @@ class TrainModel(QMainWindow):
 
     def beacon_set(self):
         try:
-            if (self.train.beacon['station_name'] is None):
+            if (self.train.beacon is None):
                 self.ui.beacon.setText("Beacon: None")
                 self.ui.station.setText("Station: None")
             else:
@@ -210,8 +216,10 @@ class TrainModel(QMainWindow):
 
     def e_brake_update(self):
         if self.train.ebrakecmd: 
+            self.ui.eBrake.setChecked(True)
             self.ui.ebrakecmd.setText("E Brake Command: On")
         else:
+            self.ui.eBrake.setChecked(False)
             self.ui.ebrakecmd.setText("E Brake Command: Off")
 
     def engine_failure(self):

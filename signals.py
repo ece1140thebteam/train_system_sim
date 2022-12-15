@@ -40,7 +40,10 @@ class signals(QObject):
   send_CTC_authority = pyqtSignal(list) # [{'line':line, 'block':block, 'authority':0}]
 
   #######################################################
-  # Wayside to CTC AND Track Model
+  # Wayside to CTC 
+  # Send track occupancy from Track Controller to CTC
+  # SHOULD NOT BE USED CURRENTLY......CTC SHOULD GET THIS STRAIGHT FROM TRACK MODEL
+  send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
 
   # send switch position from Track controller
   send_TrackController_switch_pos = pyqtSignal(str, int, int)
@@ -51,13 +54,10 @@ class signals(QObject):
   # Send traffic light colors from Track Controller
   send_TrackController_traffic_light = pyqtSignal(list) # [{'line':line, 'block':block, 'traffic_light':0 for RED, 1 for GREEN}]
 
-  # Send track occupancy from Track Controller to CTC
-  # SHOULD NOT BE USED CURRENTLY......CTC SHOULD GET THIS STRAIGHT FROM TRACK MODEL
-  send_TrackController_track_occupancy = pyqtSignal(list) # Line, occupancy (0=open, 1=occupied)
-
-  # Send track failure from Track Controller to CTC
-  # SHOULD NOT BE USED CURRENTLY......CTC SHOULD GET THIS STRAIGHT FROM TRACK MODEL
-  send_TrackController_failure = pyqtSignal(str, int, int) # Line, failure type
+  # #######################################################
+  # # Wayside to Track Model
+  # # send switch position from Track controller to track model
+  # send_TrackController_switch_pos = pyqtSignal(str, int, int)
 
   #######################################################
   # CTC to Train Control
@@ -70,7 +70,7 @@ class signals(QObject):
   send_TrackModel_map_info          = pyqtSignal(dict) 
   get_TrackModel_map_info           = pyqtSignal()
 
-  # Track Model to track controller
+  # track model to track controller
   send_TrackModel_tc_track_failure = pyqtSignal(str, int, str)  #line, block, failure str
   #######################################################
   # Track Model test
@@ -98,6 +98,10 @@ class signals(QObject):
   # Send throughput from Track Model test to Track Model
   send_TrackModel_next_block_info = pyqtSignal(int, dict) #trainID, block info
   send_TrackModel_block_info = pyqtSignal(int, dict) #trainID, block info
+
+  #######################################################
+  #Train to train model and train controller when train is deleted
+  send_delete_train = pyqtSignal(int) #train id
   
   timer_tick = pyqtSignal(int) # Timer multiplier
 

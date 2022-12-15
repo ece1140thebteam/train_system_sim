@@ -20,9 +20,15 @@ class trainSignals(QObject):
     send_TrainModel_sBrake = pyqtSignal(bool) #brake state
     send_TrainModel_eBrake = pyqtSignal(bool) #brake state
 
+    #Send emergency brake command from Train Model to Train Controller (Passenger eBrake activation)
+    send_TrainCtrl_eBrake = pyqtSignal(bool)
+
     # Send external/internal light command from Train Controller to Train Model
     send_TrainModel_eLight = pyqtSignal(bool) #light state
     send_TrainModel_iLight = pyqtSignal(bool) #light state
+
+    #Send external/internal light command from Train Model to Train Controller for underground activation
+    send_TrainCtrl_lights = pyqtSignal(bool)
 
     #Send left/right door command from Train Controller to Train Model
     send_TrainModel_lDoor = pyqtSignal(bool) #door state
@@ -30,6 +36,10 @@ class trainSignals(QObject):
 
     #Send cabin temperature command from Train Controller to Train Model
     send_TrainModel_temp = pyqtSignal(int) #temp command
+
+    #Send doors to from train model to train controller
+    send_TrainCtrl_rdoor = pyqtSignal(bool) #door state
+    send_TrainCtrl_ldoor = pyqtSignal(bool) #door state
 
 class trainDirectory():
     def __init__(self):
@@ -41,17 +51,13 @@ class trainDirectory():
         s.send_CTC_create_train.connect(self.add_train)
 
     def update_block(self, id, block):
-        if 'yard' in block:
+        if id < self.idCounter:
+            self.trains[id].update_blocks(block)
+            self.trainctrl[id].cmdSpdAdjust(block)
             if block['yard']:
-                print('Train {id} has reached the yard.')
-                self.trains[id].update_blocks(block)
-                self.trainctrl[id].cmdSpdAdjust(block)
-                self.trains[id] = None
                 self.trainctrl[id] = None
-        elif id < self.idCounter:
-            if self.trains[id] is not None:
-                self.trains[id].update_blocks(block)
-                self.trainctrl[id].cmdSpdAdjust(block)
+                self.trains[id] = None
+                s.send_delete_train.emit(id)
 
     def add_train(self, line):
         #create the signals for between model and controller then pass through each constructor
