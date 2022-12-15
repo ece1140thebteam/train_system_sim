@@ -76,6 +76,7 @@ class Train():
     self.route_block = 1
     self.destinations = destinations
     self.is_dwelling = 0
+    self.is_stopped = 0
     self.dwelling_t = 0
     self.at_yard = 1
     self.time_to_dispatch = time_to_dispatch
@@ -106,6 +107,7 @@ class Train_Sim():
 
     s.timer_tick.connect(self.train_at_station)
     s.timer_tick.connect(self.increment_timer)
+    s.timer_tick.connect(self.train_stopped)
   
   # Called once every time_tick
   def increment_timer(self, mult):
@@ -235,6 +237,13 @@ class Train_Sim():
           train.is_dwelling = 0
           train.dwelling_t = 0
           self.update_authority(train.id)
+
+  def train_stopped(self, mult):
+    for train in self.trains.values():
+      if train.is_stopped == 1:
+        if len(train.destinations) != 0:
+          train.is_stopped = 0
+          self.update_authority(train.id)
   
   def update_authority(self, train_id):
     train = self.trains.get(train_id)
@@ -244,10 +253,13 @@ class Train_Sim():
     if len(train.destinations) != 0:
       # If train is a station
       if train.current_block == train.destinations[0][0]:
+        if train.destinations[0][2] == 0:
+          train.is_stopped = 1
+        # Set train dwelling to 1
+        else:
+          train.is_dwelling = 1
         # Remove station from list
         train.destinations.pop(0)
-        # Set train dwelling to 1
-        train.is_dwelling = 1
 
         if (train.line == 'Green'):
           if train.route_block == 1:

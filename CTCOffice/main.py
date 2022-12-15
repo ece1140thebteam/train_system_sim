@@ -18,10 +18,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
-        # TODO: When dispatched to a block it should stay at block until dispatched to another location
         init_data = InitData.InitData()
         self.throughputs = init_data.get_throughput()
         self.lines = init_data.get_blocks()
+        # TODO: When dispatched to a block it should stay at block until dispatched to another location
 
         # Initialize Static Data
         self.red_blocks = []
@@ -89,27 +89,25 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         self.comboBox_editStations_line.currentTextChanged.connect(self.update_stations_trains_combobox)
         self.comboBox_dispatch_line.currentTextChanged.connect(self.update_dispatch_block_combobox)
        
-        # Signal Connections
-        # Test Signals
+        # CTC Test to CTC
         s.send_CTC_test_throughput_signal.connect(self.update_throughput)
         s.send_CTC_test_failure.connect(self.update_failure)
         s.send_CTC_test_crossing.connect(self.update_crossing)
         s.send_CTC_test_track_occupancy.connect(self.set_occupancy)
 
+        # CTC to CTC updaing speeds
         s.send_CTC_suggested_speed.connect(self.set_speeds)
-
-        # Wayside Signals
         s.send_CTC_authority.connect(self.set_authorities)
+
+        # Wayside to CTC
         s.send_TrackController_track_occupancy.connect(self.set_occupancy)
-        s.send_TrackController_switch_pos.connect(self.set_switches)
-        # TODO: Send signal states from track controller and connect to self.set_signals
-        
+        s.send_TrackController_switch_pos.connect(self.set_switches)     
         s.send_TrackController_crossing.connect(self.set_crossings)
 
-        # Track Signals
+        # Track Model to CTC
         s.send_TrackModel_throughput_signal.connect(self.update_throughput)
-        # Temporary connection to track model for occupancy
         s.send_TrackModel_track_occupancy.connect(self.set_single_occupancy)
+        s.send_TrackModel_tc_track_failure.connect(self.update_failure)
 
     # Enables the actions only available in manual mode
     # Called when the manual mode button is clicked
@@ -135,9 +133,9 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             i = 0
             for row in reader:
                 if self.comboBox.currentText() == 'Green Line':
-                    stations.append((self.greenScheduleStations[i], float(row[2])*60))
+                    stations.append((self.greenScheduleStations[i], float(row[2])*60, 30))
                 elif self.comboBox.currentText() == 'Red Line':
-                    stations.append((self.redStationBlocks[i], float(row[2])*60))
+                    stations.append((self.redStationBlocks[i], float(row[2])*60, 30))
                 i+=1
             csv_file.close()
         if self.comboBox.currentText() == 'Green Line':
@@ -249,7 +247,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
             # If station is not already in destinations
             if station_in_list is False:
                 # Add station to destinations
-                Train.trains.trains[int(train)].destinations.append((station, 0))
+                Train.trains.trains[int(train)].destinations.append((station, 0, 30))
         print("Setting Line " + line + " train #: " + train + " to " + action + " at station " + str(station) + " at: " + str(
             hour) + ":" + str(minute))
         self.outputLabel.setText("Setting Line " + line + " train #: " + train + " to " + action + " at station " + str(station) + " at: " + str(
@@ -259,7 +257,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         line = self.comboBox_dispatch_line.currentText()
         block = int(self.comboBox_dispatch_block.currentText())
 
-        Train.trains.create_train(line, [(block, 0)], 0)
+        Train.trains.create_train(line, [(block, 0, 0)], 0)
 
     def dispatch_train(self):
         line = self.comboBox_dispatchTrain_line.currentText()
@@ -274,7 +272,7 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
                 else:
                     block = self.redStationBlocks[row]
                 
-                stations.append((block, time))
+                stations.append((block, time, 30))
                 stationBlocks.append(block)
 
         print(str(stations))
@@ -680,10 +678,10 @@ class MainWindow(QMainWindow, ctcOfficeLayout.Ui_MainWindow):
         for crossing in crossings:
             if crossing['line'] == 'Red':
                 if crossing['block'] != 0:
-                    self.lines[0].get(crossing['block']).crossing = crossing['crossing']
+                    self.lines[0].get(crossing['block']).crossing = crossing['track_crossing']
             if crossing['line'] == 'Green':
                 if crossing['block'] != 0:
-                    self.lines[1].get(crossing['block']).crossing = crossing['crossing']
+                    self.lines[1].get(crossing['block']).crossing = crossing['track_crossing']
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
