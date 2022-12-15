@@ -21,6 +21,7 @@ class TrainController(QMainWindow):
         #INITIALIZE CURRENT TRAIN FOR DEVELOPMENT PURPOSES ONLY
         self.curTrain = None
         self.directory = directory
+        self.totalRemoved = 0
 
         #initialize various button states and make them toggleable
         self.ui.manModeBtn.setCheckable(True)
@@ -87,6 +88,7 @@ class TrainController(QMainWindow):
         #Timer signal to govern UI Updates
         s.timer_tick.connect(self.timer)
         s.send_Update_Combo.connect(self.update_combo)
+        s.send_delete_train.connect(self.delete)
 
     #function for timer tick handling
     def timer(self, mul):
@@ -261,6 +263,11 @@ class TrainController(QMainWindow):
     def update_combo(self, id):
         self.ui.trainSelect.addItem("Train " + str(id))
         self.UpdateUI()
+
+    def delete(self):
+        self.ui.trainSelect.removeItem(id-self.totalRemoved)
+        self.totalRemoved += 1
+
 
 
 #TODO:

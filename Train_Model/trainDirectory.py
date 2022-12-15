@@ -54,6 +54,10 @@ class trainDirectory():
         if id < self.idCounter:
             self.trains[id].update_blocks(block)
             self.trainctrl[id].cmdSpdAdjust(block)
+            if 'yard' in block:
+                self.trainctrl[id] = None
+                self.trains[id] = None
+                s.send_delete_train.emit(id)
 
     def add_train(self, line):
         #create the signals for between model and controller then pass through each constructor
