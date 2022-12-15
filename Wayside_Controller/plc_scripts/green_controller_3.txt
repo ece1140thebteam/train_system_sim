@@ -1,4 +1,4 @@
-# Wayside Controller 2
+# Wayside Controller 3
 # Green blocks 1-35, 144-150 (Sections A, B, C, D, E, F, G, H, X, Y, Z)
 
 
@@ -42,3 +42,19 @@ if (track_info['Green'][19]['occupancy'] == 1):
     track_info['Green'][19]['track_crossing'] == 1
 else:
     track_info['Green'][19]['track_crossing'] == 0
+
+
+#----------------------------------------------------------------------
+# change traffic lights at stations
+#----------------------------------------------------------------------
+
+stations = [22, 31, 2, 9, 16]
+for x in stations:
+
+    # traffic light turns green if train is just passing through or when it starts moving again
+    if (track_info['Green'][x]['authority'] == 1):
+        track_info['Green'][x]['traffic_light'] = 1
+
+    # after train passes station, return traffic light to red
+    if (track_info['Green'][x]['occupancy'] == 0):
+        track_info['Green'][x]['traffic_light'] = 0
