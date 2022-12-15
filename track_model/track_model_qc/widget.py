@@ -716,7 +716,6 @@ class TrackModel(QWidget):
             return
 
         block = self.track.track_lines[line].blocks[next_block_num]
-        block.print()
         block_info = {}
         block_info['yard'] = False
         block_info['beacon'] = None
