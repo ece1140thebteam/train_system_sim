@@ -175,7 +175,7 @@ class Train_Sim():
           else:
             next_route_block = train.route_block + 1
 
-          if (block == red_route[next_route_block]) or (train.current_block == 0):
+          if (block == red_route[next_route_block]):
             train.current_block = block
             if train.route_block != len(red_route)-1:
               train.route_block += 1
@@ -459,7 +459,9 @@ class Train_Sim():
         # Set authority and speed to 1 and default
         else:
           self.red_authority[block] = 1
-          if speed == 0:
+          if block == 0:
+            block_speed = 50
+          elif speed == 0:
             block_speed = self.red_speeds[block]
 
           authorities.append({'line': 'Red', 'block': block, 'authority': 1})
