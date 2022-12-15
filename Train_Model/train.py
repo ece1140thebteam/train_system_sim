@@ -50,6 +50,7 @@ class Train():
         self.sig = signals
         self.override_lights = False
         self.line = line
+        self.real = True
 
         s.timer_tick.connect(self.timer)
 
@@ -63,6 +64,8 @@ class Train():
         self.sig.send_TrainModel_sBrake.connect(self.s_brake)
 
     def timer(self, mul):
+        if not(self.real):
+            return
         self.tickrate = 0.1*mul
         self.calc_speed()
         if self.auth == 0:
@@ -127,6 +130,7 @@ class Train():
         self.block = block
         if self.block['yard']:
             s.send_TrackModel_track_occupancy.emit(self.line, self.prev_block['block_num'], False)
+            self.real = False
             return
         s.send_TrackModel_track_occupancy.emit(self.line, self.block['block_num'], True)
         self.grade = self.block['grade']
@@ -150,6 +154,8 @@ class Train():
                 self.override_lights = False
                 self.sig.send_TrainCtrl_lights.emit(False)
         self.speedlmt = self.block['speed_limit']/3.6
+        self.elight_set(self.elightcmd)
+        self.ilight_set(self.ilightcmd)
 
     def station(self):
         if self.beacon is not None and not(self.atStation):
