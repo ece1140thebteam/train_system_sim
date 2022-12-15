@@ -39,8 +39,8 @@ class engineerUI(QWidget):
                 self.popup.exec()
                 self.close()
         else:
-            self.Train.Kp = self.ui.userInput.text()
-            self.Train.Ki = self.ui.passInput.text()
+            self.Train.Kp = int(self.ui.userInput.text())
+            self.Train.Ki = int(self.ui.passInput.text())
             self.pop = trainDialog('Kp/Ki Values Stored!')
             self.pop.show()
             self.close()

@@ -13,9 +13,6 @@ from pathlib import Path
 
 from Wayside_Controller.ui import WaysideMainUI as WaysideMainUI    # import UI
 from Wayside_Controller.blockInfo import track_info as track_info
-#from Wayside_Controller.plc_scripts import green_controller_4 as Controller4
-#from Wayside_Controller.plc_scripts import green_controller_5 as Controller5
-#from Wayside_Controller.plc_scripts import green_controller_6 as Controller6
 
 
 class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
@@ -28,9 +25,9 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       self.uploadPLC1.clicked.connect(self.getFile1)
       self.uploadPLC2.clicked.connect(self.getFile2)
       self.uploadPLC3.clicked.connect(self.getFile3)
-      #self.uploadPLC4.clicked.connect(self.getFile4)
-      #self.uploadPLC5.clicked.connect(self.getFile5)
-      #self.uploadPLC6.clicked.connect(self.getFile6)
+      self.uploadPLC4.clicked.connect(self.getFile4)
+      self.uploadPLC5.clicked.connect(self.getFile5)
+      self.uploadPLC6.clicked.connect(self.getFile6)
 
       self.blockSelect1.currentTextChanged.connect(self.displayController1Blocks)
       self.blockSelect2.currentTextChanged.connect(self.displayController2Blocks)
@@ -80,10 +77,18 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       cont2 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_2.txt")
       cont3 = str(Path(__file__).resolve().parent / "plc_scripts" /  "green_controller_3.txt")
 
+      # red controllers by default
+      cont4 = str(Path(__file__).resolve().parent / "plc_scripts" / "red_controller_4.txt")
+      cont5 = str(Path(__file__).resolve().parent / "plc_scripts" /  "red_controller_5.txt")
+      cont6 = str(Path(__file__).resolve().parent / "plc_scripts" /  "red_controller_6.txt")
+
 
       self.import_controller( cont1, 1)
       self.import_controller( cont2, 2)
       self.import_controller( cont3, 3)
+      self.import_controller( cont4, 4)
+      self.import_controller( cont5, 5)
+      self.import_controller( cont6, 6)
 
       # Initialize all waysides by running all PLC scripts
       for x in [1, 2, 3, 4, 5, 6]:
@@ -510,7 +515,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          if controller not in controllers_to_update: 
             controllers_to_update.append(controller)
 
-         print(f'suggested {line} {block} {speed}')
+         # print(f'suggested {line} {block} {speed}')
          track_info[line][block]['suggested_speed'] = speed
 
          if (speed > track_info[line][block]['speed_limit']): # SAFETY CRITICAL: can NOT allow speed to be over speed limit!
@@ -518,7 +523,7 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          else: # set commanded_speed to suggested_speed by default, but this will change if needed in run_controllerx
             track_info[line][block]['commanded_speed'] = speed
          settp = track_info[line][block]['commanded_speed']
-         print(f'ACUTAL {line} {block} {settp}')
+         # print(f'ACUTAL {line} {block} {settp}')
 
       for controller in controllers_to_update:
          self.run_controllerx(controller)
@@ -608,6 +613,8 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
         
 
          blocks_to_update.clear()
+
+      #self.uploadPlcScript()
 
 
 
@@ -738,29 +745,29 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       #          #TODO remove
       #          s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
       #          s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
-      lights = []
+         lights = []
 
-      for line in track_info:
-         for block in track_info[line]:
-            if track_info[line][block]['controller'] == controller_num  and track_info[line][block]['maintenance'] != 1: # only emit signals for blocks in corresponding controller
-               
-               if track_info[line][block]['switch_pos']!='-':
-                  s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
+         for line in track_info:
+            for block in track_info[line]:
+               if track_info[line][block]['controller'] == controller_num  and track_info[line][block]['maintenance'] != 1: # only emit signals for blocks in corresponding controller
+                  
+                  if track_info[line][block]['switch_pos']!='-':
+                     s.send_TrackController_switch_pos.emit(line, block, track_info[line][block]['switch_pos'])
 
-               if track_info[line][block]['track_crossing']!='-':
-                  s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
+                  if track_info[line][block]['track_crossing']!='-':
+                     s.send_TrackController_crossing.emit(line, block, track_info[line][block]['track_crossing'])
 
-               if track_info[line][block]['traffic_light']!='-':
-                  lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
-                              
-               if track_info[line][block]['authority'] == 0:
-                  track_info[line][block]['commanded_speed'] = 0
+                  if track_info[line][block]['traffic_light']!='-':
+                     lights.append({'line': line, 'block': block, 'traffic_light': track_info[line][block]['traffic_light']})
+                                 
+                  if track_info[line][block]['authority'] == 0:
+                     track_info[line][block]['commanded_speed'] = 0
 
-               s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
-               speed = track_info[line][block]['commanded_speed']
-               s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
-      
-         s.send_TrackController_traffic_light.emit(lights)   
+                  s.send_TrackModel_block_authority.emit(line, block, track_info[line][block]['authority'])
+                  speed = track_info[line][block]['commanded_speed']
+                  s.send_TrackModel_commanded_speed.emit(line, block, track_info[line][block]['commanded_speed'])
+         
+            s.send_TrackController_traffic_light.emit(lights)   
          
 
    def import_controller(self, filename, controller_num):
@@ -781,8 +788,11 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
          if controller_num == 2: self.displayPLC2.setText(plc)
          if controller_num == 3: self.displayPLC3.setText(plc)
          if controller_num == 4: self.displayPLC4.setText(plc)
+         if controller_num == 5: self.displayPLC5.setText(plc)
+         if controller_num == 6: self.displayPLC6.setText(plc)
          
       print(self.controllers[controller_num])
+
 
    def getFile1(self):
       filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
@@ -811,6 +821,33 @@ class MainWindow(QMainWindow, WaysideMainUI.Ui_MainWindow):
       if filename[0] != '':
          self.import_controller(filename[0], 3)
       print(self.controllers[3])
+
+   def getFile4(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[4] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 4)
+      print(self.controllers[4])
+
+   def getFile5(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[5] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 5)
+      print(self.controllers[5])
+
+   def getFile6(self):
+
+      filename = QFileDialog.getOpenFileName(self, "Select PLC Script", "", "Text Files (*.txt)")
+
+      self.controllers[6] = []
+      if filename[0] != '':
+         self.import_controller(filename[0], 6)
+      print(self.controllers[6])
 
 
 

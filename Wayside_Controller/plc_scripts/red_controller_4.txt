@@ -1,0 +1,44 @@
+# Wayside Controller 4
+# Red blocks 0-30, 76 (Sections A, B, C, D, E, F, G, T, and part of H)
+
+
+#----------------------------------------------------------------------
+# Switches at blocks 9 (default position: 9-0), 16 (default position: 16-1), and 27 (default position: 27-28)
+#----------------------------------------------------------------------
+
+if (track_info['Red'][0]['occupancy'] == 1) and (track_info['Red'][9]['authority'] == 1):
+    if (track_info['Red'][9]['switch_pos'] == 0) and (track_info['Red'][16]['switch_pos'] == 0) and (track_info['Red'][27]['switch_pos'] == 0):
+        track_info['Red'][0]['traffic_light'] = 1
+        track_info['Red'][0]['authority'] = 1
+        track_info['Red'][1]['traffic_light'] = 1
+        track_info['Red'][28]['traffic_light'] = 1
+        track_info['Red'][76]['traffic_light'] = 0
+        track_info['Red'][76]['authority'] = 0
+
+if (track_info['Red'][76]['occupancy'] == 1) and (track_info['Red'][27]['authority'] == 1) and (track_info['Red'][0]['occupancy'] == 0):
+    if (track_info['Red'][1]['occupancy'] == 0) and (track_info['Red'][2]['occupancy'] == 0) and (track_info['Red'][3]['occupancy'] == 0) and (track_info['Red'][4]['occupancy'] == 0) and (track_info['Red'][5]['occupancy'] == 0) and (track_info['Red'][6]['occupancy'] == 0) and (track_info['Red'][7]['occupancy'] == 0) and (track_info['Red'][8]['occupancy'] == 0) and (track_info['Red'][9]['occupancy'] == 0) and (track_info['Red'][16]['occupancy'] == 0) and (track_info['Red'][17]['occupancy'] == 0) and (track_info['Red'][18]['occupancy'] == 0) and (track_info['Red'][19]['occupancy'] == 0) and (track_info['Red'][20]['occupancy'] == 0) and (track_info['Red'][21]['occupancy'] == 0) and (track_info['Red'][22]['occupancy'] == 0) and (track_info['Red'][23]['occupancy'] == 0) and (track_info['Red'][24]['occupancy'] == 0) and (track_info['Red'][25]['occupancy'] == 0) and (track_info['Red'][26]['occupancy'] == 0) and (track_info['Red'][27]['occupancy'] == 0): 
+        track_info['Red'][27]['switch_pos'] = 1
+        track_info['Red'][76]['traffic_light'] = 1
+        track_info['Red'][76]['authority'] = 1
+        track_info['Red'][28]['traffic_light'] = 0
+
+# return to default switch position and traffic light colors once train in block 76 has passed
+if (track_info['Red'][76]['occupancy'] == 0):
+    track_info['Red'][27]['switch_pos'] = 0
+    track_info['Red'][76]['traffic_light'] = 0
+
+
+#----------------------------------------------------------------------
+# change traffic lights at stations
+#----------------------------------------------------------------------
+
+stations = [7, 16, 21, 25]
+for x in stations:
+
+    # traffic light turns green if train is just passing through or when it starts moving again
+    if (track_info['Red'][x]['authority'] == 1):
+        track_info['Red'][x]['traffic_light'] = 1
+
+    # after train passes station, return traffic light to red
+    if (track_info['Red'][x]['occupancy'] == 0):
+        track_info['Red'][x]['traffic_light'] = 0
