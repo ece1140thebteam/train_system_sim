@@ -379,6 +379,8 @@ class TrackModel(QWidget):
 
                         if len(positions)!=2:
                             print('switch format incorrect')
+                            print(positions)
+                            print(i)
                             # if z1 is not blocknum:
                         else:
                             switch = TrackBlock.Switch(
@@ -405,17 +407,6 @@ class TrackModel(QWidget):
                     else:
                         block_travels_to.append(int(c))
 
-                # if switch is not None:
-                #     if len(switch)>1:
-                #         switch = TrackBlock.Switch(
-                #             line=line,
-                #             section=block[1],
-                #             block=block[2],
-                #             pos1=switch[0],
-                #             pos2=switch[1],
-                #         )
-                #     else:
-                #         switch = None
                 if line not in tracklines:
                     tracklines[line] = dict()
                 if block[1] not in tracklines[line]:
@@ -718,7 +709,6 @@ class TrackModel(QWidget):
         block_info['authority']          = block.authority
         block_info['underground']        = block.underground
         block_info['speed_limit']        = block.speed_limit
-
         block_info['passengers_waiting'] = block.passengers_waiting
 
         print(block_info)
@@ -753,6 +743,7 @@ class TrackModel(QWidget):
         block_info['authority']          = block.authority
         block_info['underground']        = block.underground
         block_info['speed_limit']        = block.speed_limit
+        block_info['passengers_waiting'] = block.passengers_waiting
 
         s.send_TrackModel_block_info.emit(train_num, block_info)
 
