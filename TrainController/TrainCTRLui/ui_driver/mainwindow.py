@@ -174,7 +174,7 @@ class TrainController(QMainWindow):
         else:
             intercomstr = ('Intercom Not Active')
             self.ui.intercomBtn.setChecked(False)
-            
+
     #Function to periodically update ui based on backend train data
     def UpdateUI(self):
         
@@ -219,11 +219,11 @@ class TrainController(QMainWindow):
             self.ui.engFailStatus.setText('Engine Status: Working')
             self.ui.trackSigStatus.setText('Track Signal Status: Detected')
 
-        #check authority of current working train
-        #if no authority but stopped at a station: give beacon message
-        if not self.curTrain.auth:
-                self.beaconHandler()
-            #otherwise, train is moving when it shouldn't be, give auth error message
+            #check authority of current working train
+            #if no authority but stopped at a station: give beacon message
+            if not self.curTrain.auth:
+                    self.beaconHandler()
+                #otherwise, train is moving when it shouldn't be, give auth error message
             else:
                 if self.curTrain.curSpd > 0:
                     dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
@@ -233,7 +233,6 @@ class TrainController(QMainWindow):
                     dialog.exec()
 
         #If authority is good and no faults, continue with update
-        else:
             if(self.curTrain.manMode == True):
                 if not(self.ui.speedSlider.isEnabled()):
                     self.ui.speedSlider.setDisabled(False)
