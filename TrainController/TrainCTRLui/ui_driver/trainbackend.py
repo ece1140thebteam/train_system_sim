@@ -42,8 +42,11 @@ class Train_CTRL_BE():
     #Signals
         self.sigs.send_TrainCtrl_speed.connect(self.curSpdAdjust)
         self.sigs.send_TrainCtrl_failure.connect(self.failHandle)
+        self.sigs.send_TrainCtrl_eBrake.connect(self.passEBrake)
 
-#Functions copied from UI class
+    def passEBrake(self):
+        self.eBrake = True
+
     def beaconHandler(self, info):
         if info['beacon'] is not None:
             self.beacon = info['beacon']
