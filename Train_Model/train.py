@@ -58,7 +58,7 @@ class Train():
         self.sig.send_TrainModel_powerOutput.connect(self.power_set)
         self.sig.send_TrainModel_lDoor.connect(self.left_door)
         self.sig.send_TrainModel_rDoor.connect(self.right_door)
-        self.sig.send_TrainModel_eBrake.connect(self.e_brake)
+        self.sig.send_TrainModel_eBrake.connect(self.e_brake_set)
         self.sig.send_TrainModel_temp.connect(self.temp_set)
         self.sig.send_TrainModel_sBrake.connect(self.s_brake)
 
@@ -80,6 +80,9 @@ class Train():
     def e_brake(self, cmd):
         self.ebrakecmd = cmd
         self.sig.send_TrainCtrl_eBrake.emit(self.ebrakecmd)
+
+    def e_brake_set(self, cmd):
+        self.ebrakecmd = cmd
 
     def elight_set(self, on):
         if on:
