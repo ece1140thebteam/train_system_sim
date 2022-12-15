@@ -64,13 +64,14 @@ class Train_CTRL_BE():
             self.atStation = False
 
     def failHandle(self, failActive, failType): 
-            self.failMode = failActive
-            if failType == 'Engine':
-                self.engineFault = True
-            elif failType == 'Brake':
-                self.brakeFault = True
-            elif failType == 'Signal':
-                self.trackSigFault = True
+            self.faultMode = failActive
+            if self.faultMode:
+                if failType == 'Engine':
+                    self.engineFault = True
+                elif failType == 'Brake':
+                    self.brakeFault = True
+                elif failType == 'Signal':
+                    self.trackSigFault = True
             else:
                 self.engineFault = False
                 self.brakeFault = False
