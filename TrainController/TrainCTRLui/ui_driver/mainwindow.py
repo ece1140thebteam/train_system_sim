@@ -230,15 +230,16 @@ class TrainController(QMainWindow):
             #otherwise, train is moving when it shouldn't be, give auth error message
                 else:
                     if self.curTrain.curSpd > 0:
-                        dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
-                        self.authPopupHappened = True 
+                        if(self.authPopupHappened == False):
+                            dialog = trainDialog('Not authorized to travel on block, setting power to 0 and engaging sbrake')
+                            self.authPopupHappened = True 
+                            dialog.exec()
                         self.ui.speedSlider.setDisabled(True)
                         self.ui.speedSlider.setValue(0)
-                        self.ui.driverSpd.setText('0MPH')
-                        dialog.exec()
+                        self.ui.driverSpd.setText('0MPH')        
             else:
                 self.authPopupHappened = False
-                
+
         #If authority is good and no faults, continue with update
             if(self.curTrain.manMode == True):
                 if not(self.ui.speedSlider.isEnabled()):
