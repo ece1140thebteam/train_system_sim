@@ -1,2 +1,2 @@
 # train_system_sim
-Run `system.py` to start system and then launch modules
+Run `python system.py` to start system and then launch modules
